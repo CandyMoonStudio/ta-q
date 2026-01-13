@@ -1,0 +1,4 @@
+id	text	answer	aliases	tags	weight	status	source
+q001	Which planet is known as the Red Planet?	Mars		astronomy|space		prod	manual
+q002	Type the phrase: Hello, World!	Hello, World!	Hello World|hello world	punctuation|phrase		prod	manual
+q003	日本の首都は？	東京	とうきょう|tokyo	geo|jp		inbox	manual
