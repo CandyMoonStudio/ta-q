@@ -1,21 +1,20 @@
 # Question Generator (TypeAnswer)
 
-This folder is dedicated to **question generation, validation, and TSV→JSON conversion** only.
-It is intentionally isolated so it can be extracted into a separate repository in the future.
+このリポジトリは **問題生成・検証・TSV→JSON 変換** のみに用途を限定しています。
+将来的に別リポジトリとして切り出せるよう、意図的に独立しています。
 
-## Purpose
-- Editing format is **TSV** (human-readable for authors).
-- Game input format is **JSON** (auto-generated).
-- **Manual copy** is currently required to move JSON into the game data.
-- This folder **does not fetch** anything from the network.
-- The existing game code is **not modified** by design.
+## 目的
+- 編集形式は **TSV**（作問者にとって読みやすい形式）
+- ゲーム側の入力形式は **JSON**（自動生成）
+- JSON をゲームのデータへ反映するには **手動コピー** が必要
+- このリポジトリは **ネットワークから取得しない**
+- 既存のゲームコードは **設計上変更しない**
 
-## Usage
+## 使い方
 ```sh
-cd question_gen
 node src/build.mjs
 ```
 
-## Notes
-- Output files are generated under `question_gen/out/`.
-- This folder is self-contained and avoids dependencies whenever possible.
+## 補足
+- 出力ファイルは `out/` 配下に生成されます。
+- できるだけ依存を増やさず、自己完結する構成にしています。
