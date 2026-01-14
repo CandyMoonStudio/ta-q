@@ -48,7 +48,11 @@ export function validateQuestion(question, index) {
   const aliases = splitPipe(question.aliases);
   const tags = splitPipe(question.tags);
   const status = String(question.status || "").trim();
+
   const source = String(question.source || "").trim();
+  const romaji = String(question.romaji || "").trim();
+  const typeValue = String(question.type || "").trim();
+  const explanation = String(question.explanation || "").trim();
 
   const normalizedQuestion = {
     id,
@@ -57,7 +61,11 @@ export function validateQuestion(question, index) {
     aliases: aliases.length > 0 ? aliases : undefined,
     tags: tags.length > 0 ? tags : undefined,
     status: status || "inbox",
+
     source: source || undefined,
+    romaji: romaji || undefined,
+    type: typeValue || undefined,
+    explanation: explanation || undefined,
     _index: index,
   };
 

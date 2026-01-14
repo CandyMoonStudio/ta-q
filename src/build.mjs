@@ -34,15 +34,19 @@ rows.forEach((row, index) => {
   }
 
   const output = {
-    id: question.id,
-    text: question.text,
-    answer: question.answer,
-    aliases: question.aliases,
-    tags: question.tags,
-    weight: question.weight,
-    status: question.status,
-    source: question.source,
+    id: /^\d+$/.test(question.id) ? Number(question.id) : question.id,
+    type: question.type,
+    question: question.text,
+    romaji_typing: question.romaji,
+    answer_variants: [question.answer, ...(question.aliases || [])],
+    explanation: question.explanation,
+
+    // Internal fields for processing/debugging
     _index: question._index,
+    status: question.status,
+    tags: question.tags,
+    source: question.source,
+    weight: question.weight,
   };
 
   if (errors.length > 0) {
@@ -56,7 +60,10 @@ rows.forEach((row, index) => {
 
 const stableSort = (items) =>
   items.sort((a, b) => {
-    const idCompare = a.id.localeCompare(b.id, "en");
+    const idA = String(a.id);
+    const idB = String(b.id);
+    // Use numeric: true for natural sort order (1, 2, 10 instead of 1, 10, 2)
+    const idCompare = idA.localeCompare(idB, "en", { numeric: true });
     if (idCompare !== 0) {
       return idCompare;
     }
@@ -66,22 +73,26 @@ const stableSort = (items) =>
 stableSort(prod);
 stableSort(ng);
 
-const stripIndex = (item) => {
-  const { _index, ...rest } = item;
-  if (rest.aliases === undefined) {
-    delete rest.aliases;
-  }
-  if (rest.tags === undefined) {
-    delete rest.tags;
-  }
-  if (rest.source === undefined) {
-    delete rest.source;
-  }
+const formatOutput = (item) => {
+  const {
+    _index, status, tags, source, weight,
+    ...rest
+  } = item;
+
+  if (!rest.explanation) delete rest.explanation;
+
+  // Clean up potentially undefined fields
+  Object.keys(rest).forEach(key => {
+    if (rest[key] === undefined) {
+      delete rest[key];
+    }
+  });
+
   return rest;
 };
 
-const prodOutput = prod.map(stripIndex);
-const ngOutput = ng.map(stripIndex);
+const prodOutput = prod.map(formatOutput);
+const ngOutput = ng.map(formatOutput);
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(

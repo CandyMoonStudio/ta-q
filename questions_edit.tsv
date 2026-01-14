@@ -1,4 +1,79 @@
-id	text	answer	aliases	tags	weight	status	source
-q001	Which planet is known as the Red Planet?	Mars		astronomy|space		prod	manual
-q002	Type the phrase: Hello, World!	Hello, World!	Hello World|hello world	punctuation|phrase		prod	manual
-q003	日本の首都は？	東京	とうきょう|tokyo	geo|jp		inbox	manual
+id	text	answer	aliases	romaji	type	tags	weight	status	source	explanation
+1	日本の首都は？	tokyo	toukyou	nihon no shuto ha ?	fast			prod	import	
+2	1足す1は？	2	ni|two	1 tasu 1 ha ?	fast			prod	import	
+4	三角形の内角の和は何度？	180	180do	sankakukei no naikaku no wa ha nando ?	fast			prod	import	
+5	水の化学式は？	h2o		mizu no kagakushiki ha ?	fast			prod	import	
+7	1日は何時間？	24	24jikan	1nichi ha nanjikan ?	fast			prod	import	
+9	トランプのハート、ダイヤ以外の赤色のマークは？	none	nashi|nai	toranpu no ha-to , daiya igai no akairo no ma-ku ha ?	fast			prod	import	
+11	サイコロの1の裏の数字は？	6	roku	saikoro no 1 no ura no suuji ha ?	fast			prod	import	
+12	干支の最初の動物は？	nezumi	ne|mouse|rat	eto no saisho no doubutsu ha ?	fast			prod	import	
+13	野球の1チームの人数は？	9	kyuu	yakyuu no 1chi-mu no ninzuu ha ?	fast			prod	import	
+14	義務教育の小学校は何年間？	6	roku	gimukyouiku no shougakkou ha nannenkan ?	fast			prod	import	
+16	桃太郎が退治しに行った場所は？	onigashima		momotarou ga taiji shi ni itta basho ha ?	fast			prod	import	
+18	サッカーで手を使ってよいポジションは？	gk	goalkeeper|go-ruki-pa-	sakka- de te wo tsukatte yoi pojishon ha ?	fast			prod	import	
+21	太陽が昇る方角は？	higashi	east	taiyou ga noboru hougaku ha ?	fast			prod	import	
+25	2月は通常何日まで？	28		2gatsu ha tsuujou nannichi made ?	fast			prod	import	
+26	光の三原色は赤、緑と何？	ao	blue	hikari no sangenshoku ha aka , midori to nani ?	fast			prod	import	
+28	世界で一番広い国は？	russia	roshia	sekai de ichiban hiroi kuni ha ?	fast			prod	import	
+30	大相撲の土俵は何角形？	en	maru|circle	oozumou no dohyou ha nankakukei ?	fast			prod	import	
+32	ABCの次に来る文字は？	d		ABC no tsugi ni kuru moji ha ?	fast			prod	import	
+36	5円玉に開いている穴の形は？	maru	en|circle	5yendama ni aiteiru ana no katachi ha ?	fast			prod	import	
+38	テニスで0点の呼び方は？	love		tenisu de 0ten no yobikata ha ?	fast			prod	import	
+40	カエルの子供は？	otamajakushi		kaeru no kodomo ha ?	fast			prod	import	
+45	日本の都道府県の数は？	47		nihon no todoufuken no kazu ha ?	fast			prod	import	
+46	東京スカイツリーの高さは？	634	musashi	toukyou sukaitsuri- no takasa ha ?	fast			prod	import	
+47	聖徳太子が定めた憲法は？	17jou	juushichijou	shoutokutaishi ga sadameta kenpou ha ?	fast			prod	import	
+49	陸上のトラック、反時計回りか時計回りか？	hantokeimawari		rikujou no torakku , hantokeimawari ka tokeimawari ka ?	fast			prod	import	
+54	1ダースは何個？	12	juuni	1da-su ha nanko ?	fast			prod	import	
+62	江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？	yoshinobu	keiki	edobakufu wo hiraita jinbutsu ha tokugawa ieyasu desu ga , saigo no shougun ha dare ?	knowledge			prod	import	徳川慶喜（よしのぶ／けいき）。大政奉還を行いました。
+65	原子番号1番の元素は水素ですが、2番は何？	helium	heriumu	genshibangou 1ban no genso ha suiso desu ga , 2ban ha nani ?	knowledge			prod	import	ヘリウム (He) です。
+67	日本一大きい湖は琵琶湖ですが、二番目に大きいのは？	kasumigaura		nihonichi ookii mizuumi ha biwako desu ga , nibanme ni ookii no ha ?	knowledge			prod	import	茨城県にある霞ヶ浦です。
+68	ドラえもんの妹、ドラミちゃんの好物は？	meronpan	melonpan	doraemon no imouto , doramichan no koubutsu ha ?	knowledge			prod	import	メロンパンが大好きです。
+71	将棋の駒で、唯一斜め後ろに下がれない駒は？	keima	kei	shougi no koma de , yuiitsu naname ushiro ni sagarenai koma ha ?	knowledge			prod	import	桂馬は前2横1の場所に飛びます。
+73	日本の硬貨で、真ん中に穴が開いているのは5円玉と何？	50yendama	50|50yen	nihon no kouka de , mannaka ni ana ga aiteiru no ha 5yendama to nani ?	knowledge			prod	import	50円玉にも穴があります。
+75	世界三大珍味といえば、トリュフ、フォアグラと何？	kyabia	caviar	sekaisandaichinmi to ieba , toryufu , foagura to nani ?	knowledge			prod	import	キャビアです。
+76	日本で一番高い山は？	fujisan	mt.fuji|fuji	nihon de ichiban takai yama ha ?	fast			prod	import	
+ng-01	将棋の駒で一番強いのは？	ou	oushou|king	shougi no koma de ichiban tsuyoi no ha ?		ambiguous-definition		ng	import	NG Reason: 「強い」の定義が不明確（動きの多さなら竜吉、勝負上の重要度なら王将）。
+ng-02	ルフィが目指しているものは？	kaizokuou	pirate king|one piece	rufwi ga mezashite iru mono ha ?		multiple-valid-answers		ng	import	NG Reason: 「海賊王」と「ワンピース」のどちらも文脈によって正解になり得る。
+ng-03	任天堂の代表的なゲームキャラは？	mario		nintendou no daihyouteki na ge-mu kyara ha ?		subjective		ng	import	NG Reason: 「代表的」は主観であり、ポケモンなども候補になり得るため一意に定まらない。
+ng-04	「うどん」と「そば」、黒いのは？	soba		[udon] to [soba] , kuroi no ha ?		ambiguous-definition		ng	import	NG Reason: 更科そば（白）などの例外があり、必ずしも黒とは限らないため定義が不十分。
+ng-05	「きつね」の好物は油揚げ、では「うさぎ」は？	ninjin	carrot	[kitsune] no koubutsu ha aburaage , deha [usagi] ha ?		scientifically-inaccurate		ng	import	NG Reason: ウサギが人参を好むのは漫画的表現（ステレオタイプ）であり、実際の主食は牧草。
+ng-06	「パンはパンでも食べられないパンは？」というなぞなぞ。代表的な正解は？	furaipan	frypan	[pan wa pan demo taberarenai pan wa ?] to iu nazonazo . daihyouteki na seikai ha ?		trick-question		ng	import	NG Reason: 「代表的な正解」という主観に依存しており、腐ったパンなども正解になり得るためなぞなぞは不適切。
+10	一千円札に描かれている人物は（2020年時点）？	noguchi hideyo	noguchi	issenyensatsu ni egakareteiru jinbutsu ha (2020nen jiten) ?	fast			ng	import	NG Reason: Contains parentheses (User Request: annoying)
+20	現在（2025年）の日本の通貨単位は？	yen	en	genzai (2025nen) no nihon no tsuuka tani ha ?	fast			ng	import	NG Reason: Contains parentheses (User Request: annoying)
+42	「雨」が雪に変わる温度は（摂氏）？	0	zero	[ame] ga yuki ni kawaru ondo ha (sesshi) ?	fast			ng	import	NG Reason: Contains parentheses (User Request: annoying)
+51	五千円札の肖像画は誰（2020年時点）？	higuchi ichiyo	higuchi	gosenyensatsu no shouzouga ha dare (2020nen jiten) ?	fast			ng	import	NG Reason: Contains parentheses (User Request: annoying)
+72	パソコン用語で、コピーのショートカットキーはCtrl（MacはCmd）と何？	c		pasokonyougo de , kopi- no sho-tokattoki- ha Ctrl (Mac ha Cmd) to nani ?	knowledge			ng	import	CopyのCです。 (NG Reason: Contains parentheses (User Request: annoying))
+ng-07	信号機の「進め」の色は？	ao	green|midori|blue	shingouki no [susume] no iro ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-08	将棋の「歩」が成ると何になる？	tokin	to	shougi no [fu] ga naru to nani ni naru ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-09	「ありがとう」は大阪弁で？	ookini		[arigatou] ha oosakaben de ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-10	「赤い丸」の国旗の国は？	nihon	japan	[akai maru] no kokki no kuni ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-11	QRコードの「QR」は何の略？	quick response		QRko-do no [QR] ha nan no ryaku ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-12	「五輪」と呼ばれるスポーツの祭典は？	olympic	orinpikku	[gorin] to yobareru supo-tsu no saiten ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-13	「タコ」の足は何本？	8	hachihon|hakko	[tako] no ashi ha nanbon ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-14	「千代紙」は何でできている？	kami	paper|washi	[chiyogami] ha nani de dekiteiru ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-15	「氷」が溶けると何になる？	mizu	water	[koori] ga tokeru to nani ni naru ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-16	日本列島の「北」にある大きな島は？	hokkaido	hokkaidou	nihonrettou no [kita] ni aru ookina shima ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-17	「七夕」は何月何日？	7/7	7gatsu7nich|july 7th	[tanabata] ha nangatsu nannichi ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-18	「春夏秋冬」、読み方は？	shunkashuutou	syunkasyuutou	[shunkashuutou] , yomikata ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-19	「週」の真ん中の曜日は？	suiyoubi	wednesday|sui	[shuu] no mannaka no youbi ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-20	「鉛筆」の中心にある黒い棒は？	shin	lead	[enpitsu] no chuushin ni aru kuroi bou ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-21	「笑点」の座布団、最高何枚？	10	juu	[shouten] no zabuton , saikou nanmai ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-22	「グー」「チョキ」、勝つのはどっち？	gu-	rock	[gu-] [choki] , katsu no ha docchi ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-23	「義務教育」の中学校は何年間？	3	san	[gimukyouiku] no chuugakkou ha nannenkan ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-24	「耳」で聞く、「目」で何する？	miru	see|watch	[mimi] de kiku , [me] de nani suru ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-25	「魚」偏に「雪」と書く魚は？	tara	cod	[sakana] hen ni [yuki] to kaku sakana ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-26	「人間」は哺乳類、鳥類、どっち？	honyuurui	mammal	[ningen] ha honyuurui , chourui , docchi ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-27	「西」の反対の方角は？	higashi	east	[nishi] no hantai no hougaku ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-28	「金」の元素記号は？	au		[kin] no gensokigou ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-29	将棋の駒、裏返せないのは「金」と何？	ou	oushou|king|gyoku	shougi no koma , uragaesenai no ha [kin] to nani ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-30	「NHK」は何の略？	nippon housou kyoukai	nihon housou kyoukai	[NHK] ha nan no ryaku ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-31	「千円」は硬貨ではなく何？	shihei	satsu|osatsu	[senyen] ha kouka deha naku nani ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-32	夏目漱石の小説『吾輩は猫である』。書き出しは「吾輩は猫である。名前は」何？	madanai	nai	natsumesouseki no shousetsu [wagahaihanekodearu] . kakidashi ha [wagahaihanekodearu . namae ha] nani ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-33	日本の元号で、「明治」「大正」の次は？	showa	shouwa|syouwa	nihon no gengou de , [meiji] [taishou] no tsugi ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-34	童謡『森のくまさん』で、お嬢さんが落としたものは何？	iyaringu	earring	douyou [mori no kumasan] de , ojousan ga otoshita mono ha nani ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-35	ことわざ。「犬も歩けば」何に当たる？	bou	boo	kotowaza . [inu mo arukeba] nani ni ataru ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-36	国民の祝日「元日」は1月1日ですが、「建国記念の日」はいつ？	2/11	2gatsu11nichi|february 11th	kokumin no shukujitsu [ganjitsu] ha 1gatsu 1tachi desu ga , [kenkokukinen no hi] ha itsu ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-37	「M-1グランプリ」のMとは、何の頭文字？	manzai		[M-1 guranpuri] no M toha , nan no kashiramoji ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-38	「H」は水素、「O」は何？	sanso	oxygen	[H] ha suiso , [O] ha nani ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
+ng-39	「桃太郎」のお供は犬、猿、あと一匹は？	kiji	pheasant	[momotarou] no otomo ha inu , saru , ato ippiki ha ?		format-annoying		ng	import	NG Reason: Contains parentheses/brackets (User Request: annoying)
