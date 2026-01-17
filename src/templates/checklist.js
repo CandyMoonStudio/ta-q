@@ -155,17 +155,17 @@ function activateNoteInput(id) {
         reviewData[id] = { id: id, status: null, note: '', updatedAt: 0 };
     }
 
-    const statusCell = document.getElementById('status-' + id);
+    const noteCell = document.getElementById('note-' + id);
     const currentNote = reviewData[id].note || '';
 
     // Prevent re-render if already editing
-    if (statusCell.querySelector('input')) return;
+    if (noteCell.querySelector('input')) return;
 
-    statusCell.innerHTML = `
+    noteCell.innerHTML = `
     <div class="inline-input-container">
         <input type="text" id="input-${id}" class="inline-input" 
                value="${currentNote.replace(/"/g, '&quot;')}" 
-               placeholder="Enter note..." 
+               placeholder="メモを入力..." 
                onkeydown="handleInputKey(event, '${id}')"
                onblur="saveNote('${id}')">
     </div>
@@ -225,30 +225,27 @@ function updateRowVisuals(id) {
 }
 
 function renderStatusCell(id) {
-    const statusCell = document.getElementById('status-' + id);
-    if (!statusCell) return;
+    const badgeCell = document.getElementById(`badge-${id}`);
+    const noteCell = document.getElementById(`note-${id}`);
 
-    if (statusCell.querySelector('input')) return;
+    if (!badgeCell || !noteCell) return;
+    if (noteCell.querySelector('input')) return; // Editing note
 
     const data = reviewData[id];
-    if (!data) {
-        statusCell.innerHTML = '';
-        return;
+
+    // 1. Badge (Status Column)
+    let badgeHtml = '';
+    if (data && data.status) {
+        badgeHtml = `<span class="status-badge ${data.status}">${data.status.toUpperCase()}</span>`;
     }
+    badgeCell.innerHTML = badgeHtml;
 
-    let html = '';
-
-    // Status Badge
-    if (data.status) {
-        html += `<span class="status-badge ${data.status}">${data.status.toUpperCase()}</span>`;
+    // 2. Note (Note Column)
+    let noteHtml = '';
+    if (data && data.note) {
+        noteHtml = `<span class="note-text">${escapeHtml(data.note)}</span>`;
     }
-
-    // Note
-    if (data.note) {
-        html += `<span style="font-size:0.9em; color:var(--text-sub);">${escapeHtml(data.note)}</span>`;
-    }
-
-    statusCell.innerHTML = html;
+    noteCell.innerHTML = noteHtml;
 }
 
 // --- Drawer & Tabs ---

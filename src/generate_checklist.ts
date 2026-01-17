@@ -97,10 +97,11 @@ function generateChecklist() {
                             <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="OK（採用）">✓</button>
                             <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="NG（却下）">×</button>
                             <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="Debug（要修正：誤字脱字や内容の不備）">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="Hold（保留：後で判断）">⏸</button>
+                            <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="保留 (Hold)">!</button>
                             <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="メモを追加">📝</button>
                         </div>
                     </td>
+                    <td class="status-cell" id="badge-${safeId}" style="min-width: 100px;"></td>
                     <td class="id-cell">
                         <span class="id-badge">${safeId}</span>
                     </td>
@@ -117,7 +118,7 @@ function generateChecklist() {
                         <span class="romaji-main">${highlightedRomaji}</span>
                         ${variantsText !== '-' ? `<span class="romaji-variants">Variants: ${highlightedVariants}</span>` : ''}
                     </td>
-                    <td class="status-cell" id="status-${safeId}"></td>
+                    <td class="note-cell" id="note-${safeId}"></td>
                 </tr>`;
         }
 
