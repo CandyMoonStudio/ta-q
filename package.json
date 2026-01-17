@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsx src/build.ts",
     "checklist": "npm run build && tsx src/generate_checklist.ts",
+    "add": "tsx src/cli/add.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit"
   },
