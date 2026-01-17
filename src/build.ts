@@ -46,7 +46,7 @@ function stableSort(items: OutputQuestion[]): OutputQuestion[] {
 
 function formatOutput(item: OutputQuestion): Partial<OutputQuestion> {
     const {
-        _index, status, tags, source, weight,
+        _index, status, weight,
         ...rest
     } = item;
 

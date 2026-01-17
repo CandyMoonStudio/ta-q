@@ -127,6 +127,33 @@
             letter-spacing: 0.05em;
             font-weight: 700;
             border-bottom: 2px solid #e5e7eb;
+            position: relative;
+            /* For resizer */
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background-color: #f3f4f6;
+        }
+
+        .resizer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: col-resize;
+            user-select: none;
+            touch-action: none;
+            z-index: 100;
+        }
+
+        .resizer:hover,
+        .resizing {
+            background: var(--primary);
+            width: 4px;
         }
 
         tr {
@@ -143,6 +170,105 @@
             vertical-align: middle;
             border-bottom: 1px solid #e5e7eb;
             /* Divider */
+        }
+
+        /* Sticky First Column (Actions) */
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            background-color: var(--bg-card);
+            box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        th:first-child {
+            z-index: 30;
+            /* Ensure header stays on top of sticky column cells */
+        }
+
+        /* Fix for hover effect obscuring sticky bg */
+        tr:hover td:first-child {
+            background-color: #f9fafb;
+        }
+
+        /* Controls Area */
+        .controls-area {
+            display: flex;
+            gap: 16px;
+            padding: 20px 40px;
+            /* Match container padding */
+            background: var(--bg-body);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            min-width: 120px;
+            cursor: pointer;
+        }
+
+        /* Genres */
+        .tag-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-right: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .tag-badge.type {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .tag-badge.tag {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
         }
 
         /* Cells */
@@ -547,9 +673,30 @@
             <span style="color:#10b981">採用: 34</span> | 
             <span style="color:#1f2937">要修正: 0</span> | 
             <span style="color:#ef4444">却下: 44</span>
-         • Generated: 2026/1/17 20:23:15
+         • Generated: 2026/1/17 20:32:21
         </div>
     </header>
+
+    <div class="controls-area">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="検索 (ID, 問題, 解答, ジャンル...)">
+        </div>
+        <div class="filter-group">
+            <select class="filter-select" id="status-filter">
+                <option value="all">全ステータス</option>
+                <option value="unset">未判定</option>
+                <option value="ok">OK (採用)</option>
+                <option value="ng">NG (却下)</option>
+                <option value="debug">DEBUG (要修正)</option>
+                <option value="hold">HOLD (保留)</option>
+            </select>
+            <select class="filter-select" id="genre-filter">
+                <option value="all">全ジャンル</option>
+                <!-- Generated dynamically -->
+            </select>
+        </div>
+    </div>
 
     <div class="container">
         <table>
@@ -557,6 +704,7 @@
                 <tr>
                     <th width="160">操作</th>
                     <th width="60">ID</th>
+                    <th width="120">ジャンル</th>
                     <th>問題 / 解答</th>
                     <th>ローマ字 / 別解</th>
                     <th width="250" style="text-align:right;">状態 / メモ</th>
@@ -564,7 +712,12 @@
             </thead>
             <tbody>
                 
-                <tr id="row-1" class="" data-id="1">
+                <tr id="row-1" class="" 
+                    data-id="1" 
+                    data-search="1 日本の首都は？ 東京 東京 nihon no shuto ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('1', 'ok')" title="OK（採用）">✓</button>
@@ -574,9 +727,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('1')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">1</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の首都は？</div>
@@ -589,7 +745,12 @@
                     </td>
                     <td class="status-cell" id="status-1"></td>
                 </tr>
-                <tr id="row-2" class="" data-id="2">
+                <tr id="row-2" class="" 
+                    data-id="2" 
+                    data-search="2 1足す1は？ 2 2 1 tasu 1 ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('2', 'ok')" title="OK（採用）">✓</button>
@@ -599,9 +760,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('2')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">2</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>1足す1は？</div>
@@ -614,7 +778,12 @@
                     </td>
                     <td class="status-cell" id="status-2"></td>
                 </tr>
-                <tr id="row-4" class="" data-id="4">
+                <tr id="row-4" class="" 
+                    data-id="4" 
+                    data-search="4 三角形の内角の和は何度？ 180度 180度 sankakukei no naikaku no wa ha nando ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('4', 'ok')" title="OK（採用）">✓</button>
@@ -624,9 +793,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('4')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">4</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>三角形の内角の和は何度？</div>
@@ -639,7 +811,12 @@
                     </td>
                     <td class="status-cell" id="status-4"></td>
                 </tr>
-                <tr id="row-5" class="" data-id="5">
+                <tr id="row-5" class="" 
+                    data-id="5" 
+                    data-search="5 水の化学式は？ h2o h2o mizu no kagakushiki ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('5', 'ok')" title="OK（採用）">✓</button>
@@ -649,9 +826,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('5')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">5</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>水の化学式は？</div>
@@ -664,7 +844,12 @@
                     </td>
                     <td class="status-cell" id="status-5"></td>
                 </tr>
-                <tr id="row-7" class="" data-id="7">
+                <tr id="row-7" class="" 
+                    data-id="7" 
+                    data-search="7 1日は何時間？ 24時間 24時間 1nichi ha nanjikan ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('7', 'ok')" title="OK（採用）">✓</button>
@@ -674,9 +859,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('7')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">7</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>1日は何時間？</div>
@@ -689,7 +877,12 @@
                     </td>
                     <td class="status-cell" id="status-7"></td>
                 </tr>
-                <tr id="row-9" class="" data-id="9">
+                <tr id="row-9" class="" 
+                    data-id="9" 
+                    data-search="9 トランプのハート、ダイヤ以外の赤色のマークは？ なし なし toranpu no ha-to , daiya igai no akairo no ma-ku ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('9', 'ok')" title="OK（採用）">✓</button>
@@ -699,9 +892,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('9')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">9</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>トランプのハート、ダイヤ以外の赤色のマークは？</div>
@@ -714,7 +910,12 @@
                     </td>
                     <td class="status-cell" id="status-9"></td>
                 </tr>
-                <tr id="row-11" class="" data-id="11">
+                <tr id="row-11" class="" 
+                    data-id="11" 
+                    data-search="11 サイコロの1の裏の数字は？ 6 6 saikoro no 1 no ura no suuji ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('11', 'ok')" title="OK（採用）">✓</button>
@@ -724,9 +925,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('11')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">11</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>サイコロの1の裏の数字は？</div>
@@ -739,7 +943,12 @@
                     </td>
                     <td class="status-cell" id="status-11"></td>
                 </tr>
-                <tr id="row-12" class="" data-id="12">
+                <tr id="row-12" class="" 
+                    data-id="12" 
+                    data-search="12 干支の最初の動物は？ ねずみ ねずみ eto no saisho no doubutsu ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('12', 'ok')" title="OK（採用）">✓</button>
@@ -749,9 +958,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('12')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">12</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>干支の最初の動物は？</div>
@@ -764,7 +976,12 @@
                     </td>
                     <td class="status-cell" id="status-12"></td>
                 </tr>
-                <tr id="row-13" class="" data-id="13">
+                <tr id="row-13" class="" 
+                    data-id="13" 
+                    data-search="13 野球の1チームの人数は？ 9 9 yakyuu no 1chi-mu no ninzuu ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('13', 'ok')" title="OK（採用）">✓</button>
@@ -774,9 +991,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('13')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">13</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>野球の1チームの人数は？</div>
@@ -789,7 +1009,12 @@
                     </td>
                     <td class="status-cell" id="status-13"></td>
                 </tr>
-                <tr id="row-14" class="" data-id="14">
+                <tr id="row-14" class="" 
+                    data-id="14" 
+                    data-search="14 義務教育の小学校は何年間？ 6年間 6年間 gimukyouiku no shougakkou ha nannenkan ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('14', 'ok')" title="OK（採用）">✓</button>
@@ -799,9 +1024,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('14')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">14</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>義務教育の小学校は何年間？</div>
@@ -814,7 +1042,12 @@
                     </td>
                     <td class="status-cell" id="status-14"></td>
                 </tr>
-                <tr id="row-16" class="" data-id="16">
+                <tr id="row-16" class="" 
+                    data-id="16" 
+                    data-search="16 桃太郎が退治しに行った場所は？ 鬼ヶ島 鬼ヶ島 momotarou ga taiji shi ni itta basho ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('16', 'ok')" title="OK（採用）">✓</button>
@@ -824,9 +1057,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('16')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">16</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>桃太郎が退治しに行った場所は？</div>
@@ -839,7 +1075,12 @@
                     </td>
                     <td class="status-cell" id="status-16"></td>
                 </tr>
-                <tr id="row-18" class="" data-id="18">
+                <tr id="row-18" class="" 
+                    data-id="18" 
+                    data-search="18 サッカーで手を使ってよいポジションは？ ゴールキーパー ゴールキーパー sakka- de te wo tsukatte yoi pojishon ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('18', 'ok')" title="OK（採用）">✓</button>
@@ -849,9 +1090,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('18')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">18</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>サッカーで手を使ってよいポジションは？</div>
@@ -864,7 +1108,12 @@
                     </td>
                     <td class="status-cell" id="status-18"></td>
                 </tr>
-                <tr id="row-21" class="" data-id="21">
+                <tr id="row-21" class="" 
+                    data-id="21" 
+                    data-search="21 太陽が昇る方角は？ 東 東 taiyou ga noboru hougaku ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('21', 'ok')" title="OK（採用）">✓</button>
@@ -874,9 +1123,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('21')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">21</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>太陽が昇る方角は？</div>
@@ -889,7 +1141,12 @@
                     </td>
                     <td class="status-cell" id="status-21"></td>
                 </tr>
-                <tr id="row-25" class="" data-id="25">
+                <tr id="row-25" class="" 
+                    data-id="25" 
+                    data-search="25 2月は通常何日まで？ 28日 28日 2gatsu ha tsuujou nannichi made ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('25', 'ok')" title="OK（採用）">✓</button>
@@ -899,9 +1156,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('25')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">25</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>2月は通常何日まで？</div>
@@ -914,7 +1174,12 @@
                     </td>
                     <td class="status-cell" id="status-25"></td>
                 </tr>
-                <tr id="row-26" class="" data-id="26">
+                <tr id="row-26" class="" 
+                    data-id="26" 
+                    data-search="26 光の三原色は赤、緑と何？ 青 青 hikari no sangenshoku ha aka , midori to nani ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('26', 'ok')" title="OK（採用）">✓</button>
@@ -924,9 +1189,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('26')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">26</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>光の三原色は赤、緑と何？</div>
@@ -939,7 +1207,12 @@
                     </td>
                     <td class="status-cell" id="status-26"></td>
                 </tr>
-                <tr id="row-28" class="" data-id="28">
+                <tr id="row-28" class="" 
+                    data-id="28" 
+                    data-search="28 世界で一番広い国は？ ロシア ロシア sekai de ichiban hiroi kuni ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('28', 'ok')" title="OK（採用）">✓</button>
@@ -949,9 +1222,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('28')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">28</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>世界で一番広い国は？</div>
@@ -964,7 +1240,12 @@
                     </td>
                     <td class="status-cell" id="status-28"></td>
                 </tr>
-                <tr id="row-30" class="" data-id="30">
+                <tr id="row-30" class="" 
+                    data-id="30" 
+                    data-search="30 大相撲の土俵は何角形？ 円 円 oozumou no dohyou ha nankakukei ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('30', 'ok')" title="OK（採用）">✓</button>
@@ -974,9 +1255,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('30')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">30</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>大相撲の土俵は何角形？</div>
@@ -989,7 +1273,12 @@
                     </td>
                     <td class="status-cell" id="status-30"></td>
                 </tr>
-                <tr id="row-32" class="" data-id="32">
+                <tr id="row-32" class="" 
+                    data-id="32" 
+                    data-search="32 abcの次に来る文字は？ d d abc no tsugi ni kuru moji ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('32', 'ok')" title="OK（採用）">✓</button>
@@ -999,9 +1288,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('32')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">32</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ABCの次に来る文字は？</div>
@@ -1014,7 +1306,12 @@
                     </td>
                     <td class="status-cell" id="status-32"></td>
                 </tr>
-                <tr id="row-36" class="" data-id="36">
+                <tr id="row-36" class="" 
+                    data-id="36" 
+                    data-search="36 5円玉に開いている穴の形は？ 円 円 5yendama ni aiteiru ana no katachi ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('36', 'ok')" title="OK（採用）">✓</button>
@@ -1024,9 +1321,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('36')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">36</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>5円玉に開いている穴の形は？</div>
@@ -1039,7 +1339,12 @@
                     </td>
                     <td class="status-cell" id="status-36"></td>
                 </tr>
-                <tr id="row-38" class="" data-id="38">
+                <tr id="row-38" class="" 
+                    data-id="38" 
+                    data-search="38 テニスで0点の呼び方は？ ラブ ラブ tenisu de 0ten no yobikata ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('38', 'ok')" title="OK（採用）">✓</button>
@@ -1049,9 +1354,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('38')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">38</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>テニスで0点の呼び方は？</div>
@@ -1064,7 +1372,12 @@
                     </td>
                     <td class="status-cell" id="status-38"></td>
                 </tr>
-                <tr id="row-40" class="" data-id="40">
+                <tr id="row-40" class="" 
+                    data-id="40" 
+                    data-search="40 カエルの子供は？ おたまじゃくし おたまじゃくし kaeru no kodomo ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('40', 'ok')" title="OK（採用）">✓</button>
@@ -1074,9 +1387,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('40')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">40</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>カエルの子供は？</div>
@@ -1089,7 +1405,12 @@
                     </td>
                     <td class="status-cell" id="status-40"></td>
                 </tr>
-                <tr id="row-45" class="" data-id="45">
+                <tr id="row-45" class="" 
+                    data-id="45" 
+                    data-search="45 日本の都道府県の数は？ 47 47 nihon no todoufuken no kazu ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('45', 'ok')" title="OK（採用）">✓</button>
@@ -1099,9 +1420,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('45')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">45</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の都道府県の数は？</div>
@@ -1114,7 +1438,12 @@
                     </td>
                     <td class="status-cell" id="status-45"></td>
                 </tr>
-                <tr id="row-46" class="" data-id="46">
+                <tr id="row-46" class="" 
+                    data-id="46" 
+                    data-search="46 東京スカイツリーの高さは？ 634 634 toukyou sukaitsuri- no takasa ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('46', 'ok')" title="OK（採用）">✓</button>
@@ -1124,9 +1453,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('46')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">46</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>東京スカイツリーの高さは？</div>
@@ -1139,7 +1471,12 @@
                     </td>
                     <td class="status-cell" id="status-46"></td>
                 </tr>
-                <tr id="row-47" class="" data-id="47">
+                <tr id="row-47" class="" 
+                    data-id="47" 
+                    data-search="47 聖徳太子が定めた憲法は？ 17条 17条 shoutokutaishi ga sadameta kenpou ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('47', 'ok')" title="OK（採用）">✓</button>
@@ -1149,9 +1486,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('47')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">47</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>聖徳太子が定めた憲法は？</div>
@@ -1164,7 +1504,12 @@
                     </td>
                     <td class="status-cell" id="status-47"></td>
                 </tr>
-                <tr id="row-49" class="" data-id="49">
+                <tr id="row-49" class="" 
+                    data-id="49" 
+                    data-search="49 陸上のトラック、反時計回りか時計回りか？ 反時計回り 反時計回り rikujou no torakku , hantokeimawari ka tokeimawari ka ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('49', 'ok')" title="OK（採用）">✓</button>
@@ -1174,9 +1519,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('49')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">49</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>陸上のトラック、反時計回りか時計回りか？</div>
@@ -1189,7 +1537,12 @@
                     </td>
                     <td class="status-cell" id="status-49"></td>
                 </tr>
-                <tr id="row-54" class="" data-id="54">
+                <tr id="row-54" class="" 
+                    data-id="54" 
+                    data-search="54 1ダースは何個？ 12 12 1da-su ha nanko ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('54', 'ok')" title="OK（採用）">✓</button>
@@ -1199,9 +1552,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('54')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">54</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>1ダースは何個？</div>
@@ -1214,7 +1570,12 @@
                     </td>
                     <td class="status-cell" id="status-54"></td>
                 </tr>
-                <tr id="row-62" class="" data-id="62">
+                <tr id="row-62" class="" 
+                    data-id="62" 
+                    data-search="62 江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？ 徳川慶喜 徳川慶喜 edobakufu wo hiraita jinbutsu ha tokugawa ieyasu desu ga , saigo no shougun ha dare ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('62', 'ok')" title="OK（採用）">✓</button>
@@ -1224,9 +1585,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('62')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">62</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？</div>
@@ -1239,7 +1603,12 @@
                     </td>
                     <td class="status-cell" id="status-62"></td>
                 </tr>
-                <tr id="row-65" class="" data-id="65">
+                <tr id="row-65" class="" 
+                    data-id="65" 
+                    data-search="65 原子番号1番の元素は水素ですが、2番は何？ ヘリウム ヘリウム genshibangou 1ban no genso ha suiso desu ga , 2ban ha nani ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('65', 'ok')" title="OK（採用）">✓</button>
@@ -1249,9 +1618,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('65')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">65</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>原子番号1番の元素は水素ですが、2番は何？</div>
@@ -1264,7 +1636,12 @@
                     </td>
                     <td class="status-cell" id="status-65"></td>
                 </tr>
-                <tr id="row-67" class="" data-id="67">
+                <tr id="row-67" class="" 
+                    data-id="67" 
+                    data-search="67 日本一大きい湖は琵琶湖ですが、二番目に大きいのは？ 霞ヶ浦 霞ヶ浦 nihonichi ookii mizuumi ha biwako desu ga , nibanme ni ookii no ha ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('67', 'ok')" title="OK（採用）">✓</button>
@@ -1274,9 +1651,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('67')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">67</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本一大きい湖は琵琶湖ですが、二番目に大きいのは？</div>
@@ -1289,7 +1669,12 @@
                     </td>
                     <td class="status-cell" id="status-67"></td>
                 </tr>
-                <tr id="row-68" class="" data-id="68">
+                <tr id="row-68" class="" 
+                    data-id="68" 
+                    data-search="68 ドラえもんの妹、ドラミちゃんの好物は？ メロンパン メロンパン doraemon no imouto , doramichan no koubutsu ha ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('68', 'ok')" title="OK（採用）">✓</button>
@@ -1299,9 +1684,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('68')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">68</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ドラえもんの妹、ドラミちゃんの好物は？</div>
@@ -1314,7 +1702,12 @@
                     </td>
                     <td class="status-cell" id="status-68"></td>
                 </tr>
-                <tr id="row-71" class="" data-id="71">
+                <tr id="row-71" class="" 
+                    data-id="71" 
+                    data-search="71 将棋の駒で、唯一斜め後ろに下がれない駒は？ 桂馬 桂馬 shougi no koma de , yuiitsu naname ushiro ni sagarenai koma ha ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('71', 'ok')" title="OK（採用）">✓</button>
@@ -1324,9 +1717,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('71')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">71</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の駒で、唯一斜め後ろに下がれない駒は？</div>
@@ -1339,7 +1735,12 @@
                     </td>
                     <td class="status-cell" id="status-71"></td>
                 </tr>
-                <tr id="row-73" class="" data-id="73">
+                <tr id="row-73" class="" 
+                    data-id="73" 
+                    data-search="73 日本の硬貨で、真ん中に穴が開いているのは5円玉と何？ 50円玉 50円玉 nihon no kouka de , mannaka ni ana ga aiteiru no ha 5yendama to nani ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('73', 'ok')" title="OK（採用）">✓</button>
@@ -1349,9 +1750,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('73')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">73</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の硬貨で、真ん中に穴が開いているのは5円玉と何？</div>
@@ -1364,7 +1768,12 @@
                     </td>
                     <td class="status-cell" id="status-73"></td>
                 </tr>
-                <tr id="row-75" class="" data-id="75">
+                <tr id="row-75" class="" 
+                    data-id="75" 
+                    data-search="75 世界三大珍味といえば、トリュフ、フォアグラと何？ キャビア キャビア sekaisandaichinmi to ieba , toryufu , foagura to nani ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('75', 'ok')" title="OK（採用）">✓</button>
@@ -1374,9 +1783,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('75')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">75</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>世界三大珍味といえば、トリュフ、フォアグラと何？</div>
@@ -1389,7 +1801,12 @@
                     </td>
                     <td class="status-cell" id="status-75"></td>
                 </tr>
-                <tr id="row-76" class="" data-id="76">
+                <tr id="row-76" class="" 
+                    data-id="76" 
+                    data-search="76 日本で一番高い山は？ 富士山 富士山 nihon de ichiban takai yama ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="prod">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('76', 'ok')" title="OK（採用）">✓</button>
@@ -1399,9 +1816,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('76')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">76</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本で一番高い山は？</div>
@@ -1414,7 +1834,12 @@
                     </td>
                     <td class="status-cell" id="status-76"></td>
                 </tr>
-                <tr id="row-10" class="row-ng-initial" data-id="10">
+                <tr id="row-10" class="row-ng-initial" 
+                    data-id="10" 
+                    data-search="10 一千円札に描かれている人物は（2020年時点）？ noguchi hideyo noguchi hideyo issenyensatsu ni egakareteiru jinbutsu ha (2020nen jiten) ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('10', 'ok')" title="OK（採用）">✓</button>
@@ -1424,9 +1849,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('10')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">10</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>一千円札に描かれている人物は（2020年時点）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1439,7 +1867,12 @@
                     </td>
                     <td class="status-cell" id="status-10"></td>
                 </tr>
-                <tr id="row-20" class="row-ng-initial" data-id="20">
+                <tr id="row-20" class="row-ng-initial" 
+                    data-id="20" 
+                    data-search="20 現在（2025年）の日本の通貨単位は？ yen yen genzai (2025nen) no nihon no tsuuka tani ha ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('20', 'ok')" title="OK（採用）">✓</button>
@@ -1449,9 +1882,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('20')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">20</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>現在（2025年）の日本の通貨単位は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1464,7 +1900,12 @@
                     </td>
                     <td class="status-cell" id="status-20"></td>
                 </tr>
-                <tr id="row-42" class="row-ng-initial" data-id="42">
+                <tr id="row-42" class="row-ng-initial" 
+                    data-id="42" 
+                    data-search="42 「雨」が雪に変わる温度は（摂氏）？ 0 0 [ame] ga yuki ni kawaru ondo ha (sesshi) ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('42', 'ok')" title="OK（採用）">✓</button>
@@ -1474,9 +1915,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('42')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">42</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「雨」が雪に変わる温度は（摂氏）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1489,7 +1933,12 @@
                     </td>
                     <td class="status-cell" id="status-42"></td>
                 </tr>
-                <tr id="row-51" class="row-ng-initial" data-id="51">
+                <tr id="row-51" class="row-ng-initial" 
+                    data-id="51" 
+                    data-search="51 五千円札の肖像画は誰（2020年時点）？ higuchi ichiyo higuchi ichiyo gosenyensatsu no shouzouga ha dare (2020nen jiten) ?"
+                    data-type="fast"
+                    data-tags=""
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('51', 'ok')" title="OK（採用）">✓</button>
@@ -1499,9 +1948,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('51')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">51</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">fast</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>五千円札の肖像画は誰（2020年時点）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1514,7 +1966,12 @@
                     </td>
                     <td class="status-cell" id="status-51"></td>
                 </tr>
-                <tr id="row-72" class="row-ng-initial" data-id="72">
+                <tr id="row-72" class="row-ng-initial" 
+                    data-id="72" 
+                    data-search="72 パソコン用語で、コピーのショートカットキーはctrl（macはcmd）と何？ c c pasokonyougo de , kopi- no sho-tokattoki- ha ctrl (mac ha cmd) to nani ?"
+                    data-type="knowledge"
+                    data-tags=""
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('72', 'ok')" title="OK（採用）">✓</button>
@@ -1524,9 +1981,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('72')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">72</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        <span class="tag-badge type">knowledge</span>
+                        
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>パソコン用語で、コピーのショートカットキーはCtrl（MacはCmd）と何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1539,7 +1999,12 @@
                     </td>
                     <td class="status-cell" id="status-72"></td>
                 </tr>
-                <tr id="row-ng-01" class="row-ng-initial" data-id="ng-01">
+                <tr id="row-ng-01" class="row-ng-initial" 
+                    data-id="ng-01" 
+                    data-search="ng-01 将棋の駒で一番強いのは？ ou ou shougi no koma de ichiban tsuyoi no ha ?"
+                    data-type=""
+                    data-tags="ambiguous-definition"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-01', 'ok')" title="OK（採用）">✓</button>
@@ -1549,9 +2014,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-01')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-01</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">ambiguous-definition</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の駒で一番強いのは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1564,7 +2032,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-01"></td>
                 </tr>
-                <tr id="row-ng-02" class="row-ng-initial" data-id="ng-02">
+                <tr id="row-ng-02" class="row-ng-initial" 
+                    data-id="ng-02" 
+                    data-search="ng-02 ルフィが目指しているものは？ kaizokuou kaizokuou rufwi ga mezashite iru mono ha ?"
+                    data-type=""
+                    data-tags="multiple-valid-answers"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-02', 'ok')" title="OK（採用）">✓</button>
@@ -1574,9 +2047,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-02')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-02</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">multiple-valid-answers</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ルフィが目指しているものは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1589,7 +2065,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-02"></td>
                 </tr>
-                <tr id="row-ng-03" class="row-ng-initial" data-id="ng-03">
+                <tr id="row-ng-03" class="row-ng-initial" 
+                    data-id="ng-03" 
+                    data-search="ng-03 任天堂の代表的なゲームキャラは？ mario mario nintendou no daihyouteki na ge-mu kyara ha ?"
+                    data-type=""
+                    data-tags="subjective"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-03', 'ok')" title="OK（採用）">✓</button>
@@ -1599,9 +2080,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-03')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-03</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">subjective</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>任天堂の代表的なゲームキャラは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1614,7 +2098,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-03"></td>
                 </tr>
-                <tr id="row-ng-04" class="row-ng-initial" data-id="ng-04">
+                <tr id="row-ng-04" class="row-ng-initial" 
+                    data-id="ng-04" 
+                    data-search="ng-04 「うどん」と「そば」、黒いのは？ soba soba [udon] to [soba] , kuroi no ha ?"
+                    data-type=""
+                    data-tags="ambiguous-definition"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-04', 'ok')" title="OK（採用）">✓</button>
@@ -1624,9 +2113,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-04')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-04</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">ambiguous-definition</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「うどん」と「そば」、黒いのは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1639,7 +2131,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-04"></td>
                 </tr>
-                <tr id="row-ng-05" class="row-ng-initial" data-id="ng-05">
+                <tr id="row-ng-05" class="row-ng-initial" 
+                    data-id="ng-05" 
+                    data-search="ng-05 「きつね」の好物は油揚げ、では「うさぎ」は？ ninjin ninjin [kitsune] no koubutsu ha aburaage , deha [usagi] ha ?"
+                    data-type=""
+                    data-tags="scientifically-inaccurate"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-05', 'ok')" title="OK（採用）">✓</button>
@@ -1649,9 +2146,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-05')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-05</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">scientifically-inaccurate</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「きつね」の好物は油揚げ、では「うさぎ」は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1664,7 +2164,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-05"></td>
                 </tr>
-                <tr id="row-ng-06" class="row-ng-initial" data-id="ng-06">
+                <tr id="row-ng-06" class="row-ng-initial" 
+                    data-id="ng-06" 
+                    data-search="ng-06 「パンはパンでも食べられないパンは？」というなぞなぞ。代表的な正解は？ furaipan furaipan [pan wa pan demo taberarenai pan wa ?] to iu nazonazo . daihyouteki na seikai ha ?"
+                    data-type=""
+                    data-tags="trick-question"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-06', 'ok')" title="OK（採用）">✓</button>
@@ -1674,9 +2179,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-06')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-06</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">trick-question</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「パンはパンでも食べられないパンは？」というなぞなぞ。代表的な正解は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1689,7 +2197,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-06"></td>
                 </tr>
-                <tr id="row-ng-07" class="row-ng-initial" data-id="ng-07">
+                <tr id="row-ng-07" class="row-ng-initial" 
+                    data-id="ng-07" 
+                    data-search="ng-07 信号機の「進め」の色は？ ao ao shingouki no [susume] no iro ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-07', 'ok')" title="OK（採用）">✓</button>
@@ -1699,9 +2212,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-07')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-07</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>信号機の「進め」の色は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1714,7 +2230,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-07"></td>
                 </tr>
-                <tr id="row-ng-08" class="row-ng-initial" data-id="ng-08">
+                <tr id="row-ng-08" class="row-ng-initial" 
+                    data-id="ng-08" 
+                    data-search="ng-08 将棋の「歩」が成ると何になる？ tokin tokin shougi no [fu] ga naru to nani ni naru ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-08', 'ok')" title="OK（採用）">✓</button>
@@ -1724,9 +2245,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-08')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-08</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の「歩」が成ると何になる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1739,7 +2263,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-08"></td>
                 </tr>
-                <tr id="row-ng-09" class="row-ng-initial" data-id="ng-09">
+                <tr id="row-ng-09" class="row-ng-initial" 
+                    data-id="ng-09" 
+                    data-search="ng-09 「ありがとう」は大阪弁で？ ookini ookini [arigatou] ha oosakaben de ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-09', 'ok')" title="OK（採用）">✓</button>
@@ -1749,9 +2278,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-09')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-09</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「ありがとう」は大阪弁で？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1764,7 +2296,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-09"></td>
                 </tr>
-                <tr id="row-ng-10" class="row-ng-initial" data-id="ng-10">
+                <tr id="row-ng-10" class="row-ng-initial" 
+                    data-id="ng-10" 
+                    data-search="ng-10 「赤い丸」の国旗の国は？ nihon nihon [akai maru] no kokki no kuni ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-10', 'ok')" title="OK（採用）">✓</button>
@@ -1774,9 +2311,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-10')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-10</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「赤い丸」の国旗の国は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1789,7 +2329,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-10"></td>
                 </tr>
-                <tr id="row-ng-11" class="row-ng-initial" data-id="ng-11">
+                <tr id="row-ng-11" class="row-ng-initial" 
+                    data-id="ng-11" 
+                    data-search="ng-11 qrコードの「qr」は何の略？ quick response quick response qrko-do no [qr] ha nan no ryaku ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-11', 'ok')" title="OK（採用）">✓</button>
@@ -1799,9 +2344,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-11')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-11</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>QRコードの「QR」は何の略？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1814,7 +2362,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-11"></td>
                 </tr>
-                <tr id="row-ng-12" class="row-ng-initial" data-id="ng-12">
+                <tr id="row-ng-12" class="row-ng-initial" 
+                    data-id="ng-12" 
+                    data-search="ng-12 「五輪」と呼ばれるスポーツの祭典は？ olympic olympic [gorin] to yobareru supo-tsu no saiten ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-12', 'ok')" title="OK（採用）">✓</button>
@@ -1824,9 +2377,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-12')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-12</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「五輪」と呼ばれるスポーツの祭典は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1839,7 +2395,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-12"></td>
                 </tr>
-                <tr id="row-ng-13" class="row-ng-initial" data-id="ng-13">
+                <tr id="row-ng-13" class="row-ng-initial" 
+                    data-id="ng-13" 
+                    data-search="ng-13 「タコ」の足は何本？ 8 8 [tako] no ashi ha nanbon ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-13', 'ok')" title="OK（採用）">✓</button>
@@ -1849,9 +2410,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-13')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-13</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「タコ」の足は何本？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1864,7 +2428,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-13"></td>
                 </tr>
-                <tr id="row-ng-14" class="row-ng-initial" data-id="ng-14">
+                <tr id="row-ng-14" class="row-ng-initial" 
+                    data-id="ng-14" 
+                    data-search="ng-14 「千代紙」は何でできている？ kami kami [chiyogami] ha nani de dekiteiru ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-14', 'ok')" title="OK（採用）">✓</button>
@@ -1874,9 +2443,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-14')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-14</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「千代紙」は何でできている？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1889,7 +2461,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-14"></td>
                 </tr>
-                <tr id="row-ng-15" class="row-ng-initial" data-id="ng-15">
+                <tr id="row-ng-15" class="row-ng-initial" 
+                    data-id="ng-15" 
+                    data-search="ng-15 「氷」が溶けると何になる？ mizu mizu [koori] ga tokeru to nani ni naru ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-15', 'ok')" title="OK（採用）">✓</button>
@@ -1899,9 +2476,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-15')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-15</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「氷」が溶けると何になる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1914,7 +2494,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-15"></td>
                 </tr>
-                <tr id="row-ng-16" class="row-ng-initial" data-id="ng-16">
+                <tr id="row-ng-16" class="row-ng-initial" 
+                    data-id="ng-16" 
+                    data-search="ng-16 日本列島の「北」にある大きな島は？ hokkaido hokkaido nihonrettou no [kita] ni aru ookina shima ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-16', 'ok')" title="OK（採用）">✓</button>
@@ -1924,9 +2509,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-16')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-16</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本列島の「北」にある大きな島は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1939,7 +2527,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-16"></td>
                 </tr>
-                <tr id="row-ng-17" class="row-ng-initial" data-id="ng-17">
+                <tr id="row-ng-17" class="row-ng-initial" 
+                    data-id="ng-17" 
+                    data-search="ng-17 「七夕」は何月何日？ 7/7 7/7 [tanabata] ha nangatsu nannichi ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-17', 'ok')" title="OK（採用）">✓</button>
@@ -1949,9 +2542,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-17')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-17</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「七夕」は何月何日？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1964,7 +2560,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-17"></td>
                 </tr>
-                <tr id="row-ng-18" class="row-ng-initial" data-id="ng-18">
+                <tr id="row-ng-18" class="row-ng-initial" 
+                    data-id="ng-18" 
+                    data-search="ng-18 「春夏秋冬」、読み方は？ shunkashuutou shunkashuutou [shunkashuutou] , yomikata ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-18', 'ok')" title="OK（採用）">✓</button>
@@ -1974,9 +2575,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-18')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-18</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「春夏秋冬」、読み方は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -1989,7 +2593,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-18"></td>
                 </tr>
-                <tr id="row-ng-19" class="row-ng-initial" data-id="ng-19">
+                <tr id="row-ng-19" class="row-ng-initial" 
+                    data-id="ng-19" 
+                    data-search="ng-19 「週」の真ん中の曜日は？ suiyoubi suiyoubi [shuu] no mannaka no youbi ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-19', 'ok')" title="OK（採用）">✓</button>
@@ -1999,9 +2608,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-19')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-19</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「週」の真ん中の曜日は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2014,7 +2626,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-19"></td>
                 </tr>
-                <tr id="row-ng-20" class="row-ng-initial" data-id="ng-20">
+                <tr id="row-ng-20" class="row-ng-initial" 
+                    data-id="ng-20" 
+                    data-search="ng-20 「鉛筆」の中心にある黒い棒は？ shin shin [enpitsu] no chuushin ni aru kuroi bou ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-20', 'ok')" title="OK（採用）">✓</button>
@@ -2024,9 +2641,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-20')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-20</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「鉛筆」の中心にある黒い棒は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2039,7 +2659,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-20"></td>
                 </tr>
-                <tr id="row-ng-21" class="row-ng-initial" data-id="ng-21">
+                <tr id="row-ng-21" class="row-ng-initial" 
+                    data-id="ng-21" 
+                    data-search="ng-21 「笑点」の座布団、最高何枚？ 10 10 [shouten] no zabuton , saikou nanmai ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-21', 'ok')" title="OK（採用）">✓</button>
@@ -2049,9 +2674,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-21')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-21</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「笑点」の座布団、最高何枚？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2064,7 +2692,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-21"></td>
                 </tr>
-                <tr id="row-ng-22" class="row-ng-initial" data-id="ng-22">
+                <tr id="row-ng-22" class="row-ng-initial" 
+                    data-id="ng-22" 
+                    data-search="ng-22 「グー」「チョキ」、勝つのはどっち？ gu- gu- [gu-] [choki] , katsu no ha docchi ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-22', 'ok')" title="OK（採用）">✓</button>
@@ -2074,9 +2707,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-22')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-22</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「グー」「チョキ」、勝つのはどっち？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2089,7 +2725,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-22"></td>
                 </tr>
-                <tr id="row-ng-23" class="row-ng-initial" data-id="ng-23">
+                <tr id="row-ng-23" class="row-ng-initial" 
+                    data-id="ng-23" 
+                    data-search="ng-23 「義務教育」の中学校は何年間？ 3 3 [gimukyouiku] no chuugakkou ha nannenkan ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-23', 'ok')" title="OK（採用）">✓</button>
@@ -2099,9 +2740,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-23')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-23</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「義務教育」の中学校は何年間？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2114,7 +2758,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-23"></td>
                 </tr>
-                <tr id="row-ng-24" class="row-ng-initial" data-id="ng-24">
+                <tr id="row-ng-24" class="row-ng-initial" 
+                    data-id="ng-24" 
+                    data-search="ng-24 「耳」で聞く、「目」で何する？ miru miru [mimi] de kiku , [me] de nani suru ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-24', 'ok')" title="OK（採用）">✓</button>
@@ -2124,9 +2773,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-24')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-24</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「耳」で聞く、「目」で何する？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2139,7 +2791,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-24"></td>
                 </tr>
-                <tr id="row-ng-25" class="row-ng-initial" data-id="ng-25">
+                <tr id="row-ng-25" class="row-ng-initial" 
+                    data-id="ng-25" 
+                    data-search="ng-25 「魚」偏に「雪」と書く魚は？ tara tara [sakana] hen ni [yuki] to kaku sakana ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-25', 'ok')" title="OK（採用）">✓</button>
@@ -2149,9 +2806,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-25')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-25</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「魚」偏に「雪」と書く魚は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2164,7 +2824,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-25"></td>
                 </tr>
-                <tr id="row-ng-26" class="row-ng-initial" data-id="ng-26">
+                <tr id="row-ng-26" class="row-ng-initial" 
+                    data-id="ng-26" 
+                    data-search="ng-26 「人間」は哺乳類、鳥類、どっち？ honyuurui honyuurui [ningen] ha honyuurui , chourui , docchi ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-26', 'ok')" title="OK（採用）">✓</button>
@@ -2174,9 +2839,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-26')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-26</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「人間」は哺乳類、鳥類、どっち？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2189,7 +2857,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-26"></td>
                 </tr>
-                <tr id="row-ng-27" class="row-ng-initial" data-id="ng-27">
+                <tr id="row-ng-27" class="row-ng-initial" 
+                    data-id="ng-27" 
+                    data-search="ng-27 「西」の反対の方角は？ higashi higashi [nishi] no hantai no hougaku ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-27', 'ok')" title="OK（採用）">✓</button>
@@ -2199,9 +2872,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-27')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-27</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「西」の反対の方角は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2214,7 +2890,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-27"></td>
                 </tr>
-                <tr id="row-ng-28" class="row-ng-initial" data-id="ng-28">
+                <tr id="row-ng-28" class="row-ng-initial" 
+                    data-id="ng-28" 
+                    data-search="ng-28 「金」の元素記号は？ au au [kin] no gensokigou ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-28', 'ok')" title="OK（採用）">✓</button>
@@ -2224,9 +2905,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-28')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-28</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「金」の元素記号は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2239,7 +2923,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-28"></td>
                 </tr>
-                <tr id="row-ng-29" class="row-ng-initial" data-id="ng-29">
+                <tr id="row-ng-29" class="row-ng-initial" 
+                    data-id="ng-29" 
+                    data-search="ng-29 将棋の駒、裏返せないのは「金」と何？ ou ou shougi no koma , uragaesenai no ha [kin] to nani ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-29', 'ok')" title="OK（採用）">✓</button>
@@ -2249,9 +2938,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-29')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-29</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の駒、裏返せないのは「金」と何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2264,7 +2956,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-29"></td>
                 </tr>
-                <tr id="row-ng-30" class="row-ng-initial" data-id="ng-30">
+                <tr id="row-ng-30" class="row-ng-initial" 
+                    data-id="ng-30" 
+                    data-search="ng-30 「nhk」は何の略？ nippon housou kyoukai nippon housou kyoukai [nhk] ha nan no ryaku ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-30', 'ok')" title="OK（採用）">✓</button>
@@ -2274,9 +2971,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-30')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-30</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「NHK」は何の略？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2289,7 +2989,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-30"></td>
                 </tr>
-                <tr id="row-ng-31" class="row-ng-initial" data-id="ng-31">
+                <tr id="row-ng-31" class="row-ng-initial" 
+                    data-id="ng-31" 
+                    data-search="ng-31 「千円」は硬貨ではなく何？ shihei shihei [senyen] ha kouka deha naku nani ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-31', 'ok')" title="OK（採用）">✓</button>
@@ -2299,9 +3004,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-31')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-31</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「千円」は硬貨ではなく何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2314,7 +3022,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-31"></td>
                 </tr>
-                <tr id="row-ng-32" class="row-ng-initial" data-id="ng-32">
+                <tr id="row-ng-32" class="row-ng-initial" 
+                    data-id="ng-32" 
+                    data-search="ng-32 夏目漱石の小説『吾輩は猫である』。書き出しは「吾輩は猫である。名前は」何？ madanai madanai natsumesouseki no shousetsu [wagahaihanekodearu] . kakidashi ha [wagahaihanekodearu . namae ha] nani ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-32', 'ok')" title="OK（採用）">✓</button>
@@ -2324,9 +3037,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-32')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-32</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>夏目漱石の小説『吾輩は猫である』。書き出しは「吾輩は猫である。名前は」何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2339,7 +3055,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-32"></td>
                 </tr>
-                <tr id="row-ng-33" class="row-ng-initial" data-id="ng-33">
+                <tr id="row-ng-33" class="row-ng-initial" 
+                    data-id="ng-33" 
+                    data-search="ng-33 日本の元号で、「明治」「大正」の次は？ showa showa nihon no gengou de , [meiji] [taishou] no tsugi ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-33', 'ok')" title="OK（採用）">✓</button>
@@ -2349,9 +3070,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-33')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-33</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の元号で、「明治」「大正」の次は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2364,7 +3088,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-33"></td>
                 </tr>
-                <tr id="row-ng-34" class="row-ng-initial" data-id="ng-34">
+                <tr id="row-ng-34" class="row-ng-initial" 
+                    data-id="ng-34" 
+                    data-search="ng-34 童謡『森のくまさん』で、お嬢さんが落としたものは何？ iyaringu iyaringu douyou [mori no kumasan] de , ojousan ga otoshita mono ha nani ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-34', 'ok')" title="OK（採用）">✓</button>
@@ -2374,9 +3103,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-34')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-34</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>童謡『森のくまさん』で、お嬢さんが落としたものは何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2389,7 +3121,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-34"></td>
                 </tr>
-                <tr id="row-ng-35" class="row-ng-initial" data-id="ng-35">
+                <tr id="row-ng-35" class="row-ng-initial" 
+                    data-id="ng-35" 
+                    data-search="ng-35 ことわざ。「犬も歩けば」何に当たる？ bou bou kotowaza . [inu mo arukeba] nani ni ataru ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-35', 'ok')" title="OK（採用）">✓</button>
@@ -2399,9 +3136,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-35')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-35</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ことわざ。「犬も歩けば」何に当たる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2414,7 +3154,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-35"></td>
                 </tr>
-                <tr id="row-ng-36" class="row-ng-initial" data-id="ng-36">
+                <tr id="row-ng-36" class="row-ng-initial" 
+                    data-id="ng-36" 
+                    data-search="ng-36 国民の祝日「元日」は1月1日ですが、「建国記念の日」はいつ？ 2/11 2/11 kokumin no shukujitsu [ganjitsu] ha 1gatsu 1tachi desu ga , [kenkokukinen no hi] ha itsu ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-36', 'ok')" title="OK（採用）">✓</button>
@@ -2424,9 +3169,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-36')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-36</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>国民の祝日「元日」は1月1日ですが、「建国記念の日」はいつ？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2439,7 +3187,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-36"></td>
                 </tr>
-                <tr id="row-ng-37" class="row-ng-initial" data-id="ng-37">
+                <tr id="row-ng-37" class="row-ng-initial" 
+                    data-id="ng-37" 
+                    data-search="ng-37 「m-1グランプリ」のmとは、何の頭文字？ manzai manzai [m-1 guranpuri] no m toha , nan no kashiramoji ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-37', 'ok')" title="OK（採用）">✓</button>
@@ -2449,9 +3202,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-37')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-37</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「M-1グランプリ」のMとは、何の頭文字？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2464,7 +3220,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-37"></td>
                 </tr>
-                <tr id="row-ng-38" class="row-ng-initial" data-id="ng-38">
+                <tr id="row-ng-38" class="row-ng-initial" 
+                    data-id="ng-38" 
+                    data-search="ng-38 「h」は水素、「o」は何？ sanso sanso [h] ha suiso , [o] ha nani ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-38', 'ok')" title="OK（採用）">✓</button>
@@ -2474,9 +3235,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-38')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-38</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「H」は水素、「O」は何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2489,7 +3253,12 @@
                     </td>
                     <td class="status-cell" id="status-ng-38"></td>
                 </tr>
-                <tr id="row-ng-39" class="row-ng-initial" data-id="ng-39">
+                <tr id="row-ng-39" class="row-ng-initial" 
+                    data-id="ng-39" 
+                    data-search="ng-39 「桃太郎」のお供は犬、猿、あと一匹は？ kiji kiji [momotarou] no otomo ha inu , saru , ato ippiki ha ?"
+                    data-type=""
+                    data-tags="format-annoying"
+                    data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('ng-39', 'ok')" title="OK（採用）">✓</button>
@@ -2499,9 +3268,12 @@
                             <button class="btn-icon btn-note" onclick="activateNoteInput('ng-39')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">ng-39</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        
+                        <span class="tag-badge tag">format-annoying</span>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「桃太郎」のお供は犬、猿、あと一匹は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
@@ -2921,47 +3693,194 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        // --- Filters & Search ---
+        function initFilters() {
+            // Populate Genre Filter
+            const genres = new Set();
+            if (typeof SERVER_DATA !== 'undefined') {
+                SERVER_DATA.forEach(q => {
+                    if (q.type) genres.add(q.type);
+                    if (q.tags) {
+                        q.tags.split(',').forEach(t => genres.add(t.trim()));
+                    }
+                });
+            }
+            const genreSelect = document.getElementById('genre-filter');
+            // convert to array, sort, insert
+            const sortedGenres = Array.from(genres).sort();
+            sortedGenres.forEach(g => {
+                if (!g) return;
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.innerText = g;
+                genreSelect.appendChild(opt);
+            });
+
+            // Event Listeners
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('genre-filter').addEventListener('change', applyFilters);
+        }
+
+        function applyFilters() {
+            const searchTerms = document.getElementById('search-input').value.toLowerCase().split(/\s+/).filter(s => s);
+            const statusFilter = document.getElementById('status-filter').value;
+            const genreFilter = document.getElementById('genre-filter').value;
+
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const id = row.getAttribute('data-id');
+                // skip if not a data row (e.g. empty message)
+                if (!id) return;
+
+                const searchData = (row.getAttribute('data-search') || '').toLowerCase();
+                const typeData = row.getAttribute('data-type') || '';
+                const tagsData = row.getAttribute('data-tags') || '';
+                let initialStatus = row.getAttribute('data-status-initial');
+
+                // Normalization
+                if (initialStatus === 'prod') initialStatus = 'unset';
+
+                // Resolve Current Status
+                // If localStorage has status, use it. Otherwise use initial (debug/ng/unset).
+                const currentReview = reviewData[id];
+                let effectiveStatus = currentReview?.status || initialStatus || 'unset';
+
+                // 1. Search
+                let matchSearch = true;
+                if (searchTerms.length > 0) {
+                    matchSearch = searchTerms.every(term => searchData.includes(term));
+                }
+
+                // 2. Status
+                let matchStatus = true;
+                if (statusFilter !== 'all') {
+                    matchStatus = (effectiveStatus === statusFilter);
+                }
+
+                // 3. Genre
+                let matchGenre = true;
+                if (genreFilter !== 'all') {
+                    const typeMatch = typeData === genreFilter;
+                    const tagMatch = tagsData.split(',').map(t => t.trim()).includes(genreFilter);
+                    matchGenre = typeMatch || tagMatch;
+                }
+
+                if (matchSearch && matchStatus && matchGenre) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+
+        // --- Sort & Resize ---
+        function initTableFeatures() {
+            const table = document.querySelector('table');
+            const headers = table.querySelectorAll('th');
+
+            headers.forEach((th, index) => {
+                // 1. Sort
+                // Skip Action column (index 0)
+                if (index > 0) {
+                    th.addEventListener('click', () => sortTable(index));
+                }
+
+                // 2. Resize
+                const resizer = document.createElement('div');
+                resizer.classList.add('resizer');
+                th.appendChild(resizer);
+                createResizableColumn(th, resizer);
+            });
+        }
+
+        let sortDirection = 1; // 1: asc, -1: desc
+        let lastSortIndex = -1;
+
+        function sortTable(columnIndex) {
+            const table = document.querySelector('table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            if (lastSortIndex === columnIndex) {
+                sortDirection *= -1;
+            } else {
+                sortDirection = 1;
+                lastSortIndex = columnIndex;
+            }
+
+            // Simple type check: try number, then string
+            const getValue = (tr, idx) => {
+                const td = tr.children[idx];
+                return td ? (td.innerText || td.textContent) : '';
+            };
+
+            rows.sort((a, b) => {
+                const valA = getValue(a, columnIndex).trim();
+                const valB = getValue(b, columnIndex).trim();
+
+                const numA = parseFloat(valA);
+                const numB = parseFloat(valB);
+
+                if (!isNaN(numA) && !isNaN(numB) && valA !== '' && valB !== '') {
+                    return (numA - numB) * sortDirection;
+                }
+                return valA.localeCompare(valB) * sortDirection;
+            });
+
+            // Re-append to tbody
+            rows.forEach(row => tbody.appendChild(row));
+
+            // Re-apply filters? Not needed visually as display:none persists
+        }
+
+        function createResizableColumn(th, resizer) {
+            let x = 0;
+            let w = 0;
+
+            const mouseDownHandler = function (e) {
+                x = e.clientX;
+                const styles = window.getComputedStyle(th);
+                w = parseInt(styles.width, 10);
+
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+                resizer.classList.add('resizing');
+                e.preventDefault();
+                e.stopPropagation();
+            };
+
+            const mouseMoveHandler = function (e) {
+                const dx = e.clientX - x;
+                th.style.width = `${w + dx}px`;
+            };
+
+            const mouseUpHandler = function () {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+                resizer.classList.remove('resizing');
+            };
+
+            resizer.addEventListener('mousedown', mouseDownHandler);
+            resizer.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            initTableFeatures();
+            // ... (Other inits will run if they are also on DOMContentLoaded or script body)
+        });
+
+
+
     </script>
-
-    if (!data.type && !data.comment) {
-    statusCell.innerHTML = '';
-    return;
-    }
-
-    let badgeClass = data.type ? data.type.toLowerCase() : 'note';
-    let badgeText = data.type || 'NOTE';
-
-    let html = '<div class="status-display">';
-
-        if (data.type) {
-        html += `<span class="status-badge ${badgeClass}">${badgeText}</span>`;
-        }
-
-        if (data.comment) {
-        const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;' ).replace( />/g, '&gt;').replace(/"/g,
-        '&quot;');
-        html += `<span>${esc(data.comment)}</span>`;
-        }
-
-        // Delete button
-        html += `<button class="delete-btn" onclick="clearStatus('${id}')" title="Clear">✕</button>`;
-        html += '</div>';
-
-    statusCell.innerHTML = html;
-    }
-
-    function copyReport() {
-    const area = document.getElementById('report-area');
-    area.select();
-    document.execCommand('copy');
-
-    const btn = document.querySelector('.copy-btn');
-    const originalText = btn.textContent;
-    btn.textContent = '✅ Copied!';
-    setTimeout(() => {
-    btn.textContent = originalText;
-    }, 2000);
-    }
+    <script>
+        // Server Data Injection
+        const SERVER_DATA = [{"id":1,"type":"fast","question":"日本の首都は？","romaji_typing":"nihon no shuto ha ?","answer_variants":["tokyo","toukyou"],"answer_display":"東京","answer":"東京","reading":"とうきょう","tags":"","source":"import","_list":"prod"},{"id":2,"type":"fast","question":"1足す1は？","romaji_typing":"1 tasu 1 ha ?","answer_variants":["2","ni","two"],"answer_display":"2","answer":"2","reading":"に","tags":"","source":"import","_list":"prod"},{"id":4,"type":"fast","question":"三角形の内角の和は何度？","romaji_typing":"sankakukei no naikaku no wa ha nando ?","answer_variants":["180","180do"],"answer_display":"180度","answer":"180度","reading":"ひゃくはちじゅうど","tags":"","source":"import","_list":"prod"},{"id":5,"type":"fast","question":"水の化学式は？","romaji_typing":"mizu no kagakushiki ha ?","answer_variants":["h2o"],"answer_display":"H2O","answer":"H2O","reading":"えいちつうおう","tags":"","source":"import","_list":"prod"},{"id":7,"type":"fast","question":"1日は何時間？","romaji_typing":"1nichi ha nanjikan ?","answer_variants":["24","24jikan"],"answer_display":"24時間","answer":"24時間","reading":"にじゅうよじかん","tags":"","source":"import","_list":"prod"},{"id":9,"type":"fast","question":"トランプのハート、ダイヤ以外の赤色のマークは？","romaji_typing":"toranpu no ha-to , daiya igai no akairo no ma-ku ha ?","answer_variants":["none","nashi","nai"],"answer_display":"なし","answer":"なし","reading":"なし","tags":"","source":"import","_list":"prod"},{"id":11,"type":"fast","question":"サイコロの1の裏の数字は？","romaji_typing":"saikoro no 1 no ura no suuji ha ?","answer_variants":["6","roku"],"answer_display":"6","answer":"6","reading":"ろく","tags":"","source":"import","_list":"prod"},{"id":12,"type":"fast","question":"干支の最初の動物は？","romaji_typing":"eto no saisho no doubutsu ha ?","answer_variants":["nezumi","ne","mouse","rat"],"answer_display":"ねずみ","answer":"ねずみ","reading":"ねずみ","tags":"","source":"import","_list":"prod"},{"id":13,"type":"fast","question":"野球の1チームの人数は？","romaji_typing":"yakyuu no 1chi-mu no ninzuu ha ?","answer_variants":["9","kyuu"],"answer_display":"9","answer":"9","reading":"きゅう","tags":"","source":"import","_list":"prod"},{"id":14,"type":"fast","question":"義務教育の小学校は何年間？","romaji_typing":"gimukyouiku no shougakkou ha nannenkan ?","answer_variants":["6","roku"],"answer_display":"6年間","answer":"6年間","reading":"ろくねん","tags":"","source":"import","_list":"prod"},{"id":16,"type":"fast","question":"桃太郎が退治しに行った場所は？","romaji_typing":"momotarou ga taiji shi ni itta basho ha ?","answer_variants":["onigashima"],"answer_display":"鬼ヶ島","answer":"鬼ヶ島","reading":"おにがしま","tags":"","source":"import","_list":"prod"},{"id":18,"type":"fast","question":"サッカーで手を使ってよいポジションは？","romaji_typing":"sakka- de te wo tsukatte yoi pojishon ha ?","answer_variants":["gk","goalkeeper","go-ruki-pa-"],"answer_display":"ゴールキーパー","answer":"ゴールキーパー","reading":"ごおるきいぱあ","tags":"","source":"import","_list":"prod"},{"id":21,"type":"fast","question":"太陽が昇る方角は？","romaji_typing":"taiyou ga noboru hougaku ha ?","answer_variants":["higashi","east"],"answer_display":"東","answer":"東","reading":"ひがし","tags":"","source":"import","_list":"prod"},{"id":25,"type":"fast","question":"2月は通常何日まで？","romaji_typing":"2gatsu ha tsuujou nannichi made ?","answer_variants":["28"],"answer_display":"28日","answer":"28日","reading":"にじゅうはちにち","tags":"","source":"import","_list":"prod"},{"id":26,"type":"fast","question":"光の三原色は赤、緑と何？","romaji_typing":"hikari no sangenshoku ha aka , midori to nani ?","answer_variants":["ao","blue"],"answer_display":"青","answer":"青","reading":"あお","tags":"","source":"import","_list":"prod"},{"id":28,"type":"fast","question":"世界で一番広い国は？","romaji_typing":"sekai de ichiban hiroi kuni ha ?","answer_variants":["russia","roshia"],"answer_display":"ロシア","answer":"ロシア","reading":"ろしあ","tags":"","source":"import","_list":"prod"},{"id":30,"type":"fast","question":"大相撲の土俵は何角形？","romaji_typing":"oozumou no dohyou ha nankakukei ?","answer_variants":["en","maru","circle"],"answer_display":"円","answer":"円","reading":"えん","tags":"","source":"import","_list":"prod"},{"id":32,"type":"fast","question":"ABCの次に来る文字は？","romaji_typing":"ABC no tsugi ni kuru moji ha ?","answer_variants":["d"],"answer_display":"D","answer":"D","reading":"でぃ","tags":"","source":"import","_list":"prod"},{"id":36,"type":"fast","question":"5円玉に開いている穴の形は？","romaji_typing":"5yendama ni aiteiru ana no katachi ha ?","answer_variants":["maru","en","circle"],"answer_display":"円","answer":"円","reading":"えん","tags":"","source":"import","_list":"prod"},{"id":38,"type":"fast","question":"テニスで0点の呼び方は？","romaji_typing":"tenisu de 0ten no yobikata ha ?","answer_variants":["love"],"answer_display":"ラブ","answer":"ラブ","reading":"らぶ","tags":"","source":"import","_list":"prod"},{"id":40,"type":"fast","question":"カエルの子供は？","romaji_typing":"kaeru no kodomo ha ?","answer_variants":["otamajakushi"],"answer_display":"おたまじゃくし","answer":"おたまじゃくし","reading":"おたまじゃくし","tags":"","source":"import","_list":"prod"},{"id":45,"type":"fast","question":"日本の都道府県の数は？","romaji_typing":"nihon no todoufuken no kazu ha ?","answer_variants":["47"],"answer_display":"47","answer":"47","reading":"よんじゅうなな","tags":"","source":"import","_list":"prod"},{"id":46,"type":"fast","question":"東京スカイツリーの高さは？","romaji_typing":"toukyou sukaitsuri- no takasa ha ?","answer_variants":["634","musashi"],"answer_display":"634","answer":"634","reading":"ろっぴゃくさんじゅうよん","tags":"","source":"import","_list":"prod"},{"id":47,"type":"fast","question":"聖徳太子が定めた憲法は？","romaji_typing":"shoutokutaishi ga sadameta kenpou ha ?","answer_variants":["17jou","juushichijou"],"answer_display":"17条","answer":"17条","reading":"じゅうしちじょう","tags":"","source":"import","_list":"prod"},{"id":49,"type":"fast","question":"陸上のトラック、反時計回りか時計回りか？","romaji_typing":"rikujou no torakku , hantokeimawari ka tokeimawari ka ?","answer_variants":["hantokeimawari"],"answer_display":"反時計回り","answer":"反時計回り","reading":"はんとけいまわり","tags":"","source":"import","_list":"prod"},{"id":54,"type":"fast","question":"1ダースは何個？","romaji_typing":"1da-su ha nanko ?","answer_variants":["12","juuni"],"answer_display":"12","answer":"12","reading":"じゅうに","tags":"","source":"import","_list":"prod"},{"id":62,"type":"knowledge","question":"江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？","romaji_typing":"edobakufu wo hiraita jinbutsu ha tokugawa ieyasu desu ga , saigo no shougun ha dare ?","answer_variants":["yoshinobu","keiki"],"answer_display":"徳川慶喜","answer":"徳川慶喜","reading":"けいき","explanation":"徳川慶喜（よしのぶ／けいき）。大政奉還を行いました。","tags":"","source":"import","_list":"prod"},{"id":65,"type":"knowledge","question":"原子番号1番の元素は水素ですが、2番は何？","romaji_typing":"genshibangou 1ban no genso ha suiso desu ga , 2ban ha nani ?","answer_variants":["helium","heriumu"],"answer_display":"ヘリウム","answer":"ヘリウム","reading":"へりうむ","explanation":"ヘリウム (He) です。","tags":"","source":"import","_list":"prod"},{"id":67,"type":"knowledge","question":"日本一大きい湖は琵琶湖ですが、二番目に大きいのは？","romaji_typing":"nihonichi ookii mizuumi ha biwako desu ga , nibanme ni ookii no ha ?","answer_variants":["kasumigaura"],"answer_display":"霞ヶ浦","answer":"霞ヶ浦","reading":"かすみがうら","explanation":"茨城県にある霞ヶ浦です。","tags":"","source":"import","_list":"prod"},{"id":68,"type":"knowledge","question":"ドラえもんの妹、ドラミちゃんの好物は？","romaji_typing":"doraemon no imouto , doramichan no koubutsu ha ?","answer_variants":["meronpan","melonpan"],"answer_display":"メロンパン","answer":"メロンパン","reading":"めろんぱん","explanation":"メロンパンが大好きです。","tags":"","source":"import","_list":"prod"},{"id":71,"type":"knowledge","question":"将棋の駒で、唯一斜め後ろに下がれない駒は？","romaji_typing":"shougi no koma de , yuiitsu naname ushiro ni sagarenai koma ha ?","answer_variants":["keima","kei"],"answer_display":"桂馬","answer":"桂馬","reading":"けいま","explanation":"桂馬は前2横1の場所に飛びます。","tags":"","source":"import","_list":"prod"},{"id":73,"type":"knowledge","question":"日本の硬貨で、真ん中に穴が開いているのは5円玉と何？","romaji_typing":"nihon no kouka de , mannaka ni ana ga aiteiru no ha 5yendama to nani ?","answer_variants":["50yendama","50","50yen"],"answer_display":"50円玉","answer":"50円玉","reading":"ごじゅうえんだま","explanation":"50円玉にも穴があります。","tags":"","source":"import","_list":"prod"},{"id":75,"type":"knowledge","question":"世界三大珍味といえば、トリュフ、フォアグラと何？","romaji_typing":"sekaisandaichinmi to ieba , toryufu , foagura to nani ?","answer_variants":["kyabia","caviar"],"answer_display":"キャビア","answer":"キャビア","reading":"きゃびあ","explanation":"キャビアです。","tags":"","source":"import","_list":"prod"},{"id":76,"type":"fast","question":"日本で一番高い山は？","romaji_typing":"nihon de ichiban takai yama ha ?","answer_variants":["fujisan","mt.fuji","fuji"],"answer_display":"富士山","answer":"富士山","reading":"ふじさん","tags":"","source":"import","_list":"prod"},{"id":10,"type":"fast","question":"一千円札に描かれている人物は（2020年時点）？","romaji_typing":"issenyensatsu ni egakareteiru jinbutsu ha (2020nen jiten) ?","answer_variants":["noguchi hideyo","noguchi"],"answer_display":"noguchi hideyo","answer":"noguchi hideyo","explanation":"NG Reason: Contains parentheses (User Request: annoying)","tags":"","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":20,"type":"fast","question":"現在（2025年）の日本の通貨単位は？","romaji_typing":"genzai (2025nen) no nihon no tsuuka tani ha ?","answer_variants":["yen","en"],"answer_display":"yen","answer":"yen","explanation":"NG Reason: Contains parentheses (User Request: annoying)","tags":"","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":42,"type":"fast","question":"「雨」が雪に変わる温度は（摂氏）？","romaji_typing":"[ame] ga yuki ni kawaru ondo ha (sesshi) ?","answer_variants":["0","zero"],"answer_display":"0","answer":"0","explanation":"NG Reason: Contains parentheses (User Request: annoying)","tags":"","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":51,"type":"fast","question":"五千円札の肖像画は誰（2020年時点）？","romaji_typing":"gosenyensatsu no shouzouga ha dare (2020nen jiten) ?","answer_variants":["higuchi ichiyo","higuchi"],"answer_display":"higuchi ichiyo","answer":"higuchi ichiyo","explanation":"NG Reason: Contains parentheses (User Request: annoying)","tags":"","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":72,"type":"knowledge","question":"パソコン用語で、コピーのショートカットキーはCtrl（MacはCmd）と何？","romaji_typing":"pasokonyougo de , kopi- no sho-tokattoki- ha Ctrl (Mac ha Cmd) to nani ?","answer_variants":["c"],"answer_display":"c","answer":"c","explanation":"CopyのCです。 (NG Reason: Contains parentheses (User Request: annoying))","tags":"","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-01","question":"将棋の駒で一番強いのは？","romaji_typing":"shougi no koma de ichiban tsuyoi no ha ?","answer_variants":["ou","oushou","king"],"answer_display":"ou","answer":"ou","explanation":"NG Reason: 「強い」の定義が不明確（動きの多さなら竜吉、勝負上の重要度なら王将）。","tags":"ambiguous-definition","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-02","question":"ルフィが目指しているものは？","romaji_typing":"rufwi ga mezashite iru mono ha ?","answer_variants":["kaizokuou","pirate king","one piece"],"answer_display":"kaizokuou","answer":"kaizokuou","explanation":"NG Reason: 「海賊王」と「ワンピース」のどちらも文脈によって正解になり得る。","tags":"multiple-valid-answers","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-03","question":"任天堂の代表的なゲームキャラは？","romaji_typing":"nintendou no daihyouteki na ge-mu kyara ha ?","answer_variants":["mario"],"answer_display":"mario","answer":"mario","explanation":"NG Reason: 「代表的」は主観であり、ポケモンなども候補になり得るため一意に定まらない。","tags":"subjective","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-04","question":"「うどん」と「そば」、黒いのは？","romaji_typing":"[udon] to [soba] , kuroi no ha ?","answer_variants":["soba"],"answer_display":"soba","answer":"soba","explanation":"NG Reason: 更科そば（白）などの例外があり、必ずしも黒とは限らないため定義が不十分。","tags":"ambiguous-definition","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-05","question":"「きつね」の好物は油揚げ、では「うさぎ」は？","romaji_typing":"[kitsune] no koubutsu ha aburaage , deha [usagi] ha ?","answer_variants":["ninjin","carrot"],"answer_display":"ninjin","answer":"ninjin","explanation":"NG Reason: ウサギが人参を好むのは漫画的表現（ステレオタイプ）であり、実際の主食は牧草。","tags":"scientifically-inaccurate","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-06","question":"「パンはパンでも食べられないパンは？」というなぞなぞ。代表的な正解は？","romaji_typing":"[pan wa pan demo taberarenai pan wa ?] to iu nazonazo . daihyouteki na seikai ha ?","answer_variants":["furaipan","frypan"],"answer_display":"furaipan","answer":"furaipan","explanation":"NG Reason: 「代表的な正解」という主観に依存しており、腐ったパンなども正解になり得るためなぞなぞは不適切。","tags":"trick-question","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-07","question":"信号機の「進め」の色は？","romaji_typing":"shingouki no [susume] no iro ha ?","answer_variants":["ao","green","midori","blue"],"answer_display":"ao","answer":"ao","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-08","question":"将棋の「歩」が成ると何になる？","romaji_typing":"shougi no [fu] ga naru to nani ni naru ?","answer_variants":["tokin","to"],"answer_display":"tokin","answer":"tokin","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-09","question":"「ありがとう」は大阪弁で？","romaji_typing":"[arigatou] ha oosakaben de ?","answer_variants":["ookini"],"answer_display":"ookini","answer":"ookini","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-10","question":"「赤い丸」の国旗の国は？","romaji_typing":"[akai maru] no kokki no kuni ha ?","answer_variants":["nihon","japan"],"answer_display":"nihon","answer":"nihon","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-11","question":"QRコードの「QR」は何の略？","romaji_typing":"QRko-do no [QR] ha nan no ryaku ?","answer_variants":["quick response"],"answer_display":"quick response","answer":"quick response","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-12","question":"「五輪」と呼ばれるスポーツの祭典は？","romaji_typing":"[gorin] to yobareru supo-tsu no saiten ha ?","answer_variants":["olympic","orinpikku"],"answer_display":"olympic","answer":"olympic","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-13","question":"「タコ」の足は何本？","romaji_typing":"[tako] no ashi ha nanbon ?","answer_variants":["8","hachihon","hakko"],"answer_display":"8","answer":"8","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-14","question":"「千代紙」は何でできている？","romaji_typing":"[chiyogami] ha nani de dekiteiru ?","answer_variants":["kami","paper","washi"],"answer_display":"kami","answer":"kami","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-15","question":"「氷」が溶けると何になる？","romaji_typing":"[koori] ga tokeru to nani ni naru ?","answer_variants":["mizu","water"],"answer_display":"mizu","answer":"mizu","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-16","question":"日本列島の「北」にある大きな島は？","romaji_typing":"nihonrettou no [kita] ni aru ookina shima ha ?","answer_variants":["hokkaido","hokkaidou"],"answer_display":"hokkaido","answer":"hokkaido","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-17","question":"「七夕」は何月何日？","romaji_typing":"[tanabata] ha nangatsu nannichi ?","answer_variants":["7\/7","7gatsu7nich","july 7th"],"answer_display":"7\/7","answer":"7\/7","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-18","question":"「春夏秋冬」、読み方は？","romaji_typing":"[shunkashuutou] , yomikata ha ?","answer_variants":["shunkashuutou","syunkasyuutou"],"answer_display":"shunkashuutou","answer":"shunkashuutou","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-19","question":"「週」の真ん中の曜日は？","romaji_typing":"[shuu] no mannaka no youbi ha ?","answer_variants":["suiyoubi","wednesday","sui"],"answer_display":"suiyoubi","answer":"suiyoubi","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-20","question":"「鉛筆」の中心にある黒い棒は？","romaji_typing":"[enpitsu] no chuushin ni aru kuroi bou ha ?","answer_variants":["shin","lead"],"answer_display":"shin","answer":"shin","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-21","question":"「笑点」の座布団、最高何枚？","romaji_typing":"[shouten] no zabuton , saikou nanmai ?","answer_variants":["10","juu"],"answer_display":"10","answer":"10","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-22","question":"「グー」「チョキ」、勝つのはどっち？","romaji_typing":"[gu-] [choki] , katsu no ha docchi ?","answer_variants":["gu-","rock"],"answer_display":"gu-","answer":"gu-","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-23","question":"「義務教育」の中学校は何年間？","romaji_typing":"[gimukyouiku] no chuugakkou ha nannenkan ?","answer_variants":["3","san"],"answer_display":"3","answer":"3","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-24","question":"「耳」で聞く、「目」で何する？","romaji_typing":"[mimi] de kiku , [me] de nani suru ?","answer_variants":["miru","see","watch"],"answer_display":"miru","answer":"miru","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-25","question":"「魚」偏に「雪」と書く魚は？","romaji_typing":"[sakana] hen ni [yuki] to kaku sakana ha ?","answer_variants":["tara","cod"],"answer_display":"tara","answer":"tara","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-26","question":"「人間」は哺乳類、鳥類、どっち？","romaji_typing":"[ningen] ha honyuurui , chourui , docchi ?","answer_variants":["honyuurui","mammal"],"answer_display":"honyuurui","answer":"honyuurui","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-27","question":"「西」の反対の方角は？","romaji_typing":"[nishi] no hantai no hougaku ha ?","answer_variants":["higashi","east"],"answer_display":"higashi","answer":"higashi","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-28","question":"「金」の元素記号は？","romaji_typing":"[kin] no gensokigou ha ?","answer_variants":["au"],"answer_display":"au","answer":"au","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-29","question":"将棋の駒、裏返せないのは「金」と何？","romaji_typing":"shougi no koma , uragaesenai no ha [kin] to nani ?","answer_variants":["ou","oushou","king","gyoku"],"answer_display":"ou","answer":"ou","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-30","question":"「NHK」は何の略？","romaji_typing":"[NHK] ha nan no ryaku ?","answer_variants":["nippon housou kyoukai","nihon housou kyoukai"],"answer_display":"nippon housou kyoukai","answer":"nippon housou kyoukai","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-31","question":"「千円」は硬貨ではなく何？","romaji_typing":"[senyen] ha kouka deha naku nani ?","answer_variants":["shihei","satsu","osatsu"],"answer_display":"shihei","answer":"shihei","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-32","question":"夏目漱石の小説『吾輩は猫である』。書き出しは「吾輩は猫である。名前は」何？","romaji_typing":"natsumesouseki no shousetsu [wagahaihanekodearu] . kakidashi ha [wagahaihanekodearu . namae ha] nani ?","answer_variants":["madanai","nai"],"answer_display":"madanai","answer":"madanai","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-33","question":"日本の元号で、「明治」「大正」の次は？","romaji_typing":"nihon no gengou de , [meiji] [taishou] no tsugi ha ?","answer_variants":["showa","shouwa","syouwa"],"answer_display":"showa","answer":"showa","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-34","question":"童謡『森のくまさん』で、お嬢さんが落としたものは何？","romaji_typing":"douyou [mori no kumasan] de , ojousan ga otoshita mono ha nani ?","answer_variants":["iyaringu","earring"],"answer_display":"iyaringu","answer":"iyaringu","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-35","question":"ことわざ。「犬も歩けば」何に当たる？","romaji_typing":"kotowaza . [inu mo arukeba] nani ni ataru ?","answer_variants":["bou","boo"],"answer_display":"bou","answer":"bou","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-36","question":"国民の祝日「元日」は1月1日ですが、「建国記念の日」はいつ？","romaji_typing":"kokumin no shukujitsu [ganjitsu] ha 1gatsu 1tachi desu ga , [kenkokukinen no hi] ha itsu ?","answer_variants":["2\/11","2gatsu11nichi","february 11th"],"answer_display":"2\/11","answer":"2\/11","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-37","question":"「M-1グランプリ」のMとは、何の頭文字？","romaji_typing":"[M-1 guranpuri] no M toha , nan no kashiramoji ?","answer_variants":["manzai"],"answer_display":"manzai","answer":"manzai","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-38","question":"「H」は水素、「O」は何？","romaji_typing":"[H] ha suiso , [O] ha nani ?","answer_variants":["sanso","oxygen"],"answer_display":"sanso","answer":"sanso","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"},{"id":"ng-39","question":"「桃太郎」のお供は犬、猿、あと一匹は？","romaji_typing":"[momotarou] no otomo ha inu , saru , ato ippiki ha ?","answer_variants":["kiji","pheasant"],"answer_display":"kiji","answer":"kiji","explanation":"NG Reason: Contains parentheses\/brackets (User Request: annoying)","tags":"format-annoying","source":"import","errors":["status_not_prod_or_debug"],"_list":"ng"}];
     </script>
 </body>
 

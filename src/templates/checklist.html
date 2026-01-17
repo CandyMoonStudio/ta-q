@@ -127,6 +127,33 @@
             letter-spacing: 0.05em;
             font-weight: 700;
             border-bottom: 2px solid #e5e7eb;
+            position: relative;
+            /* For resizer */
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th:hover {
+            background-color: #f3f4f6;
+        }
+
+        .resizer {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: rgba(0, 0, 0, 0.05);
+            cursor: col-resize;
+            user-select: none;
+            touch-action: none;
+            z-index: 100;
+        }
+
+        .resizer:hover,
+        .resizing {
+            background: var(--primary);
+            width: 4px;
         }
 
         tr {
@@ -143,6 +170,105 @@
             vertical-align: middle;
             border-bottom: 1px solid #e5e7eb;
             /* Divider */
+        }
+
+        /* Sticky First Column (Actions) */
+        th:first-child,
+        td:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 20;
+            background-color: var(--bg-card);
+            box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        th:first-child {
+            z-index: 30;
+            /* Ensure header stays on top of sticky column cells */
+        }
+
+        /* Fix for hover effect obscuring sticky bg */
+        tr:hover td:first-child {
+            background-color: #f9fafb;
+        }
+
+        /* Controls Area */
+        .controls-area {
+            display: flex;
+            gap: 16px;
+            padding: 20px 40px;
+            /* Match container padding */
+            background: var(--bg-body);
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: white;
+            min-width: 120px;
+            cursor: pointer;
+        }
+
+        /* Genres */
+        .tag-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-right: 4px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .tag-badge.type {
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
+        }
+
+        .tag-badge.tag {
+            background: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
         }
 
         /* Cells */
@@ -547,12 +673,34 @@
         </div>
     </header>
 
+    <div class="controls-area">
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="search-input" id="search-input" placeholder="検索 (ID, 問題, 解答, ジャンル...)">
+        </div>
+        <div class="filter-group">
+            <select class="filter-select" id="status-filter">
+                <option value="all">全ステータス</option>
+                <option value="unset">未判定</option>
+                <option value="ok">OK (採用)</option>
+                <option value="ng">NG (却下)</option>
+                <option value="debug">DEBUG (要修正)</option>
+                <option value="hold">HOLD (保留)</option>
+            </select>
+            <select class="filter-select" id="genre-filter">
+                <option value="all">全ジャンル</option>
+                <!-- Generated dynamically -->
+            </select>
+        </div>
+    </div>
+
     <div class="container">
         <table>
             <thead>
                 <tr>
                     <th width="160">操作</th>
                     <th width="60">ID</th>
+                    <th width="120">ジャンル</th>
                     <th>問題 / 解答</th>
                     <th>ローマ字 / 別解</th>
                     <th width="250" style="text-align:right;">状態 / メモ</th>
@@ -967,47 +1115,194 @@
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
         }
+
+        // --- Filters & Search ---
+        function initFilters() {
+            // Populate Genre Filter
+            const genres = new Set();
+            if (typeof SERVER_DATA !== 'undefined') {
+                SERVER_DATA.forEach(q => {
+                    if (q.type) genres.add(q.type);
+                    if (q.tags) {
+                        q.tags.split(',').forEach(t => genres.add(t.trim()));
+                    }
+                });
+            }
+            const genreSelect = document.getElementById('genre-filter');
+            // convert to array, sort, insert
+            const sortedGenres = Array.from(genres).sort();
+            sortedGenres.forEach(g => {
+                if (!g) return;
+                const opt = document.createElement('option');
+                opt.value = g;
+                opt.innerText = g;
+                genreSelect.appendChild(opt);
+            });
+
+            // Event Listeners
+            document.getElementById('search-input').addEventListener('input', applyFilters);
+            document.getElementById('status-filter').addEventListener('change', applyFilters);
+            document.getElementById('genre-filter').addEventListener('change', applyFilters);
+        }
+
+        function applyFilters() {
+            const searchTerms = document.getElementById('search-input').value.toLowerCase().split(/\s+/).filter(s => s);
+            const statusFilter = document.getElementById('status-filter').value;
+            const genreFilter = document.getElementById('genre-filter').value;
+
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const id = row.getAttribute('data-id');
+                // skip if not a data row (e.g. empty message)
+                if (!id) return;
+
+                const searchData = (row.getAttribute('data-search') || '').toLowerCase();
+                const typeData = row.getAttribute('data-type') || '';
+                const tagsData = row.getAttribute('data-tags') || '';
+                let initialStatus = row.getAttribute('data-status-initial');
+
+                // Normalization
+                if (initialStatus === 'prod') initialStatus = 'unset';
+
+                // Resolve Current Status
+                // If localStorage has status, use it. Otherwise use initial (debug/ng/unset).
+                const currentReview = reviewData[id];
+                let effectiveStatus = currentReview?.status || initialStatus || 'unset';
+
+                // 1. Search
+                let matchSearch = true;
+                if (searchTerms.length > 0) {
+                    matchSearch = searchTerms.every(term => searchData.includes(term));
+                }
+
+                // 2. Status
+                let matchStatus = true;
+                if (statusFilter !== 'all') {
+                    matchStatus = (effectiveStatus === statusFilter);
+                }
+
+                // 3. Genre
+                let matchGenre = true;
+                if (genreFilter !== 'all') {
+                    const typeMatch = typeData === genreFilter;
+                    const tagMatch = tagsData.split(',').map(t => t.trim()).includes(genreFilter);
+                    matchGenre = typeMatch || tagMatch;
+                }
+
+                if (matchSearch && matchStatus && matchGenre) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+
+        // --- Sort & Resize ---
+        function initTableFeatures() {
+            const table = document.querySelector('table');
+            const headers = table.querySelectorAll('th');
+
+            headers.forEach((th, index) => {
+                // 1. Sort
+                // Skip Action column (index 0)
+                if (index > 0) {
+                    th.addEventListener('click', () => sortTable(index));
+                }
+
+                // 2. Resize
+                const resizer = document.createElement('div');
+                resizer.classList.add('resizer');
+                th.appendChild(resizer);
+                createResizableColumn(th, resizer);
+            });
+        }
+
+        let sortDirection = 1; // 1: asc, -1: desc
+        let lastSortIndex = -1;
+
+        function sortTable(columnIndex) {
+            const table = document.querySelector('table');
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            if (lastSortIndex === columnIndex) {
+                sortDirection *= -1;
+            } else {
+                sortDirection = 1;
+                lastSortIndex = columnIndex;
+            }
+
+            // Simple type check: try number, then string
+            const getValue = (tr, idx) => {
+                const td = tr.children[idx];
+                return td ? (td.innerText || td.textContent) : '';
+            };
+
+            rows.sort((a, b) => {
+                const valA = getValue(a, columnIndex).trim();
+                const valB = getValue(b, columnIndex).trim();
+
+                const numA = parseFloat(valA);
+                const numB = parseFloat(valB);
+
+                if (!isNaN(numA) && !isNaN(numB) && valA !== '' && valB !== '') {
+                    return (numA - numB) * sortDirection;
+                }
+                return valA.localeCompare(valB) * sortDirection;
+            });
+
+            // Re-append to tbody
+            rows.forEach(row => tbody.appendChild(row));
+
+            // Re-apply filters? Not needed visually as display:none persists
+        }
+
+        function createResizableColumn(th, resizer) {
+            let x = 0;
+            let w = 0;
+
+            const mouseDownHandler = function (e) {
+                x = e.clientX;
+                const styles = window.getComputedStyle(th);
+                w = parseInt(styles.width, 10);
+
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+                resizer.classList.add('resizing');
+                e.preventDefault();
+                e.stopPropagation();
+            };
+
+            const mouseMoveHandler = function (e) {
+                const dx = e.clientX - x;
+                th.style.width = `${w + dx}px`;
+            };
+
+            const mouseUpHandler = function () {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+                resizer.classList.remove('resizing');
+            };
+
+            resizer.addEventListener('mousedown', mouseDownHandler);
+            resizer.addEventListener('click', (e) => e.stopPropagation());
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            initTableFeatures();
+            // ... (Other inits will run if they are also on DOMContentLoaded or script body)
+        });
+
+
+
     </script>
-
-    if (!data.type && !data.comment) {
-    statusCell.innerHTML = '';
-    return;
-    }
-
-    let badgeClass = data.type ? data.type.toLowerCase() : 'note';
-    let badgeText = data.type || 'NOTE';
-
-    let html = '<div class="status-display">';
-
-        if (data.type) {
-        html += `<span class="status-badge ${badgeClass}">${badgeText}</span>`;
-        }
-
-        if (data.comment) {
-        const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;' ).replace( />/g, '&gt;').replace(/"/g,
-        '&quot;');
-        html += `<span>${esc(data.comment)}</span>`;
-        }
-
-        // Delete button
-        html += `<button class="delete-btn" onclick="clearStatus('${id}')" title="Clear">✕</button>`;
-        html += '</div>';
-
-    statusCell.innerHTML = html;
-    }
-
-    function copyReport() {
-    const area = document.getElementById('report-area');
-    area.select();
-    document.execCommand('copy');
-
-    const btn = document.querySelector('.copy-btn');
-    const originalText = btn.textContent;
-    btn.textContent = '✅ Copied!';
-    setTimeout(() => {
-    btn.textContent = originalText;
-    }, 2000);
-    }
+    <script>
+        // Server Data Injection
+        const SERVER_DATA = {{ SERVER_DATA }};
     </script>
 </body>
 

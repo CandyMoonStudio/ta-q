@@ -74,6 +74,10 @@ function generateChecklist() {
             const displayAnswer = escapeHtml(q.answer_display || q.answer);
             const safeId = escapeHtml(String(q.id));
 
+            const typeText = q.type || '';
+            const tagsText = q.tags || '';
+            const searchText = (q.id + ' ' + q.question + ' ' + q.answer + ' ' + (q.answer_display || '') + ' ' + (q.romaji_typing || '')).toLowerCase();
+
             // Status Badge for the list
             let listBadge = '';
             if (q._list === 'debug') listBadge = '<span class="status-badge debug" style="margin-left:8px; background:#8b5cf6; color:white; font-size:0.7em;">DEBUG</span>';
@@ -82,7 +86,12 @@ function generateChecklist() {
             const rowClass = q._list === 'ng' ? 'row-ng-initial' : (q._list === 'debug' ? 'row-debug-initial' : '');
 
             tableRows += `
-                <tr id="row-${safeId}" class="${rowClass}" data-id="${safeId}">
+                <tr id="row-${safeId}" class="${rowClass}" 
+                    data-id="${safeId}" 
+                    data-search="${escapeHtml(searchText)}"
+                    data-type="${escapeHtml(typeText)}"
+                    data-tags="${escapeHtml(tagsText)}"
+                    data-status-initial="${q._list}">
                     <td class="action-cell">
                         <div class="action-buttons">
                             <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="OK（採用）">✓</button>
@@ -92,9 +101,12 @@ function generateChecklist() {
                             <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    </td>
                     <td class="id-cell">
                         <span class="id-badge">${safeId}</span>
+                    </td>
+                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
+                        ${typeText ? `<span class="tag-badge type">${escapeHtml(typeText)}</span>` : ''}
+                        ${tagsText ? `<span class="tag-badge tag">${escapeHtml(tagsText)}</span>` : ''}
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>${displayQuestion}${listBadge}</div>
@@ -118,7 +130,8 @@ function generateChecklist() {
         let outputHtml = templateHtml
             .replace('{{TABLE_ROWS}}', tableRows)
             .replace('{{TOTAL_COUNT}} items', statsHtml)
-            .replace('{{GENERATED_DATE}}', new Date().toLocaleString('ja-JP'));
+            .replace('{{GENERATED_DATE}}', new Date().toLocaleString('ja-JP'))
+            .replace(/{{\s*SERVER_DATA\s*}}/, JSON.stringify(allQuestions).replace(/\//g, '\\/')); // Simple escape for script tag
 
         const docsDir = path.dirname(OUTPUT_FILE);
         if (!fs.existsSync(docsDir)) {
