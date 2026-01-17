@@ -85,8 +85,11 @@ function generateChecklist() {
                 <tr id="row-${safeId}" class="${rowClass}" data-id="${safeId}">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn btn-ng" onclick="toggleStatus('${safeId}', 'NG')" title="Mark as NG">NG</button>
-                            <button class="btn btn-note" onclick="activateNoteInput('${safeId}')" title="Edit Note">Note</button>
+                            <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="OK (Adopt)">✓</button>
+                            <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="NG (Reject)">×</button>
+                            <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="Debug (Fix)">?</button>
+                            <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="Hold (Later)">⏸</button>
+                            <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="Add Note">📝</button>
                         </div>
                     </td>
                     <td class="id-cell">
