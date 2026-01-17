@@ -80,28 +80,32 @@ function generateChecklist() {
 
             // Status Badge for the list
             let listBadge = '';
-            if (q._list === 'debug') listBadge = '<span class="status-badge debug" style="margin-left:8px; background:#8b5cf6; color:white; font-size:0.7em;">DEBUG</span>';
-            if (q._list === 'ng') listBadge = '<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span>';
 
-            const rowClass = q._list === 'ng' ? 'row-ng-initial' : (q._list === 'debug' ? 'row-debug-initial' : '');
+            // Mapping initial list to display status
+            let initialStatus = q._list || 'unset';
+            if (initialStatus === 'prod') initialStatus = 'ok';
+
+            const statusClass = initialStatus !== 'unset' ? `row-${initialStatus}` : '';
+            const badgeHtml = initialStatus !== 'unset' ?
+                `<span class="status-badge ${initialStatus}">${initialStatus.toUpperCase()}</span>` : '';
 
             tableRows += `
-                <tr id="row-${safeId}" class="${rowClass}" 
+                <tr id="row-${safeId}" class="${statusClass}" 
                     data-id="${safeId}" 
-                    data-search="${escapeHtml(searchText)}"
-                    data-type="${escapeHtml(typeText)}"
+                    data-search="${escapeHtml(searchText)}" 
+                    data-type="${escapeHtml(typeText)}" 
                     data-tags="${escapeHtml(tagsText)}"
-                    data-status-initial="${q._list}">
+                    data-status-initial="${initialStatus}">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="OK（採用）">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="NG（却下）">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="Debug（要修正：誤字脱字や内容の不備）">?</button>
+                            <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="要修正 (Debug)">?</button>
                             <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="保留 (Hold)">!</button>
                             <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="メモを追加">📝</button>
                         </div>
                     </td>
-                    <td class="status-cell" id="badge-${safeId}" style="min-width: 100px;"></td>
+                    <td class="status-cell" id="badge-${safeId}" style="min-width: 100px;">${badgeHtml}</td>
                     <td class="id-cell">
                         <span class="id-badge">${safeId}</span>
                     </td>
@@ -110,7 +114,7 @@ function generateChecklist() {
                         ${tagsText ? `<span class="tag-badge tag">${escapeHtml(tagsText)}</span>` : ''}
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>${displayQuestion}${listBadge}</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>${displayQuestion}</div>
                         <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>${displayAnswer}</div>
                         ${q.errors ? `<div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">${escapeHtml(q.errors.join(', '))}</div>` : ''}
                     </td>

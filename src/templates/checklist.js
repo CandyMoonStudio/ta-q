@@ -88,13 +88,14 @@ function updateStats() {
         SERVER_DATA.forEach(q => {
             const id = q.id;
             let initialStatus = q._list;
-            if (initialStatus === 'prod') initialStatus = 'unset';
+            if (initialStatus === 'prod') initialStatus = 'ok';
 
             const review = reviewData[id];
             let effective = review?.status || initialStatus;
 
             if (effective === 'prod') effective = 'ok'; // Normalize
-            if (effective === 'unset' || !effective) effective = 'ok'; // Treat unset as OK (Prod) for counting? Or separate?
+            if (effective === 'unset' || !effective) effective = 'ok';
+            // Treat unset as OK (Prod) for counting? Or separate?
             // In original summary logic: "Prod: 34" usually means unset/ok.
 
             // Let's strictly follow filter logic mapping if possible, but for stats:
