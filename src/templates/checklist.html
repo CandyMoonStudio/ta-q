@@ -28,7 +28,7 @@
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-            --drawer-width: 400px;
+            --drawer-width: min(400px, 90vw);
         }
 
         * {
@@ -564,11 +564,11 @@
         <table>
             <thead>
                 <tr>
-                    <th width="160">Actions</th>
+                    <th width="160">操作</th>
                     <th width="60">ID</th>
-                    <th>Question / Answer</th>
-                    <th>Romaji Typing</th>
-                    <th width="250" style="text-align:right;">Status / Note</th>
+                    <th>問題 / 解答</th>
+                    <th>ローマ字 / 別解</th>
+                    <th width="250" style="text-align:right;">状態 / メモ</th>
                 </tr>
             </thead>
             <tbody>
@@ -849,10 +849,10 @@
                     let qText = '';
                     if (row) {
                         const qDiv = row.querySelector('.question-text');
-                        if (qDiv) qText = qDiv.innerText.replace(/NG|DEBUG|HOLD/g, '').trim(); // Remove badge text if any
+                        if (qDiv) qText = qDiv.innerText.replace(/NG|DEBUG|HOLD/g, '').replace(/^Q:/, '').trim(); // Remove badge text and initial Q:
                     }
 
-                    md += `- **[${item.id}]** ${qText}\n`;
+                    md += `- **[${item.id}]** Q: ${qText}\n`;
                     if (item.note) {
                         md += `  - Note: ${item.note}\n`;
                     }

@@ -28,7 +28,7 @@
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
-            --drawer-width: 400px;
+            --drawer-width: min(400px, 90vw);
         }
 
         * {
@@ -560,7 +560,7 @@
             <span style="color:#10b981">Prod: 34</span> | 
             <span style="color:#8b5cf6">Debug: 0</span> | 
             <span style="color:#ef4444">NG: 44</span>
-         • Generated: 2026/1/17 20:08:30
+         • Generated: 2026/1/17 20:13:01
         </div>
     </header>
 
@@ -568,11 +568,11 @@
         <table>
             <thead>
                 <tr>
-                    <th width="160">Actions</th>
+                    <th width="160">操作</th>
                     <th width="60">ID</th>
-                    <th>Question / Answer</th>
-                    <th>Romaji Typing</th>
-                    <th width="250" style="text-align:right;">Status / Note</th>
+                    <th>問題 / 解答</th>
+                    <th>ローマ字 / 別解</th>
+                    <th width="250" style="text-align:right;">状態 / メモ</th>
                 </tr>
             </thead>
             <tbody>
@@ -591,8 +591,8 @@
                         <span class="id-badge">1</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本の首都は？</div>
-                        <div class="answer-text">東京</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の首都は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>東京</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -615,8 +615,8 @@
                         <span class="id-badge">2</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">1足す1は？</div>
-                        <div class="answer-text">2</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>1足す1は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>2</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -639,8 +639,8 @@
                         <span class="id-badge">4</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">三角形の内角の和は何度？</div>
-                        <div class="answer-text">180度</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>三角形の内角の和は何度？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>180度</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -663,8 +663,8 @@
                         <span class="id-badge">5</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">水の化学式は？</div>
-                        <div class="answer-text">H2O</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>水の化学式は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>H2O</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -687,8 +687,8 @@
                         <span class="id-badge">7</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">1日は何時間？</div>
-                        <div class="answer-text">24時間</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>1日は何時間？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>24時間</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -711,8 +711,8 @@
                         <span class="id-badge">9</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">トランプのハート、ダイヤ以外の赤色のマークは？</div>
-                        <div class="answer-text">なし</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>トランプのハート、ダイヤ以外の赤色のマークは？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>なし</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -735,8 +735,8 @@
                         <span class="id-badge">11</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">サイコロの1の裏の数字は？</div>
-                        <div class="answer-text">6</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>サイコロの1の裏の数字は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>6</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -759,8 +759,8 @@
                         <span class="id-badge">12</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">干支の最初の動物は？</div>
-                        <div class="answer-text">ねずみ</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>干支の最初の動物は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ねずみ</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -783,8 +783,8 @@
                         <span class="id-badge">13</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">野球の1チームの人数は？</div>
-                        <div class="answer-text">9</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>野球の1チームの人数は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>9</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -807,8 +807,8 @@
                         <span class="id-badge">14</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">義務教育の小学校は何年間？</div>
-                        <div class="answer-text">6年間</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>義務教育の小学校は何年間？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>6年間</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -831,8 +831,8 @@
                         <span class="id-badge">16</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">桃太郎が退治しに行った場所は？</div>
-                        <div class="answer-text">鬼ヶ島</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>桃太郎が退治しに行った場所は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>鬼ヶ島</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -855,8 +855,8 @@
                         <span class="id-badge">18</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">サッカーで手を使ってよいポジションは？</div>
-                        <div class="answer-text">ゴールキーパー</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>サッカーで手を使ってよいポジションは？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ゴールキーパー</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -879,8 +879,8 @@
                         <span class="id-badge">21</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">太陽が昇る方角は？</div>
-                        <div class="answer-text">東</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>太陽が昇る方角は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>東</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -903,8 +903,8 @@
                         <span class="id-badge">25</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">2月は通常何日まで？</div>
-                        <div class="answer-text">28日</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>2月は通常何日まで？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>28日</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -927,8 +927,8 @@
                         <span class="id-badge">26</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">光の三原色は赤、緑と何？</div>
-                        <div class="answer-text">青</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>光の三原色は赤、緑と何？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>青</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -951,8 +951,8 @@
                         <span class="id-badge">28</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">世界で一番広い国は？</div>
-                        <div class="answer-text">ロシア</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>世界で一番広い国は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ロシア</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -975,8 +975,8 @@
                         <span class="id-badge">30</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">大相撲の土俵は何角形？</div>
-                        <div class="answer-text">円</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>大相撲の土俵は何角形？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>円</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -999,8 +999,8 @@
                         <span class="id-badge">32</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">ABCの次に来る文字は？</div>
-                        <div class="answer-text">D</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ABCの次に来る文字は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>D</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1023,8 +1023,8 @@
                         <span class="id-badge">36</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">5円玉に開いている穴の形は？</div>
-                        <div class="answer-text">円</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>5円玉に開いている穴の形は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>円</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1047,8 +1047,8 @@
                         <span class="id-badge">38</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">テニスで0点の呼び方は？</div>
-                        <div class="answer-text">ラブ</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>テニスで0点の呼び方は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ラブ</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1071,8 +1071,8 @@
                         <span class="id-badge">40</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">カエルの子供は？</div>
-                        <div class="answer-text">おたまじゃくし</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>カエルの子供は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>おたまじゃくし</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1095,8 +1095,8 @@
                         <span class="id-badge">45</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本の都道府県の数は？</div>
-                        <div class="answer-text">47</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の都道府県の数は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>47</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1119,8 +1119,8 @@
                         <span class="id-badge">46</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">東京スカイツリーの高さは？</div>
-                        <div class="answer-text">634</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>東京スカイツリーの高さは？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>634</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1143,8 +1143,8 @@
                         <span class="id-badge">47</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">聖徳太子が定めた憲法は？</div>
-                        <div class="answer-text">17条</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>聖徳太子が定めた憲法は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>17条</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1167,8 +1167,8 @@
                         <span class="id-badge">49</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">陸上のトラック、反時計回りか時計回りか？</div>
-                        <div class="answer-text">反時計回り</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>陸上のトラック、反時計回りか時計回りか？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>反時計回り</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1191,8 +1191,8 @@
                         <span class="id-badge">54</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">1ダースは何個？</div>
-                        <div class="answer-text">12</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>1ダースは何個？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>12</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1215,8 +1215,8 @@
                         <span class="id-badge">62</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？</div>
-                        <div class="answer-text">徳川慶喜</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>徳川慶喜</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1239,8 +1239,8 @@
                         <span class="id-badge">65</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">原子番号1番の元素は水素ですが、2番は何？</div>
-                        <div class="answer-text">ヘリウム</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>原子番号1番の元素は水素ですが、2番は何？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ヘリウム</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1263,8 +1263,8 @@
                         <span class="id-badge">67</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本一大きい湖は琵琶湖ですが、二番目に大きいのは？</div>
-                        <div class="answer-text">霞ヶ浦</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本一大きい湖は琵琶湖ですが、二番目に大きいのは？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>霞ヶ浦</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1287,8 +1287,8 @@
                         <span class="id-badge">68</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">ドラえもんの妹、ドラミちゃんの好物は？</div>
-                        <div class="answer-text">メロンパン</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ドラえもんの妹、ドラミちゃんの好物は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>メロンパン</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1311,8 +1311,8 @@
                         <span class="id-badge">71</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">将棋の駒で、唯一斜め後ろに下がれない駒は？</div>
-                        <div class="answer-text">桂馬</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の駒で、唯一斜め後ろに下がれない駒は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>桂馬</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1335,8 +1335,8 @@
                         <span class="id-badge">73</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本の硬貨で、真ん中に穴が開いているのは5円玉と何？</div>
-                        <div class="answer-text">50円玉</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の硬貨で、真ん中に穴が開いているのは5円玉と何？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>50円玉</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1359,8 +1359,8 @@
                         <span class="id-badge">75</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">世界三大珍味といえば、トリュフ、フォアグラと何？</div>
-                        <div class="answer-text">キャビア</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>世界三大珍味といえば、トリュフ、フォアグラと何？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>キャビア</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1383,8 +1383,8 @@
                         <span class="id-badge">76</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本で一番高い山は？</div>
-                        <div class="answer-text">富士山</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本で一番高い山は？</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>富士山</div>
                         
                     </td>
                     <td class="romaji-cell">
@@ -1407,8 +1407,8 @@
                         <span class="id-badge">10</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">一千円札に描かれている人物は（2020年時点）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">noguchi hideyo</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>一千円札に描かれている人物は（2020年時点）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>noguchi hideyo</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1431,8 +1431,8 @@
                         <span class="id-badge">20</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">現在（2025年）の日本の通貨単位は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">yen</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>現在（2025年）の日本の通貨単位は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>yen</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1455,8 +1455,8 @@
                         <span class="id-badge">42</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「雨」が雪に変わる温度は（摂氏）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">0</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「雨」が雪に変わる温度は（摂氏）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>0</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1479,8 +1479,8 @@
                         <span class="id-badge">51</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">五千円札の肖像画は誰（2020年時点）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">higuchi ichiyo</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>五千円札の肖像画は誰（2020年時点）？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>higuchi ichiyo</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1503,8 +1503,8 @@
                         <span class="id-badge">72</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">パソコン用語で、コピーのショートカットキーはCtrl（MacはCmd）と何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">c</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>パソコン用語で、コピーのショートカットキーはCtrl（MacはCmd）と何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>c</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1527,8 +1527,8 @@
                         <span class="id-badge">ng-01</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">将棋の駒で一番強いのは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">ou</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の駒で一番強いのは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ou</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1551,8 +1551,8 @@
                         <span class="id-badge">ng-02</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">ルフィが目指しているものは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">kaizokuou</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ルフィが目指しているものは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>kaizokuou</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1575,8 +1575,8 @@
                         <span class="id-badge">ng-03</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">任天堂の代表的なゲームキャラは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">mario</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>任天堂の代表的なゲームキャラは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>mario</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1599,8 +1599,8 @@
                         <span class="id-badge">ng-04</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「うどん」と「そば」、黒いのは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">soba</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「うどん」と「そば」、黒いのは？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>soba</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1623,8 +1623,8 @@
                         <span class="id-badge">ng-05</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「きつね」の好物は油揚げ、では「うさぎ」は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">ninjin</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「きつね」の好物は油揚げ、では「うさぎ」は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ninjin</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1647,8 +1647,8 @@
                         <span class="id-badge">ng-06</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「パンはパンでも食べられないパンは？」というなぞなぞ。代表的な正解は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">furaipan</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「パンはパンでも食べられないパンは？」というなぞなぞ。代表的な正解は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>furaipan</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1671,8 +1671,8 @@
                         <span class="id-badge">ng-07</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">信号機の「進め」の色は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">ao</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>信号機の「進め」の色は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ao</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1695,8 +1695,8 @@
                         <span class="id-badge">ng-08</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">将棋の「歩」が成ると何になる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">tokin</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の「歩」が成ると何になる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>tokin</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1719,8 +1719,8 @@
                         <span class="id-badge">ng-09</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「ありがとう」は大阪弁で？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">ookini</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「ありがとう」は大阪弁で？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ookini</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1743,8 +1743,8 @@
                         <span class="id-badge">ng-10</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「赤い丸」の国旗の国は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">nihon</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「赤い丸」の国旗の国は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>nihon</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1767,8 +1767,8 @@
                         <span class="id-badge">ng-11</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">QRコードの「QR」は何の略？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">quick response</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>QRコードの「QR」は何の略？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>quick response</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1791,8 +1791,8 @@
                         <span class="id-badge">ng-12</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「五輪」と呼ばれるスポーツの祭典は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">olympic</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「五輪」と呼ばれるスポーツの祭典は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>olympic</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1815,8 +1815,8 @@
                         <span class="id-badge">ng-13</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「タコ」の足は何本？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">8</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「タコ」の足は何本？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>8</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1839,8 +1839,8 @@
                         <span class="id-badge">ng-14</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「千代紙」は何でできている？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">kami</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「千代紙」は何でできている？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>kami</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1863,8 +1863,8 @@
                         <span class="id-badge">ng-15</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「氷」が溶けると何になる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">mizu</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「氷」が溶けると何になる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>mizu</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1887,8 +1887,8 @@
                         <span class="id-badge">ng-16</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本列島の「北」にある大きな島は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">hokkaido</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本列島の「北」にある大きな島は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>hokkaido</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1911,8 +1911,8 @@
                         <span class="id-badge">ng-17</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「七夕」は何月何日？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">7/7</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「七夕」は何月何日？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>7/7</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1935,8 +1935,8 @@
                         <span class="id-badge">ng-18</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「春夏秋冬」、読み方は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">shunkashuutou</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「春夏秋冬」、読み方は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>shunkashuutou</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1959,8 +1959,8 @@
                         <span class="id-badge">ng-19</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「週」の真ん中の曜日は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">suiyoubi</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「週」の真ん中の曜日は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>suiyoubi</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -1983,8 +1983,8 @@
                         <span class="id-badge">ng-20</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「鉛筆」の中心にある黒い棒は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">shin</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「鉛筆」の中心にある黒い棒は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>shin</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2007,8 +2007,8 @@
                         <span class="id-badge">ng-21</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「笑点」の座布団、最高何枚？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">10</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「笑点」の座布団、最高何枚？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>10</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2031,8 +2031,8 @@
                         <span class="id-badge">ng-22</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「グー」「チョキ」、勝つのはどっち？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">gu-</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「グー」「チョキ」、勝つのはどっち？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>gu-</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2055,8 +2055,8 @@
                         <span class="id-badge">ng-23</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「義務教育」の中学校は何年間？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">3</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「義務教育」の中学校は何年間？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>3</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2079,8 +2079,8 @@
                         <span class="id-badge">ng-24</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「耳」で聞く、「目」で何する？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">miru</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「耳」で聞く、「目」で何する？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>miru</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2103,8 +2103,8 @@
                         <span class="id-badge">ng-25</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「魚」偏に「雪」と書く魚は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">tara</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「魚」偏に「雪」と書く魚は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>tara</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2127,8 +2127,8 @@
                         <span class="id-badge">ng-26</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「人間」は哺乳類、鳥類、どっち？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">honyuurui</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「人間」は哺乳類、鳥類、どっち？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>honyuurui</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2151,8 +2151,8 @@
                         <span class="id-badge">ng-27</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「西」の反対の方角は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">higashi</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「西」の反対の方角は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>higashi</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2175,8 +2175,8 @@
                         <span class="id-badge">ng-28</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「金」の元素記号は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">au</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「金」の元素記号は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>au</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2199,8 +2199,8 @@
                         <span class="id-badge">ng-29</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">将棋の駒、裏返せないのは「金」と何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">ou</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>将棋の駒、裏返せないのは「金」と何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>ou</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2223,8 +2223,8 @@
                         <span class="id-badge">ng-30</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「NHK」は何の略？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">nippon housou kyoukai</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「NHK」は何の略？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>nippon housou kyoukai</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2247,8 +2247,8 @@
                         <span class="id-badge">ng-31</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「千円」は硬貨ではなく何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">shihei</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「千円」は硬貨ではなく何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>shihei</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2271,8 +2271,8 @@
                         <span class="id-badge">ng-32</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">夏目漱石の小説『吾輩は猫である』。書き出しは「吾輩は猫である。名前は」何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">madanai</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>夏目漱石の小説『吾輩は猫である』。書き出しは「吾輩は猫である。名前は」何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>madanai</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2295,8 +2295,8 @@
                         <span class="id-badge">ng-33</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">日本の元号で、「明治」「大正」の次は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">showa</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>日本の元号で、「明治」「大正」の次は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>showa</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2319,8 +2319,8 @@
                         <span class="id-badge">ng-34</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">童謡『森のくまさん』で、お嬢さんが落としたものは何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">iyaringu</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>童謡『森のくまさん』で、お嬢さんが落としたものは何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>iyaringu</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2343,8 +2343,8 @@
                         <span class="id-badge">ng-35</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">ことわざ。「犬も歩けば」何に当たる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">bou</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>ことわざ。「犬も歩けば」何に当たる？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>bou</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2367,8 +2367,8 @@
                         <span class="id-badge">ng-36</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">国民の祝日「元日」は1月1日ですが、「建国記念の日」はいつ？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">2/11</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>国民の祝日「元日」は1月1日ですが、「建国記念の日」はいつ？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>2/11</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2391,8 +2391,8 @@
                         <span class="id-badge">ng-37</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「M-1グランプリ」のMとは、何の頭文字？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">manzai</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「M-1グランプリ」のMとは、何の頭文字？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>manzai</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2415,8 +2415,8 @@
                         <span class="id-badge">ng-38</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「H」は水素、「O」は何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">sanso</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「H」は水素、「O」は何？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>sanso</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2439,8 +2439,8 @@
                         <span class="id-badge">ng-39</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">「桃太郎」のお供は犬、猿、あと一匹は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
-                        <div class="answer-text">kiji</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>「桃太郎」のお供は犬、猿、あと一匹は？<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span></div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>kiji</div>
                         <div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">status_not_prod_or_debug</div>
                     </td>
                     <td class="romaji-cell">
@@ -2725,10 +2725,10 @@
                     let qText = '';
                     if (row) {
                         const qDiv = row.querySelector('.question-text');
-                        if (qDiv) qText = qDiv.innerText.replace(/NG|DEBUG|HOLD/g, '').trim(); // Remove badge text if any
+                        if (qDiv) qText = qDiv.innerText.replace(/NG|DEBUG|HOLD/g, '').replace(/^Q:/, '').trim(); // Remove badge text and initial Q:
                     }
 
-                    md += `- **[${item.id}]** ${qText}\n`;
+                    md += `- **[${item.id}]** Q: ${qText}\n`;
                     if (item.note) {
                         md += `  - Note: ${item.note}\n`;
                     }

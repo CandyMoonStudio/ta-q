@@ -96,8 +96,8 @@ function generateChecklist() {
                         <span class="id-badge">${safeId}</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">${displayQuestion}${listBadge}</div>
-                        <div class="answer-text">${displayAnswer}</div>
+                        <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>${displayQuestion}${listBadge}</div>
+                        <div class="answer-text"><span style="opacity:0.5; margin-right:4px;">A:</span>${displayAnswer}</div>
                         ${q.errors ? `<div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">${escapeHtml(q.errors.join(', '))}</div>` : ''}
                     </td>
                     <td class="romaji-cell">
