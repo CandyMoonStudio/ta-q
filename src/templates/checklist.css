@@ -368,6 +368,51 @@ tr:hover td:first-child {
     border-left: 4px solid var(--warning);
 }
 
+/* Difficulty Stars */
+.diff-cell {
+    text-align: center;
+}
+
+.diff-stars {
+    cursor: pointer;
+    color: #fbbf24;
+    font-size: 1.1em;
+    letter-spacing: 1px;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.diff-stars:hover {
+    transform: scale(1.1);
+}
+
+/* Genre/Tags */
+.tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.tag-container:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.edit-icon {
+    opacity: 0;
+    font-size: 0.8em;
+    color: var(--primary);
+    transition: opacity 0.2s;
+}
+
+.tag-container:hover .edit-icon {
+    opacity: 1;
+}
+
 /* Buttons (Premium Style) */
 .action-buttons {
     display: flex;

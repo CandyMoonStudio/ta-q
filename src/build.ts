@@ -26,7 +26,8 @@ interface OutputQuestion {
     // Debug/Internal
     _index?: number;
     status?: string;
-    tags?: string;
+    tags?: string[];
+    difficulty?: number;
     source?: string;
     weight: number;
     errors?: string[];
@@ -86,6 +87,7 @@ function build() {
     const rows = readTsv(inputPath);
     const prod: OutputQuestion[] = [];
     const debug: OutputQuestion[] = [];
+    const unset: OutputQuestion[] = [];
     const ng: OutputQuestion[] = [];
     const errorCounts = new Map<string, number>();
 
@@ -100,6 +102,20 @@ function build() {
         const aliases = q.aliases
             ? q.aliases.split('|').map(s => s.trim()).filter(s => s.length > 0)
             : [];
+
+        // Parse tags
+        const tags = q.tags
+            ? q.tags.split(',').map(s => s.trim()).filter(s => s.length > 0)
+            : [];
+
+        // Parse difficulty
+        let difficulty = 3; // Default
+        if (q.difficulty) {
+            const d = parseInt(q.difficulty, 10);
+            if (!isNaN(d) && d >= 1 && d <= 5) {
+                difficulty = d;
+            }
+        }
 
         const answerVariants = [q.answer, ...aliases];
 
@@ -122,7 +138,8 @@ function build() {
             // Internal
             _index: q._index,
             status: q.status,
-            tags: q.tags,
+            tags: tags,
+            difficulty: difficulty,
             source: q.source,
             weight: weight
         };
@@ -137,25 +154,31 @@ function build() {
             prod.push(output);
         } else if (q.status === 'debug') {
             debug.push(output);
+        } else if (!q.status) {
+            // Empty status -> Unset list (not NG)
+            unset.push(output);
         } else {
-            // inbox or other status with no errors goes to ng (as 'not_ready')
-            output.errors = ['status_not_prod_or_debug'];
+            // Unknown status -> ng
+            output.errors = ['status_unknown'];
             ng.push(output);
-            errorCounts.set('status_not_ready', (errorCounts.get('status_not_ready') || 0) + 1);
+            errorCounts.set('status_unknown', (errorCounts.get('status_unknown') || 0) + 1);
         }
     });
 
     stableSort(prod);
     stableSort(debug);
+    stableSort(unset);
     stableSort(ng);
 
     const prodOutput = prod.map(formatOutput);
     const debugOutput = debug.map(formatOutput);
+    const unsetOutput = unset.map(formatOutput);
     const ngOutput = ng.map(formatOutput);
 
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'questions_prod.json'), JSON.stringify(prodOutput, null, 2));
     fs.writeFileSync(path.join(outDir, 'questions_debug.json'), JSON.stringify(debugOutput, null, 2));
+    fs.writeFileSync(path.join(outDir, 'questions_unset.json'), JSON.stringify(unsetOutput, null, 2));
     fs.writeFileSync(path.join(outDir, 'questions_ng.json'), JSON.stringify(ngOutput, null, 2));
 
     // Report
@@ -163,6 +186,7 @@ function build() {
         `total\t${rows.length}`,
         `prod\t${prod.length}`,
         `debug\t${debug.length}`,
+        `unset\t${unset.length}`,
         `ng\t${ng.length}`,
         '',
         'errors'
@@ -175,7 +199,7 @@ function build() {
         });
 
     fs.writeFileSync(path.join(outDir, 'report.txt'), reportLines.join('\n'));
-    console.log(`Build complete. Prod: ${prod.length}, NG: ${ng.length}`);
+    console.log(`Build complete. Prod: ${prod.length}, Debug:${debug.length}, Unset:${unset.length}, NG: ${ng.length}`);
 }
 
 build();

@@ -9,6 +9,7 @@ const __dirname = path.dirname(__filename);
 // Input: Build output from ta-question-gen
 const PROD_FILE = path.join(__dirname, '../out/questions_prod.json');
 const DEBUG_FILE = path.join(__dirname, '../out/questions_debug.json');
+const UNSET_FILE = path.join(__dirname, '../out/questions_unset.json');
 const NG_FILE = path.join(__dirname, '../out/questions_ng.json');
 const TEMPLATE_FILE = path.join(__dirname, 'templates/checklist.html');
 const OUTPUT_FILE = path.join(__dirname, '../docs/index.html');
@@ -49,11 +50,13 @@ function generateChecklist() {
 
         const prodQuestions = loadJson(PROD_FILE);
         const debugQuestions = loadJson(DEBUG_FILE);
+        const unsetQuestions = loadJson(UNSET_FILE);
         const ngQuestions = loadJson(NG_FILE);
 
         const allQuestions = [
             ...prodQuestions.map((q: any) => ({ ...q, _list: 'prod' })),
             ...debugQuestions.map((q: any) => ({ ...q, _list: 'debug' })),
+            ...unsetQuestions.map((q: any) => ({ ...q, _list: 'unset' })),
             ...ngQuestions.map((q: any) => ({ ...q, _list: 'ng' }))
         ];
 
@@ -75,7 +78,8 @@ function generateChecklist() {
             const safeId = escapeHtml(String(q.id));
 
             const typeText = q.type || '';
-            const tagsText = q.tags || '';
+            const tagsText = (q.tags && Array.isArray(q.tags)) ? q.tags.join(',') : (q.tags || '');
+            const difficulty = q.difficulty || 3;
             const searchText = (q.id + ' ' + q.question + ' ' + q.answer + ' ' + (q.answer_display || '') + ' ' + (q.romaji_typing || '')).toLowerCase();
 
             // Status Badge for the list
@@ -95,6 +99,7 @@ function generateChecklist() {
                     data-search="${escapeHtml(searchText)}" 
                     data-type="${escapeHtml(typeText)}" 
                     data-tags="${escapeHtml(tagsText)}"
+                    data-difficulty="${difficulty}"
                     data-status-initial="${initialStatus}">
                     <td class="action-cell">
                         <div class="action-buttons">
@@ -109,9 +114,17 @@ function generateChecklist() {
                     <td class="id-cell">
                         <span class="id-badge">${safeId}</span>
                     </td>
-                    <td class="genre-cell" style="font-size:0.85em; color:var(--text-sub);">
-                        ${typeText ? `<span class="tag-badge type">${escapeHtml(typeText)}</span>` : ''}
-                        ${tagsText ? `<span class="tag-badge tag">${escapeHtml(tagsText)}</span>` : ''}
+                    <td class="diff-cell" id="diff-${safeId}">
+                        <div class="diff-stars" data-action="edit-difficulty" title="Click to edit difficulty">
+                            ${'★'.repeat(difficulty)}${'☆'.repeat(5 - difficulty)}
+                        </div>
+                    </td>
+                    <td class="genre-cell" id="genre-${safeId}" style="font-size:0.85em; color:var(--text-sub);">
+                        <div class="tag-container" data-action="edit-tags" title="Click to edit tags">
+                            ${typeText ? `<span class="tag-badge type">${escapeHtml(typeText)}</span>` : ''}
+                            ${tagsText ? tagsText.split(',').map((t: string) => `<span class="tag-badge tag">${escapeHtml(t.trim())}</span>`).join('') : ''}
+                            <span class="edit-icon">✎</span>
+                        </div>
                     </td>
                     <td style="min-width: 250px;">
                         <div class="question-text"><span style="opacity:0.5; margin-right:4px;">Q:</span>${displayQuestion}</div>
@@ -129,6 +142,7 @@ function generateChecklist() {
         const statsHtml = `
             <div class="stats-item prod">採用: <span id="count-prod">${prodQuestions.length}</span></div>
             <div class="stats-item debug">要修正: <span id="count-debug">${debugQuestions.length}</span></div>
+            <div class="stats-item unset">未設定: <span id="count-unset">${unsetQuestions.length}</span></div>
             <div class="stats-item ng">却下: <span id="count-ng">${ngQuestions.length}</span></div>
             <div class="stats-item hold">保留: <span id="count-hold">0</span></div>
             <div class="stats-item info">${allQuestions.length} items</div>
@@ -154,7 +168,7 @@ function generateChecklist() {
         }
 
         fs.writeFileSync(OUTPUT_FILE, outputHtml, 'utf8');
-        console.log(`Checklist generated: ${OUTPUT_FILE} (Prod:${prodQuestions.length}, Debug:${debugQuestions.length}, NG:${ngQuestions.length})`);
+        console.log(`Checklist generated: ${OUTPUT_FILE} (Prod:${prodQuestions.length}, Debug:${debugQuestions.length}, Unset:${unsetQuestions.length}, NG:${ngQuestions.length})`);
     } catch (err) {
         console.error('Error generating checklist:', err);
         process.exit(1);

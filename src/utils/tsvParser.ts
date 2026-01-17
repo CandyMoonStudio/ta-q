@@ -9,6 +9,7 @@ export interface QuestionRecord {
     romaji: string;
     type: string;
     tags: string;
+    difficulty: string; // New column: 1-5 (parsed as string initially)
     weight: string;
     status: string;
     source: string;

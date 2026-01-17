@@ -7,6 +7,7 @@ const LS_KEY = 'taq_review_v2';
 // State
 let reviewData = {};
 let drafts = [];
+let allTags = new Set(); // For autocomplete
 
 // --- Init ---
 window.addEventListener('DOMContentLoaded', () => {
@@ -32,6 +33,10 @@ window.addEventListener('DOMContentLoaded', () => {
         if (row) {
             updateRowVisuals(item.id);
             renderStatusCell(item.id);
+            // Apply diff/tags overrides if they exist
+            if (item.difficulty || item.tags || item.type) {
+                updateRowDataAttributes(item.id);
+            }
         }
     });
 
@@ -43,6 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initTableFeatures();
     initDrawerResize();
     initEventListeners(); // Centralized Event Handling
+    initEditDrawer(); // Edit UI Logic
 });
 
 // --- LocalStorage ---
@@ -109,6 +115,13 @@ function initEventListeners() {
             case 'copy-tsv':
                 copyTsv();
                 break;
+            case 'edit-difficulty':
+                // Handle star click for quick edit
+                handleStarClick(e, id);
+                break;
+            case 'edit-tags':
+                openEditDrawer(id);
+                break;
             default:
                 // Handle tab switching
                 if (target.classList.contains('drawer-tab-btn')) {
@@ -149,11 +162,12 @@ function updateStats() {
         SERVER_DATA.forEach(q => {
             if (q._list === 'prod') counts.prod++;
             else if (q._list === 'debug') counts.debug++;
+            else if (q._list === 'unset') counts.unset = (counts.unset || 0) + 1;
             else if (q._list === 'ng') counts.ng++;
         });
     }
 
-    let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0 };
+    let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0, unset: 0 };
 
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
@@ -165,10 +179,12 @@ function updateStats() {
             let effective = review?.status || initialStatus;
 
             if (effective === 'prod') effective = 'ok';
-            if (effective === 'unset' || !effective) effective = 'ok';
+            // if (effective === 'unset' || !effective) effective = 'ok'; // Keep unset as unset for stats
 
             if (currentCounts.hasOwnProperty(effective)) {
                 currentCounts[effective]++;
+            } else if (effective === 'unset') {
+                currentCounts.unset++;
             }
         });
     }
@@ -179,6 +195,7 @@ function updateStats() {
     };
     setSafe('count-prod', currentCounts.ok);
     setSafe('count-debug', currentCounts.debug);
+    setSafe('count-unset', currentCounts.unset);
     setSafe('count-ng', currentCounts.ng);
     setSafe('count-hold', currentCounts.hold);
 }
@@ -322,6 +339,205 @@ function saveNote(id, text) {
     renderNoteCell(id);
 }
 
+// --- Difficulty & Tag Logic ---
+
+function handleStarClick(e, id) {
+    const starContainer = e.target.closest('.diff-stars');
+    if (!starContainer) return;
+
+    // Calculate index based on click position relative to width
+    // Or simpler: assuming monospace/equal width stars.
+    // Better: wrap each star in a span? No, currently text.
+    // Let's rely on relative position.
+    const rect = starContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    const percent = x / width;
+    let rating = Math.ceil(percent * 5);
+    if (rating < 1) rating = 1;
+    if (rating > 5) rating = 5;
+
+    setDifficulty(id, rating);
+}
+
+function setDifficulty(id, rating) {
+    if (!reviewData[id]) reviewData[id] = { id: id };
+    reviewData[id].difficulty = rating;
+    reviewData[id].updatedAt = Date.now();
+    saveToLS();
+
+    // Update UI
+    const diffCell = document.getElementById('diff-' + id);
+    if (diffCell) {
+        const cell = diffCell.querySelector('.diff-stars');
+        if (cell) {
+            cell.innerHTML = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+        }
+    }
+    updateRowDataAttributes(id);
+}
+
+function updateRowDataAttributes(id) {
+    const row = document.getElementById('row-' + id);
+    if (!row) return;
+
+    // Get Data
+    const q = SERVER_DATA.find(d => d.id == id); // Loose match for ID string/num
+    const review = reviewData[id];
+
+    // Difficulty
+    const diff = review?.difficulty ?? q?.difficulty ?? 3;
+    row.setAttribute('data-difficulty', diff);
+    // Visual update for stars is handled in setDifficulty/render logic, but let's ensure consistency if called externally
+    const starCell = row.querySelector('.diff-stars');
+    if (starCell) starCell.innerHTML = '★'.repeat(diff) + '☆'.repeat(5 - diff);
+
+    // Tags/Type
+    const type = review?.type ?? q?.type ?? '';
+    let tags = review?.tags ? review.tags : (q?.tags ? q.tags.join(',') : '');
+    if (Array.isArray(tags)) tags = tags.join(','); // Ensure string
+
+    row.setAttribute('data-type', type);
+    row.setAttribute('data-tags', tags);
+
+    // Visual Update for Genre Cell
+    const genreCell = document.getElementById(`genre-${id}`);
+    if (genreCell) {
+        const container = genreCell.querySelector('.tag-container');
+        if (container) {
+            let html = '';
+            if (type) html += `<span class="tag-badge type">${escapeHtml(type)}</span>`;
+            if (tags) {
+                tags.split(',').filter(t => t.trim()).forEach(t => {
+                    html += `<span class="tag-badge tag">${escapeHtml(t.trim())}</span>`;
+                });
+            }
+            html += `<span class="edit-icon">✎</span>`;
+            container.innerHTML = html;
+        }
+    }
+}
+
+// --- Edit Drawer Logic ---
+let currentEditId = null;
+let editTagsTemp = [];
+
+function initEditDrawer() {
+    // Populate Tag Suggestions
+    const dl = document.getElementById('tag-suggestions');
+    if (dl) {
+        // Collect all tags
+        const tags = new Set(['History', 'Science', 'Geography', 'Culture', 'Sports', 'Entertainment', 'Japan', 'World']);
+        if (typeof SERVER_DATA !== 'undefined') {
+            SERVER_DATA.forEach(q => {
+                if (q.tags) q.tags.forEach(t => tags.add(t));
+                if (q.type) tags.add(q.type);
+            });
+        }
+        tags.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t;
+            dl.appendChild(opt);
+        });
+    }
+
+    // Add Tag Button
+    document.getElementById('btn-add-tag').addEventListener('click', () => {
+        const input = document.getElementById('edit-new-tag');
+        const val = input.value.trim();
+        if (val && !editTagsTemp.includes(val)) {
+            editTagsTemp.push(val);
+            renderEditTags();
+            input.value = '';
+        }
+    });
+
+    // Save Button
+    document.getElementById('btn-save-edit').addEventListener('click', () => {
+        if (!currentEditId) return;
+
+        // Save logic
+        if (!reviewData[currentEditId]) reviewData[currentEditId] = { id: currentEditId };
+
+        // Difficulty
+        // (Handled separately usually, but let's sync if implemented in drawer too)
+        // Ignoring stars in drawer for now to keep simple, or implement:
+        // const diffStars = document.getElementById('edit-difficulty-stars').innerText; // Parsing stars text is fragile
+
+        // Type
+        const typeVal = document.getElementById('edit-type-select').value;
+        reviewData[currentEditId].type = typeVal;
+
+        // Tags
+        reviewData[currentEditId].tags = [...editTagsTemp]; // Copy
+
+        reviewData[currentEditId].updatedAt = Date.now();
+        saveToLS();
+        updateRowDataAttributes(currentEditId);
+
+        // Close drawer
+        toggleDrawer();
+    });
+}
+
+function openEditDrawer(id) {
+    currentEditId = id;
+
+    // Switch to Edit tab (hack: assume we added it or just show content-edit)
+    // We added 'content-edit' but need to show it.
+    // If we rely on tabs, we need a tab button.
+    // Or just force show content-edit within the drawer structure.
+
+    // Hide all contents
+    document.querySelectorAll('.drawer-content').forEach(c => c.style.display = 'none');
+    document.getElementById('content-edit').style.display = 'block';
+
+    // Open Drawer
+    document.body.classList.add('drawer-open');
+
+    // Populate Data
+    const q = SERVER_DATA.find(d => d.id == id);
+    const review = reviewData[id];
+
+    document.getElementById('edit-id-display').textContent = id;
+
+    // Difficulty
+    // Not fully implemented in drawer UI yet (just static stars in replaced HTML), 
+    // but we can make them clickable too later.
+
+    // Type
+    const currentType = review?.type ?? q?.type ?? '';
+    document.getElementById('edit-type-select').value = currentType;
+
+    // Tags
+    const nativeTags = q?.tags ? [...q.tags] : [];
+    const savedTags = review?.tags; // If array
+    // Logic: If review tags exist, use them. Else use native.
+    editTagsTemp = savedTags ? [...savedTags] : [...nativeTags];
+
+    renderEditTags();
+}
+
+function renderEditTags() {
+    const container = document.getElementById('edit-current-tags');
+    container.innerHTML = '';
+    editTagsTemp.forEach((tag, idx) => {
+        const chip = document.createElement('div');
+        chip.style.cssText = 'background:#4b5563; padding:2px 6px; border-radius:4px; font-size:0.85em; display:flex; align-items:center; gap:4px;';
+        chip.innerHTML = `
+            <span>${escapeHtml(tag)}</span>
+            <span style="cursor:pointer; opacity:0.7;" onclick="removeEditTag(${idx})">×</span>
+        `;
+        container.appendChild(chip);
+    });
+}
+
+// Global for inline onclick
+window.removeEditTag = function (idx) {
+    editTagsTemp.splice(idx, 1);
+    renderEditTags();
+};
+
 // --- Drawer & Tabs ---
 function toggleDrawer() {
     const body = document.body;
@@ -383,6 +599,11 @@ function downloadJson(target) {
             } else {
                 delete item.note; // Clean up
             }
+
+            // Merge Diff/Tags Overrides
+            if (review?.difficulty) item.difficulty = review.difficulty;
+            if (review?.type) item.type = review.type;
+            if (review?.tags) item.tags = review.tags;
 
             exportList.push(item);
         }
@@ -604,6 +825,9 @@ function applyFilters() {
             const tagMatch = tagsData.split(',').map(t => t.trim()).includes(genreFilter);
             matchGenre = typeMatch || tagMatch;
         }
+
+        // 4. Difficulty (Optional: Add filter UI later, for now just logic support if needed)
+        // const diffData = parseInt(row.getAttribute('data-difficulty') || '3');
 
         if (matchSearch && matchStatus && matchGenre) {
             row.style.display = '';

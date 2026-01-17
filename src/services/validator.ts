@@ -109,6 +109,7 @@ export function validateQuestion(raw: Record<string, any>, index: number): Valid
         answer_display: String(raw.answer_display || "").trim(),
         reading: String(raw.reading || "").trim(),
         explanation: String(raw.explanation || "").trim(),
+        difficulty: String(raw.difficulty || "").trim(), // Added difficulty mapping
 
         _index: index,
         normalizedAnswer
