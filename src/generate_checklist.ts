@@ -63,11 +63,12 @@ function generateChecklist() {
 
         for (const q of allQuestions) {
             const romaji = q.romaji_typing || '';
-            const highlightedRomaji = highlightAmbiguousRomaji(romaji);
+            const escapedRomaji = escapeHtml(romaji);
+            const highlightedRomaji = highlightAmbiguousRomaji(escapedRomaji);
 
-            const hasVariants = q.answer_variants && q.answer_variants.length > 1;
             const variantsText = q.answer_variants ? q.answer_variants.join(', ') : '-';
-            const highlightedVariants = highlightAmbiguousRomaji(variantsText);
+            const escapedVariants = escapeHtml(variantsText);
+            const highlightedVariants = highlightAmbiguousRomaji(escapedVariants);
 
             const displayQuestion = escapeHtml(q.question);
             const displayAnswer = escapeHtml(q.answer_display || q.answer);
@@ -94,7 +95,7 @@ function generateChecklist() {
                     <td style="min-width: 250px;">
                         <div class="question-text">${displayQuestion}${listBadge}</div>
                         <div class="answer-text">${displayAnswer}</div>
-                        ${q.errors ? `<div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">${q.errors.join(', ')}</div>` : ''}
+                        ${q.errors ? `<div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">${escapeHtml(q.errors.join(', '))}</div>` : ''}
                     </td>
                     <td class="romaji-cell">
                         <span class="romaji-main">${highlightedRomaji}</span>

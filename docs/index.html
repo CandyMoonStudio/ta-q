@@ -496,7 +496,7 @@
             <span style="color:#10b981">Prod: 34</span> | 
             <span style="color:#8b5cf6">Debug: 0</span> | 
             <span style="color:#ef4444">NG: 44</span>
-         • Generated: 2026/1/17 13:38:47
+         • Generated: 2026/1/17 13:45:03
         </div>
     </header>
 
@@ -2273,13 +2273,15 @@
             const list = document.getElementById('draft-list');
             list.innerHTML = '';
 
+            const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
             drafts.forEach((item, idx) => {
                 const el = document.createElement('div');
                 el.className = 'draft-item';
                 el.innerHTML = `
                     <div>
-                        <div style="font-weight:700; color:#a5f3fc">${item.text}</div>
-                        <div style="font-size:0.8em">${item.answer}</div>
+                        <div style="font-weight:700; color:#a5f3fc">${esc(item.text)}</div>
+                        <div style="font-size:0.8em">${esc(item.answer)}</div>
                     </div>
                     <span class="draft-remove" onclick="removeDraft(${idx})">×</span>
                 `;
@@ -2453,7 +2455,8 @@
             }
 
             if (data.comment) {
-                html += `<span>${data.comment}</span>`;
+                const esc = (s) => (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                html += `<span>${esc(data.comment)}</span>`;
             }
 
             // Delete button
