@@ -64,7 +64,13 @@ function saveToLS() {
 // --- Event Delegation (Security & Cleanup) ---
 function initEventListeners() {
     document.addEventListener('click', (e) => {
-        const target = e.target.closest('[data-action]');
+        let target = e.target.closest('[data-action]');
+
+        // If clicking directly on text inside an element with data-action, get the parent
+        if (!target && e.target.parentElement) {
+            target = e.target.parentElement.closest('[data-action]');
+        }
+
         if (!target) {
             // Check for backdrop click to close drawer
             if (document.body.classList.contains('drawer-open') &&
