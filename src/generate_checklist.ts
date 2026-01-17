@@ -128,11 +128,19 @@ function generateChecklist() {
             <span style="color:#6b7280">保留: <span id="count-hold">0</span></span>
         `;
 
+        // Load external resources
+        const cssPath = path.join(__dirname, 'templates', 'checklist.css');
+        const jsPath = path.join(__dirname, 'templates', 'checklist.js');
+        const cssContent = fs.readFileSync(cssPath, 'utf-8');
+        const jsContent = fs.readFileSync(jsPath, 'utf-8');
+
         let outputHtml = templateHtml
             .replace('{{TABLE_ROWS}}', tableRows)
             .replace('{{TOTAL_COUNT}} items', statsHtml)
             .replace('{{GENERATED_DATE}}', new Date().toLocaleString('ja-JP'))
-            .replace(/{{\s*SERVER_DATA\s*}}/, JSON.stringify(allQuestions).replace(/\//g, '\\/')); // Simple escape for script tag
+            .replace(/{{\s*SERVER_DATA\s*}}/, JSON.stringify(allQuestions).replace(/\//g, '\\/'))
+            .replace(/\{\s*\{\s*STYLES\s*\}\s*\}/g, cssContent)
+            .replace(/\{\s*\{\s*SCRIPTS\s*\}\s*\}/g, jsContent);
 
         const docsDir = path.dirname(OUTPUT_FILE);
         if (!fs.existsSync(docsDir)) {
