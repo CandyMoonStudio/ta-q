@@ -1,0 +1,19 @@
+{
+  "name": "ta-q",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsx src/build.ts",
+    "checklist": "npm run build && tsx src/generate_checklist.ts",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.9",
+    "csv-parse": "^6.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17",
+    "zod": "^4.3.5"
+  }
+}

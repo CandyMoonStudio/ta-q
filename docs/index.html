@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type & Quiz Quality Check</title>
+    <!-- Use Google Fonts instead of local fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Restoring the Modern/Premium Palette */
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+            --drawer-width: 360px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'M PLUS Rounded 1c', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            zoom: 0.75;
+            transition: padding-right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            padding-right: 0;
+        }
+        
+        body.drawer-open {
+            padding-right: var(--drawer-width);
+        }
+
+        /* Header Area */
+        header {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            color: white;
+            padding: 24px 32px;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats {
+            font-weight: 500;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        /* Container & Table */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            text-align: left;
+            padding: 0 20px 10px 20px;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        tr {
+            background-color: var(--bg-card);
+            box-shadow: var(--card-shadow);
+            border-radius: 12px;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+
+        tr:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+            z-index: 1;
+            position: relative;
+        }
+
+        td {
+            padding: 16px 20px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        /* Cells */
+        .id-badge {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .answer-text {
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .romaji-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            min-width: 300px;
+        }
+        
+        .romaji-main {
+            display: block;
+        }
+
+        .highlight-variant {
+            background: linear-gradient(120deg, rgba(239, 68, 68, 0) 0%, rgba(239, 68, 68, 0.15) 100%);
+            border-bottom: 2px solid var(--danger);
+            color: #b91c1c;
+            font-weight: 700;
+            padding: 0 1px;
+        }
+
+        .romaji-variants {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.85em;
+            color: var(--text-sub);
+        }
+        
+        .has-variants {
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Buttons (Premium Style) */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            background-color: #f3f4f6;
+            color: var(--text-sub);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            background-color: #e5e7eb;
+            color: var(--text-main);
+        }
+        
+        .btn.active-ng {
+            background-color: #fee2e2;
+            color: #ef4444;
+            box-shadow: 0 0 0 2px #ef4444 inset;
+        }
+        .btn.active-note {
+            background-color: #fef3c7;
+            color: #d97706;
+            box-shadow: 0 0 0 2px #f59e0b inset;
+        }
+
+        /* Status & Styling */
+        tr.row-ng {
+            background-color: #fff1f2 !important;
+            border: 1px solid #fda4af;
+        }
+        tr.row-note {
+            background-color: #fffbeb !important;
+            border: 1px solid #fcd34d;
+        }
+
+        .status-cell {
+            width: 250px;
+            text-align: right;
+        }
+        
+        /* Inline Input Styling */
+        .inline-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .inline-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+        }
+        
+        .status-display {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+        .status-badge.ng { background: #fee2e2; color: #ef4444; }
+        .status-badge.note { background: #fef3c7; color: #d97706; }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sub);
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+        .delete-btn:hover {
+            opacity: 1;
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Drawer */
+        #drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--drawer-width);
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.95); /* Dark Glass */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        body.drawer-open #drawer {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .drawer-content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        
+        textarea#report-area {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+            color: #a5f3fc;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            resize: none;
+            outline: none;
+        }
+        
+        .drawer-toggle-btn {
+            position: absolute;
+            left: -40px;
+            top: 24px;
+            width: 40px;
+            height: 48px;
+            background: #1e293b;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+    </style>
+</head>
+<body id="app-body">
+    <header>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <h1>Type & Quiz Check</h1>
+        </div>
+        <div class="stats">
+            34 items • Generated: 2026/1/17 11:44:41
+        </div>
+    </header>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th width="160">Actions</th>
+                    <th width="60">ID</th>
+                    <th>Question / Answer</th>
+                    <th>Romaji Typing</th>
+                    <th width="250" style="text-align:right;">Status / Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr id="row-1" class="has-variants" data-id="1">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('1', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('1')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">1</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">日本の首都は？</div>
+                        <div class="answer-text">東京</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">n</span>iho<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o <span class="highlight-variant">shu</span>to ha ?</span>
+                        <span class="romaji-variants">Variants: tokyo, toukyou</span>
+                    </td>
+                    <td class="status-cell" id="status-1"></td>
+                </tr>
+                <tr id="row-2" class="has-variants" data-id="2">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('2', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('2')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">2</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">1足す1は？</div>
+                        <div class="answer-text">2</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">1 tasu 1 ha ?</span>
+                        <span class="romaji-variants">Variants: 2, <span class="highlight-variant">n</span>i, two</span>
+                    </td>
+                    <td class="status-cell" id="status-2"></td>
+                </tr>
+                <tr id="row-4" class="has-variants" data-id="4">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('4', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('4')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">4</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">三角形の内角の和は何度？</div>
+                        <div class="answer-text">180度</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">sa<span class="highlight-variant">n</span>kakukei <span class="highlight-variant">n</span>o <span class="highlight-variant">n</span>aikaku <span class="highlight-variant">n</span>o wa ha <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>do ?</span>
+                        <span class="romaji-variants">Variants: 180, 180do</span>
+                    </td>
+                    <td class="status-cell" id="status-4"></td>
+                </tr>
+                <tr id="row-5" class="" data-id="5">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('5', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('5')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">5</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">水の化学式は？</div>
+                        <div class="answer-text">H2O</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">mizu <span class="highlight-variant">n</span>o kagaku<span class="highlight-variant">shi</span>ki ha ?</span>
+                        <span class="romaji-variants">Variants: h2o</span>
+                    </td>
+                    <td class="status-cell" id="status-5"></td>
+                </tr>
+                <tr id="row-7" class="has-variants" data-id="7">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('7', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('7')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">7</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">1日は何時間？</div>
+                        <div class="answer-text">24時間</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">1<span class="highlight-variant">n</span>i<span class="highlight-variant">chi</span> ha <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span><span class="highlight-variant">ji</span>ka<span class="highlight-variant">n</span> ?</span>
+                        <span class="romaji-variants">Variants: 24, 24<span class="highlight-variant">ji</span>ka<span class="highlight-variant">n</span></span>
+                    </td>
+                    <td class="status-cell" id="status-7"></td>
+                </tr>
+                <tr id="row-9" class="has-variants" data-id="9">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('9', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('9')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">9</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">トランプのハート、ダイヤ以外の赤色のマークは？</div>
+                        <div class="answer-text">なし</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">tora<span class="highlight-variant">n</span>pu <span class="highlight-variant">n</span>o ha-to , daiya igai <span class="highlight-variant">n</span>o akairo <span class="highlight-variant">n</span>o ma-ku ha ?</span>
+                        <span class="romaji-variants">Variants: <span class="highlight-variant">n</span>o<span class="highlight-variant">n</span>e, <span class="highlight-variant">n</span>a<span class="highlight-variant">shi</span>, <span class="highlight-variant">n</span>ai</span>
+                    </td>
+                    <td class="status-cell" id="status-9"></td>
+                </tr>
+                <tr id="row-11" class="has-variants" data-id="11">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('11', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('11')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">11</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">サイコロの1の裏の数字は？</div>
+                        <div class="answer-text">6</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">saikoro <span class="highlight-variant">n</span>o 1 <span class="highlight-variant">n</span>o ura <span class="highlight-variant">n</span>o suu<span class="highlight-variant">ji</span> ha ?</span>
+                        <span class="romaji-variants">Variants: 6, roku</span>
+                    </td>
+                    <td class="status-cell" id="status-11"></td>
+                </tr>
+                <tr id="row-12" class="has-variants" data-id="12">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('12', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('12')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">12</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">干支の最初の動物は？</div>
+                        <div class="answer-text">ねずみ</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">eto <span class="highlight-variant">n</span>o sai<span class="highlight-variant">sho</span> <span class="highlight-variant">n</span>o doubu<span class="highlight-variant">tsu</span> ha ?</span>
+                        <span class="romaji-variants">Variants: <span class="highlight-variant">n</span>ezumi, <span class="highlight-variant">n</span>e, mouse, rat</span>
+                    </td>
+                    <td class="status-cell" id="status-12"></td>
+                </tr>
+                <tr id="row-13" class="has-variants" data-id="13">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('13', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('13')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">13</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">野球の1チームの人数は？</div>
+                        <div class="answer-text">9</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">yakyuu <span class="highlight-variant">n</span>o 1<span class="highlight-variant">chi</span>-mu <span class="highlight-variant">n</span>o <span class="highlight-variant">n</span>i<span class="highlight-variant">n</span>zuu ha ?</span>
+                        <span class="romaji-variants">Variants: 9, kyuu</span>
+                    </td>
+                    <td class="status-cell" id="status-13"></td>
+                </tr>
+                <tr id="row-14" class="has-variants" data-id="14">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('14', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('14')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">14</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">義務教育の小学校は何年間？</div>
+                        <div class="answer-text">6年間</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">gimukyouiku <span class="highlight-variant">n</span>o <span class="highlight-variant">sho</span>ugakkou ha <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span><span class="highlight-variant">n</span>e<span class="highlight-variant">n</span>ka<span class="highlight-variant">n</span> ?</span>
+                        <span class="romaji-variants">Variants: 6, roku</span>
+                    </td>
+                    <td class="status-cell" id="status-14"></td>
+                </tr>
+                <tr id="row-16" class="" data-id="16">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('16', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('16')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">16</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">桃太郎が退治しに行った場所は？</div>
+                        <div class="answer-text">鬼ヶ島</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">momotarou ga tai<span class="highlight-variant">ji</span> <span class="highlight-variant">shi</span> <span class="highlight-variant">n</span>i itta ba<span class="highlight-variant">sho</span> ha ?</span>
+                        <span class="romaji-variants">Variants: o<span class="highlight-variant">n</span>iga<span class="highlight-variant">shi</span>ma</span>
+                    </td>
+                    <td class="status-cell" id="status-16"></td>
+                </tr>
+                <tr id="row-18" class="has-variants" data-id="18">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('18', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('18')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">18</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">サッカーで手を使ってよいポジションは？</div>
+                        <div class="answer-text">ゴールキーパー</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">sakka- de te wo <span class="highlight-variant">tsu</span>katte yoi po<span class="highlight-variant">ji</span><span class="highlight-variant">sho</span><span class="highlight-variant">n</span> ha ?</span>
+                        <span class="romaji-variants">Variants: gk, goalkeeper, go-ruki-pa-</span>
+                    </td>
+                    <td class="status-cell" id="status-18"></td>
+                </tr>
+                <tr id="row-21" class="has-variants" data-id="21">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('21', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('21')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">21</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">太陽が昇る方角は？</div>
+                        <div class="answer-text">東</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">taiyou ga <span class="highlight-variant">n</span>oboru hougaku ha ?</span>
+                        <span class="romaji-variants">Variants: higa<span class="highlight-variant">shi</span>, east</span>
+                    </td>
+                    <td class="status-cell" id="status-21"></td>
+                </tr>
+                <tr id="row-25" class="" data-id="25">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('25', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('25')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">25</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">2月は通常何日まで？</div>
+                        <div class="answer-text">28日</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">2ga<span class="highlight-variant">tsu</span> ha <span class="highlight-variant">tsu</span>u<span class="highlight-variant">jo</span>u <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span><span class="highlight-variant">n</span>i<span class="highlight-variant">chi</span> made ?</span>
+                        <span class="romaji-variants">Variants: 28</span>
+                    </td>
+                    <td class="status-cell" id="status-25"></td>
+                </tr>
+                <tr id="row-26" class="has-variants" data-id="26">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('26', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('26')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">26</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">光の三原色は赤、緑と何？</div>
+                        <div class="answer-text">青</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">hikari <span class="highlight-variant">n</span>o sa<span class="highlight-variant">n</span>ge<span class="highlight-variant">n</span><span class="highlight-variant">sho</span>ku ha aka , midori to <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>i ?</span>
+                        <span class="romaji-variants">Variants: ao, blue</span>
+                    </td>
+                    <td class="status-cell" id="status-26"></td>
+                </tr>
+                <tr id="row-28" class="has-variants" data-id="28">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('28', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('28')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">28</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">世界で一番広い国は？</div>
+                        <div class="answer-text">ロシア</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">sekai de i<span class="highlight-variant">chi</span>ba<span class="highlight-variant">n</span> hiroi ku<span class="highlight-variant">n</span>i ha ?</span>
+                        <span class="romaji-variants">Variants: rus<span class="highlight-variant">si</span>a, ro<span class="highlight-variant">shi</span>a</span>
+                    </td>
+                    <td class="status-cell" id="status-28"></td>
+                </tr>
+                <tr id="row-30" class="has-variants" data-id="30">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('30', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('30')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">30</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">大相撲の土俵は何角形？</div>
+                        <div class="answer-text">円</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">oozumou <span class="highlight-variant">n</span>o dohyou ha <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>kakukei ?</span>
+                        <span class="romaji-variants">Variants: e<span class="highlight-variant">n</span>, maru, circle</span>
+                    </td>
+                    <td class="status-cell" id="status-30"></td>
+                </tr>
+                <tr id="row-32" class="" data-id="32">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('32', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('32')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">32</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">ABCの次に来る文字は？</div>
+                        <div class="answer-text">D</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">ABC <span class="highlight-variant">n</span>o <span class="highlight-variant">tsu</span>gi <span class="highlight-variant">n</span>i kuru mo<span class="highlight-variant">ji</span> ha ?</span>
+                        <span class="romaji-variants">Variants: d</span>
+                    </td>
+                    <td class="status-cell" id="status-32"></td>
+                </tr>
+                <tr id="row-36" class="has-variants" data-id="36">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('36', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('36')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">36</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">5円玉に開いている穴の形は？</div>
+                        <div class="answer-text">円</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">5ye<span class="highlight-variant">n</span>dama <span class="highlight-variant">n</span>i aiteiru a<span class="highlight-variant">n</span>a <span class="highlight-variant">n</span>o kata<span class="highlight-variant">chi</span> ha ?</span>
+                        <span class="romaji-variants">Variants: maru, e<span class="highlight-variant">n</span>, circle</span>
+                    </td>
+                    <td class="status-cell" id="status-36"></td>
+                </tr>
+                <tr id="row-38" class="" data-id="38">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('38', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('38')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">38</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">テニスで0点の呼び方は？</div>
+                        <div class="answer-text">ラブ</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">te<span class="highlight-variant">n</span>isu de 0te<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o yobikata ha ?</span>
+                        <span class="romaji-variants">Variants: love</span>
+                    </td>
+                    <td class="status-cell" id="status-38"></td>
+                </tr>
+                <tr id="row-40" class="" data-id="40">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('40', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('40')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">40</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">カエルの子供は？</div>
+                        <div class="answer-text">おたまじゃくし</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">kaeru <span class="highlight-variant">n</span>o kodomo ha ?</span>
+                        <span class="romaji-variants">Variants: otama<span class="highlight-variant">ja</span>ku<span class="highlight-variant">shi</span></span>
+                    </td>
+                    <td class="status-cell" id="status-40"></td>
+                </tr>
+                <tr id="row-45" class="" data-id="45">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('45', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('45')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">45</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">日本の都道府県の数は？</div>
+                        <div class="answer-text">47</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">n</span>iho<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o todou<span class="highlight-variant">fu</span>ke<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o kazu ha ?</span>
+                        <span class="romaji-variants">Variants: 47</span>
+                    </td>
+                    <td class="status-cell" id="status-45"></td>
+                </tr>
+                <tr id="row-46" class="has-variants" data-id="46">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('46', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('46')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">46</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">東京スカイツリーの高さは？</div>
+                        <div class="answer-text">634</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">toukyou sukai<span class="highlight-variant">tsu</span>ri- <span class="highlight-variant">n</span>o takasa ha ?</span>
+                        <span class="romaji-variants">Variants: 634, musa<span class="highlight-variant">shi</span></span>
+                    </td>
+                    <td class="status-cell" id="status-46"></td>
+                </tr>
+                <tr id="row-47" class="has-variants" data-id="47">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('47', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('47')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">47</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">聖徳太子が定めた憲法は？</div>
+                        <div class="answer-text">17条</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">sho</span>utokutai<span class="highlight-variant">shi</span> ga sadameta ke<span class="highlight-variant">n</span>pou ha ?</span>
+                        <span class="romaji-variants">Variants: 17<span class="highlight-variant">jo</span>u, <span class="highlight-variant">ju</span>u<span class="highlight-variant">shi</span><span class="highlight-variant">chi</span><span class="highlight-variant">jo</span>u</span>
+                    </td>
+                    <td class="status-cell" id="status-47"></td>
+                </tr>
+                <tr id="row-49" class="" data-id="49">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('49', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('49')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">49</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">陸上のトラック、反時計回りか時計回りか？</div>
+                        <div class="answer-text">反時計回り</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">riku<span class="highlight-variant">jo</span>u <span class="highlight-variant">n</span>o torakku , ha<span class="highlight-variant">n</span>tokeimawari ka tokeimawari ka ?</span>
+                        <span class="romaji-variants">Variants: ha<span class="highlight-variant">n</span>tokeimawari</span>
+                    </td>
+                    <td class="status-cell" id="status-49"></td>
+                </tr>
+                <tr id="row-54" class="has-variants" data-id="54">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('54', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('54')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">54</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">1ダースは何個？</div>
+                        <div class="answer-text">12</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">1da-su ha <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>ko ?</span>
+                        <span class="romaji-variants">Variants: 12, <span class="highlight-variant">ju</span>u<span class="highlight-variant">n</span>i</span>
+                    </td>
+                    <td class="status-cell" id="status-54"></td>
+                </tr>
+                <tr id="row-62" class="has-variants" data-id="62">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('62', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('62')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">62</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">江戸幕府を開いた人物は徳川家康ですが、最後の将軍は誰？</div>
+                        <div class="answer-text">徳川慶喜</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">edobaku<span class="highlight-variant">fu</span> wo hiraita <span class="highlight-variant">ji</span><span class="highlight-variant">n</span>bu<span class="highlight-variant">tsu</span> ha tokugawa ieyasu desu ga , saigo <span class="highlight-variant">n</span>o <span class="highlight-variant">sho</span>ugu<span class="highlight-variant">n</span> ha dare ?</span>
+                        <span class="romaji-variants">Variants: yo<span class="highlight-variant">shi</span><span class="highlight-variant">n</span>obu, keiki</span>
+                    </td>
+                    <td class="status-cell" id="status-62"></td>
+                </tr>
+                <tr id="row-65" class="has-variants" data-id="65">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('65', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('65')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">65</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">原子番号1番の元素は水素ですが、2番は何？</div>
+                        <div class="answer-text">ヘリウム</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">ge<span class="highlight-variant">n</span><span class="highlight-variant">shi</span>ba<span class="highlight-variant">n</span>gou 1ba<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o ge<span class="highlight-variant">n</span>so ha suiso desu ga , 2ba<span class="highlight-variant">n</span> ha <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>i ?</span>
+                        <span class="romaji-variants">Variants: helium, heriumu</span>
+                    </td>
+                    <td class="status-cell" id="status-65"></td>
+                </tr>
+                <tr id="row-67" class="" data-id="67">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('67', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('67')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">67</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">日本一大きい湖は琵琶湖ですが、二番目に大きいのは？</div>
+                        <div class="answer-text">霞ヶ浦</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">n</span>iho<span class="highlight-variant">n</span>i<span class="highlight-variant">chi</span> ookii mizuumi ha biwako desu ga , <span class="highlight-variant">n</span>iba<span class="highlight-variant">n</span>me <span class="highlight-variant">n</span>i ookii <span class="highlight-variant">n</span>o ha ?</span>
+                        <span class="romaji-variants">Variants: kasumigaura</span>
+                    </td>
+                    <td class="status-cell" id="status-67"></td>
+                </tr>
+                <tr id="row-68" class="has-variants" data-id="68">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('68', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('68')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">68</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">ドラえもんの妹、ドラミちゃんの好物は？</div>
+                        <div class="answer-text">メロンパン</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">doraemo<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o imouto , dorami<span class="highlight-variant">cha</span><span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o koubu<span class="highlight-variant">tsu</span> ha ?</span>
+                        <span class="romaji-variants">Variants: mero<span class="highlight-variant">n</span>pa<span class="highlight-variant">n</span>, melo<span class="highlight-variant">n</span>pa<span class="highlight-variant">n</span></span>
+                    </td>
+                    <td class="status-cell" id="status-68"></td>
+                </tr>
+                <tr id="row-71" class="has-variants" data-id="71">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('71', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('71')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">71</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">将棋の駒で、唯一斜め後ろに下がれない駒は？</div>
+                        <div class="answer-text">桂馬</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">sho</span>ugi <span class="highlight-variant">n</span>o koma de , yuii<span class="highlight-variant">tsu</span> <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>ame u<span class="highlight-variant">shi</span>ro <span class="highlight-variant">n</span>i sagare<span class="highlight-variant">n</span>ai koma ha ?</span>
+                        <span class="romaji-variants">Variants: keima, kei</span>
+                    </td>
+                    <td class="status-cell" id="status-71"></td>
+                </tr>
+                <tr id="row-73" class="has-variants" data-id="73">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('73', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('73')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">73</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">日本の硬貨で、真ん中に穴が開いているのは5円玉と何？</div>
+                        <div class="answer-text">50円玉</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">n</span>iho<span class="highlight-variant">n</span> <span class="highlight-variant">n</span>o kouka de , ma<span class="highlight-variant">n</span><span class="highlight-variant">n</span>aka <span class="highlight-variant">n</span>i a<span class="highlight-variant">n</span>a ga aiteiru <span class="highlight-variant">n</span>o ha 5ye<span class="highlight-variant">n</span>dama to <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>i ?</span>
+                        <span class="romaji-variants">Variants: 50ye<span class="highlight-variant">n</span>dama, 50, 50ye<span class="highlight-variant">n</span></span>
+                    </td>
+                    <td class="status-cell" id="status-73"></td>
+                </tr>
+                <tr id="row-75" class="has-variants" data-id="75">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('75', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('75')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">75</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">世界三大珍味といえば、トリュフ、フォアグラと何？</div>
+                        <div class="answer-text">キャビア</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">sekaisa<span class="highlight-variant">n</span>dai<span class="highlight-variant">chi</span><span class="highlight-variant">n</span>mi to ieba , toryu<span class="highlight-variant">fu</span> , foagura to <span class="highlight-variant">n</span>a<span class="highlight-variant">n</span>i ?</span>
+                        <span class="romaji-variants">Variants: kyabia, caviar</span>
+                    </td>
+                    <td class="status-cell" id="status-75"></td>
+                </tr>
+                <tr id="row-76" class="has-variants" data-id="76">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('76', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('76')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">76</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">日本で一番高い山は？</div>
+                        <div class="answer-text">富士山</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main"><span class="highlight-variant">n</span>iho<span class="highlight-variant">n</span> de i<span class="highlight-variant">chi</span>ba<span class="highlight-variant">n</span> takai yama ha ?</span>
+                        <span class="romaji-variants">Variants: <span class="highlight-variant">fu</span><span class="highlight-variant">ji</span>sa<span class="highlight-variant">n</span>, mt.<span class="highlight-variant">fu</span><span class="highlight-variant">ji</span>, <span class="highlight-variant">fu</span><span class="highlight-variant">ji</span></span>
+                    </td>
+                    <td class="status-cell" id="status-76"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Right Drawer -->
+    <aside id="drawer">
+        <button class="drawer-toggle-btn" onclick="toggleDrawer()">◀</button>
+        <div class="drawer-header">
+            <span class="drawer-title">Review Report</span>
+        </div>
+        <div class="drawer-content">
+            <p style="margin-top:0; font-size:0.875rem; opacity:0.7; margin-bottom:10px;">
+                JSON Report (Auto-generated)
+            </p>
+            <textarea id="report-area" readonly></textarea>
+            <button class="copy-btn" onclick="copyReport()">📋 Copy JSON</button>
+        </div>
+    </aside>
+
+    <script>
+        const reviewData = {};
+        const body = document.getElementById('app-body');
+        let isDrawerOpen = false;
+
+        function toggleDrawer() {
+            isDrawerOpen = !isDrawerOpen;
+            const btn = document.querySelector('.drawer-toggle-btn');
+            
+            if (isDrawerOpen) {
+                body.classList.add('drawer-open');
+                btn.innerText = '▶';
+            } else {
+                body.classList.remove('drawer-open');
+                btn.innerText = '◀';
+            }
+        }
+
+        function updateReport() {
+            const reviews = Object.values(reviewData).filter(item => item.type !== null);
+            const report = {
+                timestamp: new Date().toISOString(),
+                total_referenced: reviews.length,
+                reviews: reviews
+            };
+            
+            const jsonStr = JSON.stringify(report, null, 2);
+            document.getElementById('report-area').value = jsonStr;
+        }
+
+        function toggleStatus(id, type) {
+            const row = document.getElementById('row-' + id);
+            
+            if (!reviewData[id]) reviewData[id] = { id: id, type: null, comment: '' };
+
+            // Toggle logic
+            if (reviewData[id].type === type) {
+                // Clear if clicking same button
+                clearStatus(id);
+            } else {
+                // Set new status
+                reviewData[id].type = type;
+                
+                // Visual update
+                updateRowVisuals(id);
+                renderStatusCell(id);
+            }
+            
+            updateReport();
+        }
+
+        function activateNoteInput(id) {
+            // Ensure data object exists
+            if (!reviewData[id]) reviewData[id] = { id: id, type: null, comment: '' };
+            
+            // Render Input field in the status cell
+            const statusCell = document.getElementById('status-' + id);
+            const currentComment = reviewData[id].comment || '';
+            
+            statusCell.innerHTML = `
+                <div class="inline-input-container">
+                    <input type="text" id="input-${id}" class="inline-input" 
+                           value="${currentComment.replace(/"/g, '&quot;')}" 
+                           placeholder="Enter note..." 
+                           onkeydown="handleInputKey(event, '${id}')"
+                           onblur="saveNote('${id}')">
+                </div>
+            `;
+            
+            // Auto focus
+            setTimeout(() => {
+                const el = document.getElementById('input-' + id);
+                if (el) el.focus();
+            }, 50);
+        }
+        
+        function handleInputKey(event, id) {
+            if (event.key === 'Enter') {
+                event.target.blur(); // Triggers saveNote via onblur
+            }
+        }
+        
+        function saveNote(id) {
+            const input = document.getElementById('input-' + id);
+            if (!input) return; // Already guarded?
+            
+            const text = input.value.trim();
+            
+            if (text) {
+                // If we have text, ensure type is set.
+                // If it was NG, keep NG. If null, set to NOTE.
+                if (!reviewData[id].type) {
+                    reviewData[id].type = 'NOTE';
+                }
+                reviewData[id].comment = text;
+            } else {
+                // Empty text
+                reviewData[id].comment = '';
+                // If it was NOTE type and now empty, maybe clear it? 
+                // Let's keep it simple: if empty and type is NOTE, clear type too.
+                if (reviewData[id].type === 'NOTE') {
+                    reviewData[id].type = null;
+                }
+            }
+            
+            updateRowVisuals(id);
+            renderStatusCell(id);
+            updateReport();
+        }
+        
+        function clearStatus(id) {
+            reviewData[id] = { id: id, type: null, comment: '' };
+            updateRowVisuals(id);
+            renderStatusCell(id);
+            updateReport();
+        }
+        
+        function updateRowVisuals(id) {
+            const row = document.getElementById('row-' + id);
+            const data = reviewData[id];
+            const btnNg = row.querySelector('.btn-ng');
+            const btnNote = row.querySelector('.btn-note');
+            
+            // Reset
+            row.classList.remove('row-ng', 'row-note');
+            btnNg.classList.remove('active-ng');
+            btnNote.classList.remove('active-note');
+            
+            if (data.type === 'NG') {
+                row.classList.add('row-ng');
+                btnNg.classList.add('active-ng');
+            } else if (data.type === 'NOTE') {
+                row.classList.add('row-note');
+                btnNote.classList.add('active-note');
+            }
+        }
+        
+        function renderStatusCell(id) {
+            const statusCell = document.getElementById('status-' + id);
+            const data = reviewData[id];
+            
+            // If editing, don't overwrite (though execution flow shouldn't come here while focusing input)
+            if (document.activeElement.id === 'input-' + id) return;
+
+            if (!data.type && !data.comment) {
+                statusCell.innerHTML = '';
+                return;
+            }
+            
+            let badgeClass = data.type ? data.type.toLowerCase() : 'note';
+            let badgeText = data.type || 'NOTE';
+            
+            let html = '<div class="status-display">';
+            
+            if (data.type) {
+                html += `<span class="status-badge ${badgeClass}">${badgeText}</span>`;
+            }
+            
+            if (data.comment) {
+                html += `<span>${data.comment}</span>`;
+            }
+            
+            // Delete button
+            html += `<button class="delete-btn" onclick="clearStatus('${id}')" title="Clear">✕</button>`;
+            html += '</div>';
+            
+            statusCell.innerHTML = html;
+        }
+
+        function copyReport() {
+            const area = document.getElementById('report-area');
+            area.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

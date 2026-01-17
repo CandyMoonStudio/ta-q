@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Question",
+  "type": "object",
+  "required": ["id", "question", "romaji_typing", "answer_variants"],
+  "properties": {
+    "id": { "type": ["string", "integer"] },
+    "type": { "type": "string" },
+    "question": { "type": "string" },
+    "romaji_typing": { "type": "string" },
+    "answer_variants": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "explanation": { "type": "string" },
+    
+    "errors": {
+        "type": "array",
+        "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": true
+}
