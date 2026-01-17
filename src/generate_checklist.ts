@@ -98,11 +98,11 @@ function generateChecklist() {
                     data-status-initial="${initialStatus}">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-${safeId}" style="min-width: 100px;">${badgeHtml}</td>

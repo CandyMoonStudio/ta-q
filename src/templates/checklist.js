@@ -6,22 +6,11 @@ const LS_KEY = 'taq_review_v2';
 
 // State
 let reviewData = {};
-let drafts = []; // Changed from const to let because it was redeclared in original scope? No, drafted as const list usually. But wait, `renderDrafts` uses it. Let's keep it const if it's mutable array.
-// Actually original was `const drafts = []`.
-// However, I need to make sure global scope works.
-// We will assign window.drafts or just keep it in this module scope if loaded as module?
-// Since we are inlining, it will be in global scope if simply scripted.
-
-// We'll wrap in IIFE or event listener to avoid pollution, but functions need to be global for HTML attributes (onclick)
-// UNLESS we use addEventListener for everything.
-// Current HTML uses `onclick="toggleDrawer()"`. So functions must be global.
-
-// We will expose functions to window.
+let drafts = [];
 
 // --- Init ---
 window.addEventListener('DOMContentLoaded', () => {
     if (!REVIEW_ENABLED) {
-        // Disable Review Features
         document.querySelectorAll('.action-cell, .fab-add, #drawer').forEach(el => el.style.display = 'none');
         return;
     }
@@ -49,10 +38,11 @@ window.addEventListener('DOMContentLoaded', () => {
     updateReport();
     updateStats();
 
-    // Init Filters & Table Features
+    // Init Logic
     initFilters();
     initTableFeatures();
     initDrawerResize();
+    initEventListeners(); // Centralized Event Handling
 });
 
 // --- LocalStorage ---
@@ -65,14 +55,96 @@ function saveToLS() {
     updateReport();
 }
 
+// --- Event Delegation (Security & Cleanup) ---
+function initEventListeners() {
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-action]');
+        if (!target) {
+            // Check for backdrop click to close drawer
+            if (document.body.classList.contains('drawer-open') &&
+                !e.target.closest('#drawer') &&
+                !e.target.closest('#btn-open-add') &&
+                !e.target.closest('.fab-add')) {
+                toggleDrawer();
+            }
+            return;
+        }
+
+        const action = target.dataset.action;
+        const row = target.closest('tr');
+        const id = row ? row.dataset.id : null;
+
+        switch (action) {
+            case 'set-status':
+                if (id) setStatus(id, target.dataset.status);
+                break;
+            case 'activate-note':
+                if (id) activateNoteInput(id);
+                break;
+            case 'toggle-drawer': // If we had a toggle button
+                toggleDrawer();
+                break;
+            case 'open-add':
+                if (!document.body.classList.contains('drawer-open')) {
+                    toggleDrawer();
+                }
+                switchTab('add');
+                break;
+            case 'download-json':
+                downloadJson(target.dataset.target);
+                break;
+            case 'copy-markdown':
+                copyMarkdownExport();
+                break;
+            case 'copy-json':
+                copyReport();
+                break;
+            case 'add-draft':
+                addDraft();
+                break;
+            case 'remove-draft':
+                const idx = target.dataset.index;
+                if (idx !== undefined) removeDraft(parseInt(idx, 10));
+                break;
+            case 'copy-tsv':
+                copyTsv();
+                break;
+            default:
+                // Handle tab switching
+                if (target.classList.contains('drawer-tab-btn')) {
+                    switchTab(target.dataset.tab);
+                }
+                break;
+        }
+
+        // Static IDs for specific buttons
+        if (target.id === 'btn-close-drawer' || target.id === 'btn-open-add') {
+            toggleDrawer();
+        }
+    });
+
+    // Delegate input events?
+    // Note inputs are created dynamically. We can attach listeners on creation OR delegate.
+    // Delegation for 'keydown' and 'blur' (focusout)
+    document.addEventListener('keydown', (e) => {
+        if (e.target.classList.contains('inline-input')) {
+            handleInputKey(e, e.target);
+        }
+    });
+
+    document.addEventListener('focusout', (e) => {
+        if (e.target.classList.contains('inline-input')) {
+            // Delay slightly to allow click events to register (e.g. clicking another button)
+            // But logic is simply "save on blur".
+            const id = e.target.dataset.id;
+            if (id) saveNote(id, e.target.value);
+        }
+    });
+}
+
 // --- Stats Update ---
 function updateStats() {
-    // Initial counts from server data
-    let counts = {
-        prod: 0, debug: 0, ng: 0, hold: 0
-    };
-
-    // Base counts from SERVER_DATA
+    let counts = { prod: 0, debug: 0, ng: 0 };
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
             if (q._list === 'prod') counts.prod++;
@@ -81,44 +153,30 @@ function updateStats() {
         });
     }
 
-    // Calculate effective counts
-    let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0, unset: 0 };
+    let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0 };
 
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
             const id = q.id;
-            let initialStatus = q._list;
+            let initialStatus = q._list || 'unset';
             if (initialStatus === 'prod') initialStatus = 'ok';
 
             const review = reviewData[id];
             let effective = review?.status || initialStatus;
 
-            if (effective === 'prod') effective = 'ok'; // Normalize
+            if (effective === 'prod') effective = 'ok';
             if (effective === 'unset' || !effective) effective = 'ok';
-            // Treat unset as OK (Prod) for counting? Or separate?
-            // In original summary logic: "Prod: 34" usually means unset/ok.
 
-            // Let's strictly follow filter logic mapping if possible, but for stats:
-            // "Prod" (adoption) count usually includes 'ok' and 'unset' (default).
-            if (effective === 'limit') effective = 'ng'; // Just in case
-
-            // Map
-            let key = effective;
-            if (key === 'prod') key = 'ok';
-            if (key === 'unset') key = 'ok'; // Assuming unset = prod = ok
-
-            if (currentCounts.hasOwnProperty(key)) {
-                currentCounts[key]++;
+            if (currentCounts.hasOwnProperty(effective)) {
+                currentCounts[effective]++;
             }
         });
     }
 
-    // Update DOM
     const setSafe = (id, val) => {
         const el = document.getElementById(id);
-        if (el) el.innerText = val;
+        if (el) el.textContent = val;
     };
-    // Prod(OK), Debug, NG, Hold
     setSafe('count-prod', currentCounts.ok);
     setSafe('count-debug', currentCounts.debug);
     setSafe('count-ng', currentCounts.ng);
@@ -132,70 +190,18 @@ function setStatus(id, status) {
     }
 
     const current = reviewData[id].status;
-
     if (current === status) {
-        // Toggle OFF
         reviewData[id].status = null;
     } else {
-        // Set New
         reviewData[id].status = status;
     }
-
     reviewData[id].updatedAt = Date.now();
 
     saveToLS();
     updateRowVisuals(id);
-    renderStatusCell(id);
+    renderStatusCell(id); // Re-render badge
+    renderNoteCell(id);   // Re-render note (placeholder might change on NG)
     updateStats();
-
-    // NO applyFilters() call here (Reverted behavior)
-}
-
-function activateNoteInput(id) {
-    if (!reviewData[id]) {
-        reviewData[id] = { id: id, status: null, note: '', updatedAt: 0 };
-    }
-
-    const noteCell = document.getElementById('note-' + id);
-    const currentNote = reviewData[id].note || '';
-
-    // Prevent re-render if already editing
-    if (noteCell.querySelector('input')) return;
-
-    noteCell.innerHTML = `
-    <div class="inline-input-container">
-        <input type="text" id="input-${id}" class="inline-input" 
-               value="${currentNote.replace(/"/g, '&quot;')}" 
-               placeholder="メモを入力..." 
-               onkeydown="handleInputKey(event, '${id}')"
-               onblur="saveNote('${id}')">
-    </div>
-`;
-
-    setTimeout(() => {
-        const el = document.getElementById('input-' + id);
-        if (el) el.focus();
-    }, 50);
-}
-
-function handleInputKey(event, id) {
-    if (event.key === 'Enter') {
-        event.target.blur();
-    }
-}
-
-function saveNote(id) {
-    const input = document.getElementById('input-' + id);
-    if (!input) return;
-
-    const text = input.value.trim();
-    if (reviewData[id].note !== text) {
-        reviewData[id].note = text;
-        reviewData[id].updatedAt = Date.now();
-        saveToLS();
-    }
-
-    renderStatusCell(id);
 }
 
 function updateRowVisuals(id) {
@@ -205,56 +211,120 @@ function updateRowVisuals(id) {
     const data = reviewData[id];
     const status = data ? data.status : null;
 
-    // Reset Classes
     row.classList.remove('row-ok', 'row-ng', 'row-debug', 'row-hold', 'row-note');
-
-    // Reset Button Active States
     row.querySelectorAll('.btn-icon').forEach(btn => btn.classList.remove('active'));
 
     if (status) {
         row.classList.add('row-' + status);
-        const btn = row.querySelector('.btn-' + status);
+        const btn = row.querySelector(`[data-status="${status}"]`);
         if (btn) btn.classList.add('active');
     }
 
-    // Note active state
     if (data && data.note) {
-        const btnNote = row.querySelector('.btn-note');
+        const btnNote = row.querySelector('[data-action="activate-note"]');
         if (btnNote) btnNote.classList.add('active');
         if (!status) row.classList.add('row-note');
     }
 }
 
+// --- Render Cells (XSS Safe) ---
 function renderStatusCell(id) {
     const badgeCell = document.getElementById(`badge-${id}`);
-    const noteCell = document.getElementById(`note-${id}`);
+    if (!badgeCell) return;
 
-    if (!badgeCell || !noteCell) return;
-    if (noteCell.querySelector('input')) return; // Editing note
+    badgeCell.innerHTML = ''; // Clear
 
     const data = reviewData[id];
-
-    // 1. Badge (Status Column)
-    let badgeHtml = '';
     if (data && data.status) {
-        badgeHtml = `<span class="status-badge ${data.status}">${data.status.toUpperCase()}</span>`;
+        const span = document.createElement('span');
+        span.className = `status-badge ${data.status}`;
+        span.textContent = data.status.toUpperCase();
+        badgeCell.appendChild(span);
     }
-    badgeCell.innerHTML = badgeHtml;
+}
 
-    // 2. Note (Note Column)
-    let noteHtml = '';
+// Renamed from activateNoteInput (logic split)
+function renderNoteCell(id) {
+    const noteCell = document.getElementById(`note-${id}`);
+    if (!noteCell) return;
+    if (noteCell.querySelector('input')) return; // Editing
+
+    noteCell.innerHTML = '';
+
+    const data = reviewData[id];
     if (data && data.note) {
-        noteHtml = `<span class="note-text">${escapeHtml(data.note)}</span>`;
+        const span = document.createElement('span');
+        span.className = 'note-text';
+        span.textContent = data.note;
+        noteCell.appendChild(span);
     }
-    noteCell.innerHTML = noteHtml;
+}
+
+// Activated by click
+function activateNoteInput(id) {
+    if (!reviewData[id]) {
+        reviewData[id] = { id: id, status: null, note: '', updatedAt: 0 };
+    }
+
+    const noteCell = document.getElementById('note-' + id);
+    if (!noteCell) return;
+    if (noteCell.querySelector('input')) return;
+
+    const currentNote = reviewData[id].note || '';
+    const currentStatus = reviewData[id].status;
+
+    noteCell.innerHTML = ''; // Clear text
+
+    const container = document.createElement('div');
+    container.className = 'inline-input-container';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = `input-${id}`;
+    input.className = 'inline-input';
+    input.value = currentNote;
+    input.dataset.id = id; // For blur handler
+
+    // Context-aware placeholder and stying
+    if (currentStatus === 'ng') {
+        input.placeholder = "NG理由を入力...";
+        input.classList.add('input-warn');
+    } else {
+        input.placeholder = "メモを入力...";
+    }
+
+    container.appendChild(input);
+    noteCell.appendChild(container);
+
+    setTimeout(() => {
+        input.focus();
+    }, 50);
+}
+
+function handleInputKey(event, input) {
+    if (event.key === 'Enter') {
+        input.blur();
+    }
+}
+
+function saveNote(id, text) {
+    const trimmed = text.trim();
+    if (!reviewData[id]) reviewData[id] = {};
+
+    if (reviewData[id].note !== trimmed) {
+        reviewData[id].note = trimmed;
+        reviewData[id].updatedAt = Date.now();
+        saveToLS();
+    }
+
+    // Re-render as text
+    updateRowVisuals(id); // To update icon state
+    renderNoteCell(id);
 }
 
 // --- Drawer & Tabs ---
 function toggleDrawer() {
-    const drawer = document.getElementById('drawer');
     const body = document.body;
-    // We toggle a class on body or style on drawer
-    // CSS uses body.drawer-open
     if (body.classList.contains('drawer-open')) {
         body.classList.remove('drawer-open');
     } else {
@@ -264,16 +334,84 @@ function toggleDrawer() {
 
 function switchTab(tab) {
     document.querySelectorAll('.drawer-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.drawer-content').forEach(c => c.classList.remove('active')); // Fixed selector
 
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('content-' + tab).classList.add('active');
+    const btn = document.querySelector(`.drawer-tab-btn[data-tab="${tab}"]`);
+    if (btn) btn.classList.add('active');
+
+    const content = document.getElementById('content-' + tab);
+    if (content) content.classList.add('active');
 }
 
-// --- Report / Export ---
+// --- Downloads / Exports ---
+function downloadJson(target) {
+    // target: 'prod' | 'ng' | 'debug'
+    if (typeof SERVER_DATA === 'undefined') {
+        alert('No data source available');
+        return;
+    }
+
+    // Merge logic
+    const exportList = [];
+
+    SERVER_DATA.forEach(q => {
+        const id = q.id;
+        // Normalize initial
+        let initialStatus = q._list || 'unset';
+        if (initialStatus === 'prod') initialStatus = 'ok';
+
+        // Apply review
+        const review = reviewData[id];
+        let effective = review?.status || initialStatus;
+        if (effective === 'prod') effective = 'ok';
+        if (effective === 'unset') effective = 'ok';
+
+        let shouldInclude = false;
+        if (target === 'prod' && effective === 'ok') shouldInclude = true;
+        if (target === 'ng' && effective === 'ng') shouldInclude = true;
+        if (target === 'debug' && effective === 'debug') shouldInclude = true;
+
+        if (shouldInclude) {
+            // Clone q content
+            const item = { ...q };
+            // Update _list
+            item._list = (target === 'prod') ? 'prod' : target;
+
+            // Add note if exists (for NG/Debug mainly)
+            if (review?.note) {
+                item.note = review.note;
+            } else {
+                delete item.note; // Clean up
+            }
+
+            exportList.push(item);
+        }
+    });
+
+    if (exportList.length === 0) {
+        alert(`No items found for ${target.toUpperCase()}`);
+        return;
+    }
+
+    const jsonStr = JSON.stringify(exportList, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kpm_questions_${target}_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+}
+
 function updateReport() {
     const reportArea = document.getElementById('report-area');
-    if (!reportArea) return; // May be hidden
+    if (!reportArea) return;
     reportArea.value = JSON.stringify(reviewData, null, 2);
 }
 
@@ -285,7 +423,6 @@ function copyReport() {
 }
 
 function copyMarkdownExport() {
-    // Generate Markdown for GitHub Issue
     const lines = [];
     lines.push('## Review Update');
 
@@ -308,14 +445,7 @@ function copyMarkdownExport() {
     });
 }
 
-// --- Add New Draft ---
-function openAddTab() {
-    if (!document.body.classList.contains('drawer-open')) {
-        toggleDrawer();
-    }
-    switchTab('add');
-}
-
+// --- Drafts (Client Only) ---
 function addDraft() {
     const idInput = document.getElementById('new-id');
     const textInput = document.getElementById('new-text');
@@ -337,7 +467,6 @@ function addDraft() {
     drafts.push({ id, text, answer });
     renderDrafts();
 
-    // Clear inputs
     textInput.value = '';
     answerInput.value = '';
     idInput.value = '';
@@ -346,16 +475,21 @@ function addDraft() {
 
 function renderDrafts() {
     const list = document.getElementById('draft-list');
-    list.innerHTML = '';
+    list.innerHTML = ''; // Safe here as we control content
     drafts.forEach((item, idx) => {
         const el = document.createElement('div');
         el.className = 'draft-item';
+
+        // Escape content
+        const safeText = escapeHtml(item.text);
+        const safeAnswer = escapeHtml(item.answer);
+
         el.innerHTML = `
         <div>
-            <div style="font-weight:700; color:#a5f3fc">${escapeHtml(item.text)}</div>
-            <div style="font-size:0.8em">${escapeHtml(item.answer)}</div>
+            <div style="font-weight:700; color:#a5f3fc">${safeText}</div>
+            <div style="font-size:0.8em">${safeAnswer}</div>
         </div>
-        <span class="draft-remove" onclick="removeDraft(${idx})">×</span>
+        <span class="draft-remove" data-action="remove-draft" data-index="${idx}">×</span>
     `;
         list.appendChild(el);
     });
@@ -380,10 +514,12 @@ function copyTsv() {
     });
 
     navigator.clipboard.writeText(tsvRows.join('\n')).then(() => {
-        const btn = document.querySelector('#content-add .copy-btn');
-        const original = btn.textContent;
-        btn.textContent = '✅ Copied!';
-        setTimeout(() => btn.textContent = original, 2000);
+        const btn = document.querySelector('[data-action="copy-tsv"]');
+        if (btn) {
+            const original = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => btn.textContent = original, 2000);
+        }
     });
 }
 
@@ -399,7 +535,6 @@ function escapeHtml(text) {
 
 // --- Filters & Search ---
 function initFilters() {
-    // Populate Genre Filter
     const genres = new Set();
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
@@ -410,7 +545,6 @@ function initFilters() {
         });
     }
     const genreSelect = document.getElementById('genre-filter');
-    // convert to array, sort, insert
     const sortedGenres = Array.from(genres).sort();
     sortedGenres.forEach(g => {
         if (!g) return;
@@ -420,7 +554,6 @@ function initFilters() {
         genreSelect.appendChild(opt);
     });
 
-    // Event Listeners
     document.getElementById('search-input').addEventListener('input', applyFilters);
     document.getElementById('status-filter').addEventListener('change', applyFilters);
     document.getElementById('genre-filter').addEventListener('change', applyFilters);
@@ -437,7 +570,6 @@ function applyFilters() {
 
     rows.forEach(row => {
         const id = row.getAttribute('data-id');
-        // skip if not a data row (e.g. empty message)
         if (!id) return;
 
         const searchData = (row.getAttribute('data-search') || '').toLowerCase();
@@ -446,11 +578,12 @@ function applyFilters() {
         let initialStatus = row.getAttribute('data-status-initial');
 
         // Normalization
-        if (initialStatus === 'prod') initialStatus = 'unset';
+        if (initialStatus === 'prod') initialStatus = 'ok';
 
         // Resolve Current Status
         const currentReview = reviewData[id];
         let effectiveStatus = currentReview?.status || initialStatus || 'unset';
+        if (effectiveStatus === 'unset') effectiveStatus = 'ok';
 
         // 1. Search
         let matchSearch = true;
@@ -480,19 +613,16 @@ function applyFilters() {
     });
 }
 
-// --- Sort & Resize ---
 function initTableFeatures() {
     const table = document.querySelector('table');
     const headers = table.querySelectorAll('th');
 
     headers.forEach((th, index) => {
-        // 1. Sort
         // Skip Action column (index 0)
         if (index > 0) {
             th.addEventListener('click', () => sortTable(index));
         }
 
-        // 2. Resize
         const resizer = document.createElement('div');
         resizer.classList.add('resizer');
         th.appendChild(resizer);
@@ -500,7 +630,8 @@ function initTableFeatures() {
     });
 }
 
-let sortDirection = 1; // 1: asc, -1: desc
+// Sort State
+let sortDirection = 1;
 let lastSortIndex = -1;
 
 function sortTable(columnIndex) {
@@ -515,7 +646,6 @@ function sortTable(columnIndex) {
         lastSortIndex = columnIndex;
     }
 
-    // Simple type check: try number, then string
     const getValue = (tr, idx) => {
         const td = tr.children[idx];
         return td ? (td.innerText || td.textContent) : '';
@@ -534,10 +664,7 @@ function sortTable(columnIndex) {
         return valA.localeCompare(valB) * sortDirection;
     });
 
-    // Re-append to tbody
     rows.forEach(row => tbody.appendChild(row));
-
-    // Re-apply filters? Not needed visually as display:none persists
 }
 
 function createResizableColumn(th, resizer) {
@@ -571,11 +698,9 @@ function createResizableColumn(th, resizer) {
     resizer.addEventListener('click', (e) => e.stopPropagation());
 }
 
-// --- Drawer Resize ---
 function initDrawerResize() {
     const drawer = document.getElementById('drawer');
     const resizer = drawer.querySelector('.drawer-resizer');
-    const body = document.body;
 
     let w = 0;
     let x = 0;
@@ -593,11 +718,10 @@ function initDrawerResize() {
     };
 
     const mouseMoveHandler = function (e) {
-        const dx = x - e.clientX; // Expanding to left
+        const dx = x - e.clientX;
         const newWidth = w + dx;
         if (newWidth > 200 && newWidth < window.innerWidth * 0.9) {
             drawer.style.width = `${newWidth}px`;
-            // Update CSS variable if possible, or just style
             document.documentElement.style.setProperty('--drawer-width', `${newWidth}px`);
         }
     };
@@ -611,17 +735,3 @@ function initDrawerResize() {
 
     resizer.addEventListener('mousedown', mouseDownHandler);
 }
-
-// Export functions to window to be accessible from HTML onclick attributes
-window.toggleDrawer = toggleDrawer;
-window.switchTab = switchTab;
-window.copyMarkdownExport = copyMarkdownExport;
-window.copyReport = copyReport;
-window.openAddTab = openAddTab;
-window.addDraft = addDraft;
-window.removeDraft = removeDraft;
-window.copyTsv = copyTsv;
-window.setStatus = setStatus;
-window.activateNoteInput = activateNoteInput;
-window.handleInputKey = handleInputKey;
-window.saveNote = saveNote;

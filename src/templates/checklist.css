@@ -531,6 +531,16 @@ tr.row-note {
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
+.inline-input.input-warn {
+    border-color: #ef4444;
+    background-color: #fff5f5;
+}
+
+.inline-input.input-warn:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
 /* Header Specific */
 .status-header {
     text-align: left;

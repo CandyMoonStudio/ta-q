@@ -545,6 +545,16 @@ tr.row-note {
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
+.inline-input.input-warn {
+    border-color: #ef4444;
+    background-color: #fff5f5;
+}
+
+.inline-input.input-warn:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
 /* Header Specific */
 .status-header {
     text-align: left;
@@ -719,7 +729,7 @@ body.drawer-open #drawer {
             <div class="stats-item ng">却下: <span id="count-ng">44</span></div>
             <div class="stats-item hold">保留: <span id="count-hold">0</span></div>
             <div class="stats-item info">78 items</div>
-            <div class="stats-item info">2026/1/17 23:18:57</div>
+            <div class="stats-item info">2026/1/17 23:29:17</div>
         
         </div>
     </header>
@@ -768,11 +778,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('1', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('1', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('1', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('1', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('1')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-1" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -802,11 +812,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('2', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('2', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('2', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('2', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('2')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-2" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -836,11 +846,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('4', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('4', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('4', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('4', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('4')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-4" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -870,11 +880,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('5', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('5', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('5', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('5', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('5')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-5" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -904,11 +914,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('7', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('7', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('7', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('7', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('7')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-7" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -938,11 +948,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('9', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('9', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('9', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('9', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('9')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-9" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -972,11 +982,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('11', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('11', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('11', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('11', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('11')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-11" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1006,11 +1016,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('12', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('12', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('12', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('12', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('12')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-12" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1040,11 +1050,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('13', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('13', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('13', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('13', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('13')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-13" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1074,11 +1084,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('14', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('14', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('14', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('14', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('14')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-14" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1108,11 +1118,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('16', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('16', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('16', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('16', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('16')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-16" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1142,11 +1152,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('18', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('18', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('18', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('18', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('18')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-18" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1176,11 +1186,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('21', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('21', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('21', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('21', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('21')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-21" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1210,11 +1220,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('25', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('25', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('25', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('25', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('25')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-25" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1244,11 +1254,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('26', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('26', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('26', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('26', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('26')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-26" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1278,11 +1288,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('28', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('28', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('28', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('28', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('28')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-28" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1312,11 +1322,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('30', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('30', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('30', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('30', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('30')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-30" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1346,11 +1356,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('32', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('32', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('32', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('32', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('32')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-32" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1380,11 +1390,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('36', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('36', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('36', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('36', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('36')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-36" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1414,11 +1424,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('38', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('38', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('38', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('38', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('38')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-38" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1448,11 +1458,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('40', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('40', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('40', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('40', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('40')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-40" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1482,11 +1492,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('45', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('45', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('45', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('45', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('45')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-45" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1516,11 +1526,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('46', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('46', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('46', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('46', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('46')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-46" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1550,11 +1560,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('47', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('47', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('47', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('47', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('47')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-47" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1584,11 +1594,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('49', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('49', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('49', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('49', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('49')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-49" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1618,11 +1628,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('54', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('54', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('54', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('54', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('54')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-54" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1652,11 +1662,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('62', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('62', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('62', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('62', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('62')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-62" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1686,11 +1696,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('65', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('65', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('65', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('65', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('65')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-65" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1720,11 +1730,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('67', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('67', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('67', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('67', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('67')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-67" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1754,11 +1764,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('68', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('68', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('68', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('68', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('68')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-68" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1788,11 +1798,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('71', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('71', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('71', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('71', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('71')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-71" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1822,11 +1832,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('73', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('73', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('73', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('73', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('73')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-73" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1856,11 +1866,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('75', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('75', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('75', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('75', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('75')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-75" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1890,11 +1900,11 @@ body.drawer-open #drawer {
                     data-status-initial="ok">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('76', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('76', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('76', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('76', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('76')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-76" style="min-width: 100px;"><span class="status-badge ok">OK</span></td>
@@ -1924,11 +1934,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('10', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('10', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('10', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('10', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('10')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-10" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -1958,11 +1968,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('20', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('20', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('20', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('20', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('20')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-20" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -1992,11 +2002,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('42', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('42', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('42', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('42', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('42')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-42" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2026,11 +2036,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('51', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('51', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('51', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('51', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('51')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-51" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2060,11 +2070,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('72', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('72', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('72', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('72', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('72')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-72" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2094,11 +2104,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-01', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-01', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-01', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-01', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-01')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-01" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2128,11 +2138,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-02', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-02', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-02', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-02', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-02')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-02" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2162,11 +2172,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-03', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-03', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-03', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-03', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-03')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-03" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2196,11 +2206,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-04', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-04', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-04', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-04', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-04')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-04" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2230,11 +2240,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-05', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-05', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-05', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-05', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-05')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-05" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2264,11 +2274,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-06', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-06', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-06', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-06', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-06')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-06" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2298,11 +2308,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-07', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-07', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-07', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-07', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-07')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-07" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2332,11 +2342,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-08', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-08', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-08', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-08', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-08')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-08" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2366,11 +2376,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-09', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-09', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-09', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-09', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-09')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-09" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2400,11 +2410,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-10', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-10', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-10', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-10', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-10')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-10" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2434,11 +2444,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-11', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-11', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-11', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-11', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-11')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-11" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2468,11 +2478,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-12', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-12', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-12', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-12', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-12')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-12" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2502,11 +2512,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-13', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-13', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-13', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-13', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-13')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-13" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2536,11 +2546,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-14', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-14', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-14', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-14', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-14')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-14" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2570,11 +2580,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-15', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-15', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-15', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-15', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-15')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-15" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2604,11 +2614,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-16', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-16', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-16', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-16', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-16')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-16" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2638,11 +2648,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-17', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-17', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-17', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-17', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-17')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-17" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2672,11 +2682,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-18', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-18', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-18', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-18', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-18')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-18" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2706,11 +2716,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-19', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-19', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-19', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-19', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-19')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-19" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2740,11 +2750,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-20', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-20', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-20', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-20', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-20')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-20" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2774,11 +2784,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-21', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-21', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-21', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-21', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-21')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-21" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2808,11 +2818,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-22', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-22', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-22', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-22', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-22')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-22" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2842,11 +2852,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-23', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-23', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-23', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-23', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-23')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-23" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2876,11 +2886,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-24', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-24', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-24', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-24', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-24')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-24" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2910,11 +2920,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-25', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-25', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-25', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-25', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-25')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-25" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2944,11 +2954,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-26', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-26', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-26', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-26', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-26')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-26" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -2978,11 +2988,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-27', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-27', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-27', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-27', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-27')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-27" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3012,11 +3022,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-28', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-28', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-28', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-28', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-28')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-28" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3046,11 +3056,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-29', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-29', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-29', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-29', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-29')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-29" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3080,11 +3090,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-30', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-30', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-30', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-30', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-30')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-30" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3114,11 +3124,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-31', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-31', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-31', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-31', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-31')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-31" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3148,11 +3158,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-32', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-32', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-32', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-32', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-32')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-32" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3182,11 +3192,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-33', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-33', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-33', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-33', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-33')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-33" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3216,11 +3226,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-34', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-34', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-34', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-34', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-34')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-34" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3250,11 +3260,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-35', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-35', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-35', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-35', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-35')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-35" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3284,11 +3294,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-36', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-36', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-36', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-36', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-36')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-36" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3318,11 +3328,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-37', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-37', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-37', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-37', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-37')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-37" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3352,11 +3362,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-38', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-38', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-38', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-38', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-38')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-38" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3386,11 +3396,11 @@ body.drawer-open #drawer {
                     data-status-initial="ng">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('ng-39', 'ok')" title="採用 (OK)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('ng-39', 'ng')" title="却下 (NG)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('ng-39', 'debug')" title="要修正 (Debug)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('ng-39', 'hold')" title="保留 (Hold)">!</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('ng-39')" title="メモを追加">📝</button>
+                            <button class="btn-icon btn-ok" data-action="set-status" data-status="ok" title="採用 (OK)">✓</button>
+                            <button class="btn-icon btn-ng" data-action="set-status" data-status="ng" title="却下 (NG)">×</button>
+                            <button class="btn-icon btn-debug" data-action="set-status" data-status="debug" title="要修正 (Debug)">?</button>
+                            <button class="btn-icon btn-hold" data-action="set-status" data-status="hold" title="保留 (Hold)">!</button>
+                            <button class="btn-icon btn-note" data-action="activate-note" title="メモを追加">📝</button>
                         </div>
                     </td>
                     <td class="status-cell" id="badge-ng-39" style="min-width: 100px;"><span class="status-badge ng">NG</span></td>
@@ -3417,67 +3427,68 @@ body.drawer-open #drawer {
     </div>
 
     <!-- Floating Action Button -->
-    <button class="fab-add" onclick="openAddTab()" title="Add New Question">+</button>
+    <button class="fab-add" data-action="open-add" title="Add New Question">+</button>
 
     <!-- Drawer -->
     <div id="drawer">
         <div class="drawer-resizer"></div>
         <div class="drawer-header">
             <div class="drawer-title">メニュー</div>
-            <button class="drawer-toggle-btn" onclick="toggleDrawer()"
+            <button class="drawer-toggle-btn" data-action="toggle-drawer"
                 style="background:rgba(255,255,255,0.1); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">✕</button>
         </div>
         <div class="drawer-tabs">
-            <button class="drawer-tab-btn active" onclick="switchTab('review')" id="tab-review">レビュー</button>
-            <button class="drawer-tab-btn" onclick="switchTab('add')" id="tab-add">新規追加</button>
+            <button class="drawer-tab-btn active" data-tab="export">Export</button>
+            <button class="drawer-tab-btn" data-tab="add">Add</button>
         </div>
 
-        <!-- Tab: Review -->
-        <div id="content-review" class="drawer-content tab-content active">
-            <h3
-                style="margin-top:0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px; margin-bottom:20px;">
-                レビュー操作</h3>
+        <div class="drawer-content active" id="content-export">
+            <p style="font-size:0.9em; opacity:0.8;">現在のレビュー状況を出力します。</p>
 
-            <button class="btn-primary" onclick="copyMarkdownExport()"
-                style="background:var(--accent); margin-bottom:10px;">
-                📋 Markdownエクスポート
-            </button>
-            <p style="font-size:0.8em; opacity:0.7; margin-top:0;">
-                GitHub Issues用に、却下(NG)/要修正(DEBUG)/保留(HOLD)の項目をクリップボードにコピーします。
-            </p>
+            <div style="margin-top:20px;">
+                <label style="font-size:0.85em; opacity:0.7; display:block; margin-bottom:8px;">JSON Download</label>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <button class="btn-primary" data-action="download-json" data-target="prod"
+                        style="background:#22c55e;">Download Prod (採用)</button>
+                    <button class="btn-primary" data-action="download-json" data-target="ng"
+                        style="background:#ef4444;">Download NG (却下)</button>
+                    <button class="btn-primary" data-action="download-json" data-target="debug"
+                        style="background:#8b5cf6;">Download Debug (修正)</button>
+                </div>
+            </div>
 
-            <hr style="border-color:rgba(255,255,255,0.1); margin: 24px 0;">
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:20px 0;">
 
-            <p style="font-size:0.875rem; opacity:0.7; margin-bottom:10px;">
-                生データ (バックアップ用)
-            </p>
-            <textarea id="report-area" readonly
-                style="height:120px; font-family:'JetBrains Mono', monospace; font-size:0.8em;"></textarea>
-            <button class="copy-btn" onclick="copyReport()"
-                style="margin-top:8px; width:100%; padding:8px; background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; border-radius:6px;">JSONをコピー</button>
+            <label style="font-size:0.85em; opacity:0.7;">Markdown Report</label>
+            <textarea id="report-area"
+                style="width:100%; height:150px; background:rgba(0,0,0,0.3); color:white; border:none; border-radius:4px; padding:8px; font-family:monospace; margin-top:8px;"></textarea>
+
+            <button class="btn-primary" data-action="copy-markdown">Copy Markdown Report</button>
+            <button class="btn-primary" data-action="copy-json" style="margin-top:8px; background:#4b5563;">Copy Raw
+                JSON</button>
         </div>
 
-        <!-- Tab: Add New -->
-        <div id="content-add" class="drawer-content tab-content">
+        <div class="drawer-content" id="content-add">
             <div class="input-group">
-                <label>ID (任意、空欄時はCLIで自動生成)</label>
-                <input type="text" id="new-id" placeholder="qXXXXX (不明な場合は空欄)">
+                <label>ID (Optional)</label>
+                <input type="text" id="new-id" placeholder="Auto-generated if empty">
             </div>
             <div class="input-group">
-                <label>問題文 *</label>
-                <input type="text" id="new-text" placeholder="問題文を入力">
+                <label>Question</label>
+                <input type="text" id="new-text">
             </div>
             <div class="input-group">
-                <label>解答 *</label>
-                <input type="text" id="new-answer" placeholder="解答を入力">
+                <label>Answer</label>
+                <input type="text" id="new-answer">
             </div>
-            <button class="btn-primary" onclick="addDraft()">リストに追加</button>
+            <button class="btn-primary" data-action="add-draft">Add Draft</button>
 
-            <div class="draft-list" id="draft-list">
-                <!-- Items go here -->
-            </div>
+            <div class="draft-list" id="draft-list"></div>
 
-            <button class="copy-btn" onclick="copyTsv()" style="margin-top: 16px;">📋 TSVとしてコピー</button>
+            <div style="margin-top:20px; text-align:right;">
+                <button class="btn copy-btn" data-action="copy-tsv"
+                    style="background:rgba(255,255,255,0.1); color:white;">Copy All as TSV</button>
+            </div>
         </div>
     </div>
 
@@ -3496,22 +3507,11 @@ const LS_KEY = 'taq_review_v2';
 
 // State
 let reviewData = {};
-let drafts = []; // Changed from const to let because it was redeclared in original scope? No, drafted as const list usually. But wait, `renderDrafts` uses it. Let's keep it const if it's mutable array.
-// Actually original was `const drafts = []`.
-// However, I need to make sure global scope works.
-// We will assign window.drafts or just keep it in this module scope if loaded as module?
-// Since we are inlining, it will be in global scope if simply scripted.
-
-// We'll wrap in IIFE or event listener to avoid pollution, but functions need to be global for HTML attributes (onclick)
-// UNLESS we use addEventListener for everything.
-// Current HTML uses `onclick="toggleDrawer()"`. So functions must be global.
-
-// We will expose functions to window.
+let drafts = [];
 
 // --- Init ---
 window.addEventListener('DOMContentLoaded', () => {
     if (!REVIEW_ENABLED) {
-        // Disable Review Features
         document.querySelectorAll('.action-cell, .fab-add, #drawer').forEach(el => el.style.display = 'none');
         return;
     }
@@ -3539,10 +3539,11 @@ window.addEventListener('DOMContentLoaded', () => {
     updateReport();
     updateStats();
 
-    // Init Filters & Table Features
+    // Init Logic
     initFilters();
     initTableFeatures();
     initDrawerResize();
+    initEventListeners(); // Centralized Event Handling
 });
 
 // --- LocalStorage ---
@@ -3555,14 +3556,96 @@ function saveToLS() {
     updateReport();
 }
 
+// --- Event Delegation (Security & Cleanup) ---
+function initEventListeners() {
+    document.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-action]');
+        if (!target) {
+            // Check for backdrop click to close drawer
+            if (document.body.classList.contains('drawer-open') &&
+                !e.target.closest('#drawer') &&
+                !e.target.closest('#btn-open-add') &&
+                !e.target.closest('.fab-add')) {
+                toggleDrawer();
+            }
+            return;
+        }
+
+        const action = target.dataset.action;
+        const row = target.closest('tr');
+        const id = row ? row.dataset.id : null;
+
+        switch (action) {
+            case 'set-status':
+                if (id) setStatus(id, target.dataset.status);
+                break;
+            case 'activate-note':
+                if (id) activateNoteInput(id);
+                break;
+            case 'toggle-drawer': // If we had a toggle button
+                toggleDrawer();
+                break;
+            case 'open-add':
+                if (!document.body.classList.contains('drawer-open')) {
+                    toggleDrawer();
+                }
+                switchTab('add');
+                break;
+            case 'download-json':
+                downloadJson(target.dataset.target);
+                break;
+            case 'copy-markdown':
+                copyMarkdownExport();
+                break;
+            case 'copy-json':
+                copyReport();
+                break;
+            case 'add-draft':
+                addDraft();
+                break;
+            case 'remove-draft':
+                const idx = target.dataset.index;
+                if (idx !== undefined) removeDraft(parseInt(idx, 10));
+                break;
+            case 'copy-tsv':
+                copyTsv();
+                break;
+            default:
+                // Handle tab switching
+                if (target.classList.contains('drawer-tab-btn')) {
+                    switchTab(target.dataset.tab);
+                }
+                break;
+        }
+
+        // Static IDs for specific buttons
+        if (target.id === 'btn-close-drawer' || target.id === 'btn-open-add') {
+            toggleDrawer();
+        }
+    });
+
+    // Delegate input events?
+    // Note inputs are created dynamically. We can attach listeners on creation OR delegate.
+    // Delegation for 'keydown' and 'blur' (focusout)
+    document.addEventListener('keydown', (e) => {
+        if (e.target.classList.contains('inline-input')) {
+            handleInputKey(e, e.target);
+        }
+    });
+
+    document.addEventListener('focusout', (e) => {
+        if (e.target.classList.contains('inline-input')) {
+            // Delay slightly to allow click events to register (e.g. clicking another button)
+            // But logic is simply "save on blur".
+            const id = e.target.dataset.id;
+            if (id) saveNote(id, e.target.value);
+        }
+    });
+}
+
 // --- Stats Update ---
 function updateStats() {
-    // Initial counts from server data
-    let counts = {
-        prod: 0, debug: 0, ng: 0, hold: 0
-    };
-
-    // Base counts from SERVER_DATA
+    let counts = { prod: 0, debug: 0, ng: 0 };
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
             if (q._list === 'prod') counts.prod++;
@@ -3571,44 +3654,30 @@ function updateStats() {
         });
     }
 
-    // Calculate effective counts
-    let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0, unset: 0 };
+    let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0 };
 
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
             const id = q.id;
-            let initialStatus = q._list;
+            let initialStatus = q._list || 'unset';
             if (initialStatus === 'prod') initialStatus = 'ok';
 
             const review = reviewData[id];
             let effective = review?.status || initialStatus;
 
-            if (effective === 'prod') effective = 'ok'; // Normalize
+            if (effective === 'prod') effective = 'ok';
             if (effective === 'unset' || !effective) effective = 'ok';
-            // Treat unset as OK (Prod) for counting? Or separate?
-            // In original summary logic: "Prod: 34" usually means unset/ok.
 
-            // Let's strictly follow filter logic mapping if possible, but for stats:
-            // "Prod" (adoption) count usually includes 'ok' and 'unset' (default).
-            if (effective === 'limit') effective = 'ng'; // Just in case
-
-            // Map
-            let key = effective;
-            if (key === 'prod') key = 'ok';
-            if (key === 'unset') key = 'ok'; // Assuming unset = prod = ok
-
-            if (currentCounts.hasOwnProperty(key)) {
-                currentCounts[key]++;
+            if (currentCounts.hasOwnProperty(effective)) {
+                currentCounts[effective]++;
             }
         });
     }
 
-    // Update DOM
     const setSafe = (id, val) => {
         const el = document.getElementById(id);
-        if (el) el.innerText = val;
+        if (el) el.textContent = val;
     };
-    // Prod(OK), Debug, NG, Hold
     setSafe('count-prod', currentCounts.ok);
     setSafe('count-debug', currentCounts.debug);
     setSafe('count-ng', currentCounts.ng);
@@ -3622,70 +3691,18 @@ function setStatus(id, status) {
     }
 
     const current = reviewData[id].status;
-
     if (current === status) {
-        // Toggle OFF
         reviewData[id].status = null;
     } else {
-        // Set New
         reviewData[id].status = status;
     }
-
     reviewData[id].updatedAt = Date.now();
 
     saveToLS();
     updateRowVisuals(id);
-    renderStatusCell(id);
+    renderStatusCell(id); // Re-render badge
+    renderNoteCell(id);   // Re-render note (placeholder might change on NG)
     updateStats();
-
-    // NO applyFilters() call here (Reverted behavior)
-}
-
-function activateNoteInput(id) {
-    if (!reviewData[id]) {
-        reviewData[id] = { id: id, status: null, note: '', updatedAt: 0 };
-    }
-
-    const noteCell = document.getElementById('note-' + id);
-    const currentNote = reviewData[id].note || '';
-
-    // Prevent re-render if already editing
-    if (noteCell.querySelector('input')) return;
-
-    noteCell.innerHTML = `
-    <div class="inline-input-container">
-        <input type="text" id="input-${id}" class="inline-input" 
-               value="${currentNote.replace(/"/g, '&quot;')}" 
-               placeholder="メモを入力..." 
-               onkeydown="handleInputKey(event, '${id}')"
-               onblur="saveNote('${id}')">
-    </div>
-`;
-
-    setTimeout(() => {
-        const el = document.getElementById('input-' + id);
-        if (el) el.focus();
-    }, 50);
-}
-
-function handleInputKey(event, id) {
-    if (event.key === 'Enter') {
-        event.target.blur();
-    }
-}
-
-function saveNote(id) {
-    const input = document.getElementById('input-' + id);
-    if (!input) return;
-
-    const text = input.value.trim();
-    if (reviewData[id].note !== text) {
-        reviewData[id].note = text;
-        reviewData[id].updatedAt = Date.now();
-        saveToLS();
-    }
-
-    renderStatusCell(id);
 }
 
 function updateRowVisuals(id) {
@@ -3695,56 +3712,120 @@ function updateRowVisuals(id) {
     const data = reviewData[id];
     const status = data ? data.status : null;
 
-    // Reset Classes
     row.classList.remove('row-ok', 'row-ng', 'row-debug', 'row-hold', 'row-note');
-
-    // Reset Button Active States
     row.querySelectorAll('.btn-icon').forEach(btn => btn.classList.remove('active'));
 
     if (status) {
         row.classList.add('row-' + status);
-        const btn = row.querySelector('.btn-' + status);
+        const btn = row.querySelector(`[data-status="${status}"]`);
         if (btn) btn.classList.add('active');
     }
 
-    // Note active state
     if (data && data.note) {
-        const btnNote = row.querySelector('.btn-note');
+        const btnNote = row.querySelector('[data-action="activate-note"]');
         if (btnNote) btnNote.classList.add('active');
         if (!status) row.classList.add('row-note');
     }
 }
 
+// --- Render Cells (XSS Safe) ---
 function renderStatusCell(id) {
     const badgeCell = document.getElementById(`badge-${id}`);
-    const noteCell = document.getElementById(`note-${id}`);
+    if (!badgeCell) return;
 
-    if (!badgeCell || !noteCell) return;
-    if (noteCell.querySelector('input')) return; // Editing note
+    badgeCell.innerHTML = ''; // Clear
 
     const data = reviewData[id];
-
-    // 1. Badge (Status Column)
-    let badgeHtml = '';
     if (data && data.status) {
-        badgeHtml = `<span class="status-badge ${data.status}">${data.status.toUpperCase()}</span>`;
+        const span = document.createElement('span');
+        span.className = `status-badge ${data.status}`;
+        span.textContent = data.status.toUpperCase();
+        badgeCell.appendChild(span);
     }
-    badgeCell.innerHTML = badgeHtml;
+}
 
-    // 2. Note (Note Column)
-    let noteHtml = '';
+// Renamed from activateNoteInput (logic split)
+function renderNoteCell(id) {
+    const noteCell = document.getElementById(`note-${id}`);
+    if (!noteCell) return;
+    if (noteCell.querySelector('input')) return; // Editing
+
+    noteCell.innerHTML = '';
+
+    const data = reviewData[id];
     if (data && data.note) {
-        noteHtml = `<span class="note-text">${escapeHtml(data.note)}</span>`;
+        const span = document.createElement('span');
+        span.className = 'note-text';
+        span.textContent = data.note;
+        noteCell.appendChild(span);
     }
-    noteCell.innerHTML = noteHtml;
+}
+
+// Activated by click
+function activateNoteInput(id) {
+    if (!reviewData[id]) {
+        reviewData[id] = { id: id, status: null, note: '', updatedAt: 0 };
+    }
+
+    const noteCell = document.getElementById('note-' + id);
+    if (!noteCell) return;
+    if (noteCell.querySelector('input')) return;
+
+    const currentNote = reviewData[id].note || '';
+    const currentStatus = reviewData[id].status;
+
+    noteCell.innerHTML = ''; // Clear text
+
+    const container = document.createElement('div');
+    container.className = 'inline-input-container';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.id = `input-${id}`;
+    input.className = 'inline-input';
+    input.value = currentNote;
+    input.dataset.id = id; // For blur handler
+
+    // Context-aware placeholder and stying
+    if (currentStatus === 'ng') {
+        input.placeholder = "NG理由を入力...";
+        input.classList.add('input-warn');
+    } else {
+        input.placeholder = "メモを入力...";
+    }
+
+    container.appendChild(input);
+    noteCell.appendChild(container);
+
+    setTimeout(() => {
+        input.focus();
+    }, 50);
+}
+
+function handleInputKey(event, input) {
+    if (event.key === 'Enter') {
+        input.blur();
+    }
+}
+
+function saveNote(id, text) {
+    const trimmed = text.trim();
+    if (!reviewData[id]) reviewData[id] = {};
+
+    if (reviewData[id].note !== trimmed) {
+        reviewData[id].note = trimmed;
+        reviewData[id].updatedAt = Date.now();
+        saveToLS();
+    }
+
+    // Re-render as text
+    updateRowVisuals(id); // To update icon state
+    renderNoteCell(id);
 }
 
 // --- Drawer & Tabs ---
 function toggleDrawer() {
-    const drawer = document.getElementById('drawer');
     const body = document.body;
-    // We toggle a class on body or style on drawer
-    // CSS uses body.drawer-open
     if (body.classList.contains('drawer-open')) {
         body.classList.remove('drawer-open');
     } else {
@@ -3754,16 +3835,84 @@ function toggleDrawer() {
 
 function switchTab(tab) {
     document.querySelectorAll('.drawer-tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.drawer-content').forEach(c => c.classList.remove('active')); // Fixed selector
 
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.getElementById('content-' + tab).classList.add('active');
+    const btn = document.querySelector(`.drawer-tab-btn[data-tab="${tab}"]`);
+    if (btn) btn.classList.add('active');
+
+    const content = document.getElementById('content-' + tab);
+    if (content) content.classList.add('active');
 }
 
-// --- Report / Export ---
+// --- Downloads / Exports ---
+function downloadJson(target) {
+    // target: 'prod' | 'ng' | 'debug'
+    if (typeof SERVER_DATA === 'undefined') {
+        alert('No data source available');
+        return;
+    }
+
+    // Merge logic
+    const exportList = [];
+
+    SERVER_DATA.forEach(q => {
+        const id = q.id;
+        // Normalize initial
+        let initialStatus = q._list || 'unset';
+        if (initialStatus === 'prod') initialStatus = 'ok';
+
+        // Apply review
+        const review = reviewData[id];
+        let effective = review?.status || initialStatus;
+        if (effective === 'prod') effective = 'ok';
+        if (effective === 'unset') effective = 'ok';
+
+        let shouldInclude = false;
+        if (target === 'prod' && effective === 'ok') shouldInclude = true;
+        if (target === 'ng' && effective === 'ng') shouldInclude = true;
+        if (target === 'debug' && effective === 'debug') shouldInclude = true;
+
+        if (shouldInclude) {
+            // Clone q content
+            const item = { ...q };
+            // Update _list
+            item._list = (target === 'prod') ? 'prod' : target;
+
+            // Add note if exists (for NG/Debug mainly)
+            if (review?.note) {
+                item.note = review.note;
+            } else {
+                delete item.note; // Clean up
+            }
+
+            exportList.push(item);
+        }
+    });
+
+    if (exportList.length === 0) {
+        alert(`No items found for ${target.toUpperCase()}`);
+        return;
+    }
+
+    const jsonStr = JSON.stringify(exportList, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kpm_questions_${target}_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, 100);
+}
+
 function updateReport() {
     const reportArea = document.getElementById('report-area');
-    if (!reportArea) return; // May be hidden
+    if (!reportArea) return;
     reportArea.value = JSON.stringify(reviewData, null, 2);
 }
 
@@ -3775,7 +3924,6 @@ function copyReport() {
 }
 
 function copyMarkdownExport() {
-    // Generate Markdown for GitHub Issue
     const lines = [];
     lines.push('## Review Update');
 
@@ -3798,14 +3946,7 @@ function copyMarkdownExport() {
     });
 }
 
-// --- Add New Draft ---
-function openAddTab() {
-    if (!document.body.classList.contains('drawer-open')) {
-        toggleDrawer();
-    }
-    switchTab('add');
-}
-
+// --- Drafts (Client Only) ---
 function addDraft() {
     const idInput = document.getElementById('new-id');
     const textInput = document.getElementById('new-text');
@@ -3827,7 +3968,6 @@ function addDraft() {
     drafts.push({ id, text, answer });
     renderDrafts();
 
-    // Clear inputs
     textInput.value = '';
     answerInput.value = '';
     idInput.value = '';
@@ -3836,16 +3976,21 @@ function addDraft() {
 
 function renderDrafts() {
     const list = document.getElementById('draft-list');
-    list.innerHTML = '';
+    list.innerHTML = ''; // Safe here as we control content
     drafts.forEach((item, idx) => {
         const el = document.createElement('div');
         el.className = 'draft-item';
+
+        // Escape content
+        const safeText = escapeHtml(item.text);
+        const safeAnswer = escapeHtml(item.answer);
+
         el.innerHTML = `
         <div>
-            <div style="font-weight:700; color:#a5f3fc">${escapeHtml(item.text)}</div>
-            <div style="font-size:0.8em">${escapeHtml(item.answer)}</div>
+            <div style="font-weight:700; color:#a5f3fc">${safeText}</div>
+            <div style="font-size:0.8em">${safeAnswer}</div>
         </div>
-        <span class="draft-remove" onclick="removeDraft(${idx})">×</span>
+        <span class="draft-remove" data-action="remove-draft" data-index="${idx}">×</span>
     `;
         list.appendChild(el);
     });
@@ -3870,10 +4015,12 @@ function copyTsv() {
     });
 
     navigator.clipboard.writeText(tsvRows.join('\n')).then(() => {
-        const btn = document.querySelector('#content-add .copy-btn');
-        const original = btn.textContent;
-        btn.textContent = '✅ Copied!';
-        setTimeout(() => btn.textContent = original, 2000);
+        const btn = document.querySelector('[data-action="copy-tsv"]');
+        if (btn) {
+            const original = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => btn.textContent = original, 2000);
+        }
     });
 }
 
@@ -3889,7 +4036,6 @@ function escapeHtml(text) {
 
 // --- Filters & Search ---
 function initFilters() {
-    // Populate Genre Filter
     const genres = new Set();
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
@@ -3900,7 +4046,6 @@ function initFilters() {
         });
     }
     const genreSelect = document.getElementById('genre-filter');
-    // convert to array, sort, insert
     const sortedGenres = Array.from(genres).sort();
     sortedGenres.forEach(g => {
         if (!g) return;
@@ -3910,7 +4055,6 @@ function initFilters() {
         genreSelect.appendChild(opt);
     });
 
-    // Event Listeners
     document.getElementById('search-input').addEventListener('input', applyFilters);
     document.getElementById('status-filter').addEventListener('change', applyFilters);
     document.getElementById('genre-filter').addEventListener('change', applyFilters);
@@ -3927,7 +4071,6 @@ function applyFilters() {
 
     rows.forEach(row => {
         const id = row.getAttribute('data-id');
-        // skip if not a data row (e.g. empty message)
         if (!id) return;
 
         const searchData = (row.getAttribute('data-search') || '').toLowerCase();
@@ -3936,11 +4079,12 @@ function applyFilters() {
         let initialStatus = row.getAttribute('data-status-initial');
 
         // Normalization
-        if (initialStatus === 'prod') initialStatus = 'unset';
+        if (initialStatus === 'prod') initialStatus = 'ok';
 
         // Resolve Current Status
         const currentReview = reviewData[id];
         let effectiveStatus = currentReview?.status || initialStatus || 'unset';
+        if (effectiveStatus === 'unset') effectiveStatus = 'ok';
 
         // 1. Search
         let matchSearch = true;
@@ -3970,19 +4114,16 @@ function applyFilters() {
     });
 }
 
-// --- Sort & Resize ---
 function initTableFeatures() {
     const table = document.querySelector('table');
     const headers = table.querySelectorAll('th');
 
     headers.forEach((th, index) => {
-        // 1. Sort
         // Skip Action column (index 0)
         if (index > 0) {
             th.addEventListener('click', () => sortTable(index));
         }
 
-        // 2. Resize
         const resizer = document.createElement('div');
         resizer.classList.add('resizer');
         th.appendChild(resizer);
@@ -3990,7 +4131,8 @@ function initTableFeatures() {
     });
 }
 
-let sortDirection = 1; // 1: asc, -1: desc
+// Sort State
+let sortDirection = 1;
 let lastSortIndex = -1;
 
 function sortTable(columnIndex) {
@@ -4005,7 +4147,6 @@ function sortTable(columnIndex) {
         lastSortIndex = columnIndex;
     }
 
-    // Simple type check: try number, then string
     const getValue = (tr, idx) => {
         const td = tr.children[idx];
         return td ? (td.innerText || td.textContent) : '';
@@ -4024,10 +4165,7 @@ function sortTable(columnIndex) {
         return valA.localeCompare(valB) * sortDirection;
     });
 
-    // Re-append to tbody
     rows.forEach(row => tbody.appendChild(row));
-
-    // Re-apply filters? Not needed visually as display:none persists
 }
 
 function createResizableColumn(th, resizer) {
@@ -4061,11 +4199,9 @@ function createResizableColumn(th, resizer) {
     resizer.addEventListener('click', (e) => e.stopPropagation());
 }
 
-// --- Drawer Resize ---
 function initDrawerResize() {
     const drawer = document.getElementById('drawer');
     const resizer = drawer.querySelector('.drawer-resizer');
-    const body = document.body;
 
     let w = 0;
     let x = 0;
@@ -4083,11 +4219,10 @@ function initDrawerResize() {
     };
 
     const mouseMoveHandler = function (e) {
-        const dx = x - e.clientX; // Expanding to left
+        const dx = x - e.clientX;
         const newWidth = w + dx;
         if (newWidth > 200 && newWidth < window.innerWidth * 0.9) {
             drawer.style.width = `${newWidth}px`;
-            // Update CSS variable if possible, or just style
             document.documentElement.style.setProperty('--drawer-width', `${newWidth}px`);
         }
     };
@@ -4101,20 +4236,6 @@ function initDrawerResize() {
 
     resizer.addEventListener('mousedown', mouseDownHandler);
 }
-
-// Export functions to window to be accessible from HTML onclick attributes
-window.toggleDrawer = toggleDrawer;
-window.switchTab = switchTab;
-window.copyMarkdownExport = copyMarkdownExport;
-window.copyReport = copyReport;
-window.openAddTab = openAddTab;
-window.addDraft = addDraft;
-window.removeDraft = removeDraft;
-window.copyTsv = copyTsv;
-window.setStatus = setStatus;
-window.activateNoteInput = activateNoteInput;
-window.handleInputKey = handleInputKey;
-window.saveNote = saveNote;
 
     </script>
 </body>

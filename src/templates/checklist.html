@@ -71,67 +71,68 @@
     </div>
 
     <!-- Floating Action Button -->
-    <button class="fab-add" onclick="openAddTab()" title="Add New Question">+</button>
+    <button class="fab-add" data-action="open-add" title="Add New Question">+</button>
 
     <!-- Drawer -->
     <div id="drawer">
         <div class="drawer-resizer"></div>
         <div class="drawer-header">
             <div class="drawer-title">メニュー</div>
-            <button class="drawer-toggle-btn" onclick="toggleDrawer()"
+            <button class="drawer-toggle-btn" data-action="toggle-drawer"
                 style="background:rgba(255,255,255,0.1); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.2rem;">✕</button>
         </div>
         <div class="drawer-tabs">
-            <button class="drawer-tab-btn active" onclick="switchTab('review')" id="tab-review">レビュー</button>
-            <button class="drawer-tab-btn" onclick="switchTab('add')" id="tab-add">新規追加</button>
+            <button class="drawer-tab-btn active" data-tab="export">Export</button>
+            <button class="drawer-tab-btn" data-tab="add">Add</button>
         </div>
 
-        <!-- Tab: Review -->
-        <div id="content-review" class="drawer-content tab-content active">
-            <h3
-                style="margin-top:0; font-size:1.1rem; border-bottom:1px solid rgba(255,255,255,0.2); padding-bottom:10px; margin-bottom:20px;">
-                レビュー操作</h3>
+        <div class="drawer-content active" id="content-export">
+            <p style="font-size:0.9em; opacity:0.8;">現在のレビュー状況を出力します。</p>
 
-            <button class="btn-primary" onclick="copyMarkdownExport()"
-                style="background:var(--accent); margin-bottom:10px;">
-                📋 Markdownエクスポート
-            </button>
-            <p style="font-size:0.8em; opacity:0.7; margin-top:0;">
-                GitHub Issues用に、却下(NG)/要修正(DEBUG)/保留(HOLD)の項目をクリップボードにコピーします。
-            </p>
+            <div style="margin-top:20px;">
+                <label style="font-size:0.85em; opacity:0.7; display:block; margin-bottom:8px;">JSON Download</label>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <button class="btn-primary" data-action="download-json" data-target="prod"
+                        style="background:#22c55e;">Download Prod (採用)</button>
+                    <button class="btn-primary" data-action="download-json" data-target="ng"
+                        style="background:#ef4444;">Download NG (却下)</button>
+                    <button class="btn-primary" data-action="download-json" data-target="debug"
+                        style="background:#8b5cf6;">Download Debug (修正)</button>
+                </div>
+            </div>
 
-            <hr style="border-color:rgba(255,255,255,0.1); margin: 24px 0;">
+            <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin:20px 0;">
 
-            <p style="font-size:0.875rem; opacity:0.7; margin-bottom:10px;">
-                生データ (バックアップ用)
-            </p>
-            <textarea id="report-area" readonly
-                style="height:120px; font-family:'JetBrains Mono', monospace; font-size:0.8em;"></textarea>
-            <button class="copy-btn" onclick="copyReport()"
-                style="margin-top:8px; width:100%; padding:8px; background:rgba(255,255,255,0.1); border:none; color:white; cursor:pointer; border-radius:6px;">JSONをコピー</button>
+            <label style="font-size:0.85em; opacity:0.7;">Markdown Report</label>
+            <textarea id="report-area"
+                style="width:100%; height:150px; background:rgba(0,0,0,0.3); color:white; border:none; border-radius:4px; padding:8px; font-family:monospace; margin-top:8px;"></textarea>
+
+            <button class="btn-primary" data-action="copy-markdown">Copy Markdown Report</button>
+            <button class="btn-primary" data-action="copy-json" style="margin-top:8px; background:#4b5563;">Copy Raw
+                JSON</button>
         </div>
 
-        <!-- Tab: Add New -->
-        <div id="content-add" class="drawer-content tab-content">
+        <div class="drawer-content" id="content-add">
             <div class="input-group">
-                <label>ID (任意、空欄時はCLIで自動生成)</label>
-                <input type="text" id="new-id" placeholder="qXXXXX (不明な場合は空欄)">
+                <label>ID (Optional)</label>
+                <input type="text" id="new-id" placeholder="Auto-generated if empty">
             </div>
             <div class="input-group">
-                <label>問題文 *</label>
-                <input type="text" id="new-text" placeholder="問題文を入力">
+                <label>Question</label>
+                <input type="text" id="new-text">
             </div>
             <div class="input-group">
-                <label>解答 *</label>
-                <input type="text" id="new-answer" placeholder="解答を入力">
+                <label>Answer</label>
+                <input type="text" id="new-answer">
             </div>
-            <button class="btn-primary" onclick="addDraft()">リストに追加</button>
+            <button class="btn-primary" data-action="add-draft">Add Draft</button>
 
-            <div class="draft-list" id="draft-list">
-                <!-- Items go here -->
-            </div>
+            <div class="draft-list" id="draft-list"></div>
 
-            <button class="copy-btn" onclick="copyTsv()" style="margin-top: 16px;">📋 TSVとしてコピー</button>
+            <div style="margin-top:20px; text-align:right;">
+                <button class="btn copy-btn" data-action="copy-tsv"
+                    style="background:rgba(255,255,255,0.1); color:white;">Copy All as TSV</button>
+            </div>
         </div>
     </div>
 
