@@ -1,0 +1,712 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Input: Build output from ta-question-gen
+const DATA_FILE = path.join(__dirname, '../out/questions_prod.json');
+// Output: GitHub Pages root
+const OUTPUT_FILE = path.join(__dirname, '../docs/index.html');
+
+/**
+ * 曖昧なローマ字パターンをハイライトする
+ */
+function highlightAmbiguousRomaji(text) {
+    if (!text) return '';
+
+    // ハイライト対象のパターン
+    const patterns = [
+        /(si|shi)/g,
+        /(tu|tsu)/g,
+        /(ti|chi)/g,
+        /(hu|fu)/g,
+        /(zi|ji)/g,
+        /(sya|sha)/g,
+        /(syu|shu)/g,
+        /(syo|sho)/g,
+        /(tya|cha)/g,
+        /(tyu|chu)/g,
+        /(tyo|cho)/g,
+        /(ja|jya)/g,
+        /(ju|jyu)/g,
+        /(jo|jyo)/g,
+        /(n)/g
+    ];
+
+    let highlighted = text;
+    // 重複マッチを避けるため、簡易的に一括置換
+    const regex = new RegExp(`(${patterns.map((p) => p.source.replace(/[()]/g, '')).join('|')})`, 'g');
+    highlighted = highlighted.replace(regex, '<span class="highlight-variant">$1</span>');
+
+    return highlighted;
+}
+
+/**
+ * 問題データのチェックリストHTMLを生成するスクリプト
+ */
+function generateChecklist() {
+    try {
+        if (!fs.existsSync(DATA_FILE)) {
+            console.error('Error: Data file not found:', DATA_FILE);
+            process.exit(1);
+        }
+
+        const rawData = fs.readFileSync(DATA_FILE, 'utf8');
+        const questions = JSON.parse(rawData);
+
+        let tableRows = '';
+        for (const q of questions) {
+            const romaji = q.romaji_typing || '';
+            const highlightedRomaji = highlightAmbiguousRomaji(romaji);
+
+            const hasVariants = q.answer_variants && q.answer_variants.length > 1;
+            const rowClass = hasVariants ? 'has-variants' : '';
+            const variantsText = q.answer_variants ? q.answer_variants.join(', ') : '-';
+            const highlightedVariants = highlightAmbiguousRomaji(variantsText);
+
+            tableRows += `
+                <tr id="row-${q.id}" class="${rowClass}" data-id="${q.id}">
+                    <td class="action-cell">
+                        <div class="action-buttons">
+                            <button class="btn btn-ng" onclick="toggleStatus('${q.id}', 'NG')" title="Mark as NG">NG</button>
+                            <button class="btn btn-note" onclick="activateNoteInput('${q.id}')" title="Edit Note">Note</button>
+                        </div>
+                    </td>
+                    <td class="id-cell">
+                        <span class="id-badge">${q.id}</span>
+                    </td>
+                    <td style="min-width: 250px;">
+                        <div class="question-text">${q.question}</div>
+                        <div class="answer-text">${q.answer_display || q.answer}</div>
+                    </td>
+                    <td class="romaji-cell">
+                        <span class="romaji-main">${highlightedRomaji}</span>
+                        ${variantsText !== '-' ? `<span class="romaji-variants">Variants: ${highlightedVariants}</span>` : ''}
+                    </td>
+                    <td class="status-cell" id="status-${q.id}"></td>
+                </tr>`;
+        }
+
+        const htmlContent = `
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type & Quiz Quality Check</title>
+    <!-- Use Google Fonts instead of local fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Restoring the Modern/Premium Palette */
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+            
+            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+            --drawer-width: 360px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'M PLUS Rounded 1c', 'Noto Sans JP', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            zoom: 0.75;
+            transition: padding-right 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            padding-right: 0;
+        }
+        
+        body.drawer-open {
+            padding-right: var(--drawer-width);
+        }
+
+        /* Header Area */
+        header {
+            background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+            color: white;
+            padding: 24px 32px;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        h1 {
+            margin: 0;
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats {
+            font-weight: 500;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        /* Container & Table */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 20px 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            text-align: left;
+            padding: 0 20px 10px 20px;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        tr {
+            background-color: var(--bg-card);
+            box-shadow: var(--card-shadow);
+            border-radius: 12px;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; }
+        td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; }
+
+        tr:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow-hover);
+            z-index: 1;
+            position: relative;
+        }
+
+        td {
+            padding: 16px 20px;
+            vertical-align: middle;
+            border: none;
+        }
+
+        /* Cells */
+        .id-badge {
+            display: inline-block;
+            background-color: #eef2ff;
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .answer-text {
+            font-weight: 500;
+            color: #4b5563;
+        }
+
+        .romaji-cell {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95em;
+            min-width: 300px;
+        }
+        
+        .romaji-main {
+            display: block;
+        }
+
+        .highlight-variant {
+            background: linear-gradient(120deg, rgba(239, 68, 68, 0) 0%, rgba(239, 68, 68, 0.15) 100%);
+            border-bottom: 2px solid var(--danger);
+            color: #b91c1c;
+            font-weight: 700;
+            padding: 0 1px;
+        }
+
+        .romaji-variants {
+            display: block;
+            margin-top: 4px;
+            font-size: 0.85em;
+            color: var(--text-sub);
+        }
+        
+        .has-variants {
+            border-left: 4px solid var(--warning);
+        }
+
+        /* Buttons (Premium Style) */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            background-color: #f3f4f6;
+            color: var(--text-sub);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            background-color: #e5e7eb;
+            color: var(--text-main);
+        }
+        
+        .btn.active-ng {
+            background-color: #fee2e2;
+            color: #ef4444;
+            box-shadow: 0 0 0 2px #ef4444 inset;
+        }
+        .btn.active-note {
+            background-color: #fef3c7;
+            color: #d97706;
+            box-shadow: 0 0 0 2px #f59e0b inset;
+        }
+
+        /* Status & Styling */
+        tr.row-ng {
+            background-color: #fff1f2 !important;
+            border: 1px solid #fda4af;
+        }
+        tr.row-note {
+            background-color: #fffbeb !important;
+            border: 1px solid #fcd34d;
+        }
+
+        .status-cell {
+            width: 250px;
+            text-align: right;
+        }
+        
+        /* Inline Input Styling */
+        .inline-input-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        .inline-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+        }
+        
+        .status-display {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            text-transform: uppercase;
+        }
+        .status-badge.ng { background: #fee2e2; color: #ef4444; }
+        .status-badge.note { background: #fef3c7; color: #d97706; }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sub);
+            opacity: 0.5;
+            transition: all 0.2s;
+        }
+        .delete-btn:hover {
+            opacity: 1;
+            background-color: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Drawer */
+        #drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: var(--drawer-width);
+            height: 100vh;
+            background: rgba(30, 41, 59, 0.95); /* Dark Glass */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        body.drawer-open #drawer {
+            transform: translateX(0);
+        }
+
+        .drawer-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .drawer-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        
+        .drawer-content {
+            padding: 20px;
+            flex-grow: 1;
+        }
+        
+        textarea#report-area {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+            color: #a5f3fc;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            resize: none;
+            outline: none;
+        }
+        
+        .drawer-toggle-btn {
+            position: absolute;
+            left: -40px;
+            top: 24px;
+            width: 40px;
+            height: 48px;
+            background: #1e293b;
+            border: none;
+            border-radius: 8px 0 0 8px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+        }
+
+    </style>
+</head>
+<body id="app-body">
+    <header>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <h1>Type & Quiz Check</h1>
+        </div>
+        <div class="stats">
+            ${questions.length} items • Generated: ${new Date().toLocaleString('ja-JP')}
+        </div>
+    </header>
+
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th width="160">Actions</th>
+                    <th width="60">ID</th>
+                    <th>Question / Answer</th>
+                    <th>Romaji Typing</th>
+                    <th width="250" style="text-align:right;">Status / Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${tableRows}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Right Drawer -->
+    <aside id="drawer">
+        <button class="drawer-toggle-btn" onclick="toggleDrawer()">◀</button>
+        <div class="drawer-header">
+            <span class="drawer-title">Review Report</span>
+        </div>
+        <div class="drawer-content">
+            <p style="margin-top:0; font-size:0.875rem; opacity:0.7; margin-bottom:10px;">
+                JSON Report (Auto-generated)
+            </p>
+            <textarea id="report-area" readonly></textarea>
+            <button class="copy-btn" onclick="copyReport()">📋 Copy JSON</button>
+        </div>
+    </aside>
+
+    <script>
+        const reviewData = {};
+        const body = document.getElementById('app-body');
+        let isDrawerOpen = false;
+
+        function toggleDrawer() {
+            isDrawerOpen = !isDrawerOpen;
+            const btn = document.querySelector('.drawer-toggle-btn');
+            
+            if (isDrawerOpen) {
+                body.classList.add('drawer-open');
+                btn.innerText = '▶';
+            } else {
+                body.classList.remove('drawer-open');
+                btn.innerText = '◀';
+            }
+        }
+
+        function updateReport() {
+            const reviews = Object.values(reviewData).filter(item => item.type !== null);
+            const report = {
+                timestamp: new Date().toISOString(),
+                total_referenced: reviews.length,
+                reviews: reviews
+            };
+            
+            const jsonStr = JSON.stringify(report, null, 2);
+            document.getElementById('report-area').value = jsonStr;
+        }
+
+        function toggleStatus(id, type) {
+            const row = document.getElementById('row-' + id);
+            
+            if (!reviewData[id]) reviewData[id] = { id: id, type: null, comment: '' };
+
+            // Toggle logic
+            if (reviewData[id].type === type) {
+                // Clear if clicking same button
+                clearStatus(id);
+            } else {
+                // Set new status
+                reviewData[id].type = type;
+                
+                // Visual update
+                updateRowVisuals(id);
+                renderStatusCell(id);
+            }
+            
+            updateReport();
+        }
+
+        function activateNoteInput(id) {
+            // Ensure data object exists
+            if (!reviewData[id]) reviewData[id] = { id: id, type: null, comment: '' };
+            
+            // Render Input field in the status cell
+            const statusCell = document.getElementById('status-' + id);
+            const currentComment = reviewData[id].comment || '';
+            
+            statusCell.innerHTML = \`
+                <div class="inline-input-container">
+                    <input type="text" id="input-\${id}" class="inline-input" 
+                           value="\${currentComment.replace(/"/g, '&quot;')}" 
+                           placeholder="Enter note..." 
+                           onkeydown="handleInputKey(event, '\${id}')"
+                           onblur="saveNote('\${id}')">
+                </div>
+            \`;
+            
+            // Auto focus
+            setTimeout(() => {
+                document.getElementById('input-' + id).focus();
+            }, 50);
+        }
+        
+        function handleInputKey(event, id) {
+            if (event.key === 'Enter') {
+                event.target.blur(); // Triggers saveNote via onblur
+            }
+        }
+        
+        function saveNote(id) {
+            const input = document.getElementById('input-' + id);
+            if (!input) return; // Already guarded?
+            
+            const text = input.value.trim();
+            
+            if (text) {
+                // If we have text, ensure type is set.
+                // If it was NG, keep NG. If null, set to NOTE.
+                if (!reviewData[id].type) {
+                    reviewData[id].type = 'NOTE';
+                }
+                reviewData[id].comment = text;
+            } else {
+                // Empty text
+                reviewData[id].comment = '';
+                // If it was NOTE type and now empty, maybe clear it? 
+                // Let's keep it simple: if empty and type is NOTE, clear type too.
+                if (reviewData[id].type === 'NOTE') {
+                    reviewData[id].type = null;
+                }
+            }
+            
+            updateRowVisuals(id);
+            renderStatusCell(id);
+            updateReport();
+        }
+        
+        function clearStatus(id) {
+            reviewData[id] = { id: id, type: null, comment: '' };
+            updateRowVisuals(id);
+            renderStatusCell(id);
+            updateReport();
+        }
+        
+        function updateRowVisuals(id) {
+            const row = document.getElementById('row-' + id);
+            const data = reviewData[id];
+            const btnNg = row.querySelector('.btn-ng');
+            const btnNote = row.querySelector('.btn-note');
+            
+            // Reset
+            row.classList.remove('row-ng', 'row-note');
+            btnNg.classList.remove('active-ng');
+            btnNote.classList.remove('active-note');
+            
+            if (data.type === 'NG') {
+                row.classList.add('row-ng');
+                btnNg.classList.add('active-ng');
+            } else if (data.type === 'NOTE') {
+                row.classList.add('row-note');
+                btnNote.classList.add('active-note');
+            }
+        }
+        
+        function renderStatusCell(id) {
+            const statusCell = document.getElementById('status-' + id);
+            const data = reviewData[id];
+            
+            // If editing, don't overwrite (though execution flow shouldn't come here while focusing input)
+            if (document.activeElement.id === 'input-' + id) return;
+
+            if (!data.type && !data.comment) {
+                statusCell.innerHTML = '';
+                return;
+            }
+            
+            let badgeClass = data.type ? data.type.toLowerCase() : 'note';
+            let badgeText = data.type || 'NOTE';
+            
+            let html = '<div class="status-display">';
+            
+            if (data.type) {
+                html += \`<span class="status-badge \${badgeClass}">\${badgeText}</span>\`;
+            }
+            
+            if (data.comment) {
+                html += \`<span>\${data.comment}</span>\`;
+            }
+            
+            // Delete button
+            html += \`<button class="delete-btn" onclick="clearStatus('\${id}')" title="Clear">✕</button>\`;
+            html += '</div>';
+            
+            statusCell.innerHTML = html;
+        }
+
+        function copyReport() {
+            const area = document.getElementById('report-area');
+            area.select();
+            document.execCommand('copy');
+            
+            const btn = document.querySelector('.copy-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>`;
+
+        const docsDir = path.dirname(OUTPUT_FILE);
+        if (!fs.existsSync(docsDir)) {
+            fs.mkdirSync(docsDir, { recursive: true });
+        }
+
+        fs.writeFileSync(OUTPUT_FILE, htmlContent, 'utf8');
+        console.log(`チェックリストを生成しました: ${OUTPUT_FILE} `);
+    } catch (err) {
+        console.error('エラーが発生しました:', err);
+    }
+}
+
+generateChecklist();

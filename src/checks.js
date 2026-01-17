@@ -51,6 +51,8 @@ export function validateQuestion(question, index) {
 
   const source = String(question.source || "").trim();
   const romaji = String(question.romaji || "").trim();
+  const answerDisplay = String(question.answer_display || "").trim();
+  const reading = String(question.reading || "").trim();
   const typeValue = String(question.type || "").trim();
   const explanation = String(question.explanation || "").trim();
 
@@ -64,6 +66,8 @@ export function validateQuestion(question, index) {
 
     source: source || undefined,
     romaji: romaji || undefined,
+    answer_display: answerDisplay || undefined,
+    reading: reading || undefined,
     type: typeValue || undefined,
     explanation: explanation || undefined,
     _index: index,

@@ -39,6 +39,33 @@ rows.forEach((row, index) => {
     question: question.text,
     romaji_typing: question.romaji,
     answer_variants: [question.answer, ...(question.aliases || [])],
+    answer_display: question.answer_display || question.answer, // Fallback to raw answer if display not set
+    answer: question.answer_display || question.answer, // Typeanswer expects 'answer' to be the display one? No, wait.
+    // In typeanswer/data/questions_prod.json:
+    // "answer_display": "東京",
+    // "answer": "東京",
+    // It seems 'answer' is often same as 'answer_display'.
+    // BUT 'answer_variants' contains the typing logic targets.
+    // Let's check typeanswer data again.
+    // id: 1
+    // question: "日本の首都は？"
+    // romaji_typing: "nihon no shuto ha ?"
+    // answer_variants: ["tokyo", "toukyou"]
+    // answer_display: "東京"
+    // answer: "東京"
+
+    // So 'answer' in JSON output is display text.
+    // In TA-Question-Gen, 'question.answer' is the PRIMARY typing key (e.g. 'tokyo').
+    // So we need to map:
+    // JSON.answer -> question.answer_display (or question.answer if display missing? No, question.answer is 'tokyo' usually)
+    // Actually looking at row 2 in TSV: text: "1足す1は？" answer: "2" aliases: "ni|two"
+    // Here 'answer' is '2', which is displayable.
+    // But row 1: text: "日本の首都は？" answer: "tokyo" aliases: "toukyou"
+    // Here 'answer' is 'tokyo', NOT displayable "東京".
+    // So we MUST use answer_display for JSON.answer and JSON.answer_display.
+
+    answer: question.answer_display,
+    reading: question.reading,
     explanation: question.explanation,
 
     // Internal fields for processing/debugging

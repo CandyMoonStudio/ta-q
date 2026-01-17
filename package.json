@@ -1,8 +1,9 @@
 {
-  "name": "typeanswer-question-gen",
+  "name": "ta-q",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node src/build.mjs"
+    "build": "node src/build.mjs",
+    "checklist": "npm run build && node src/generate_checklist.mjs"
   }
 }
