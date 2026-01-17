@@ -85,6 +85,7 @@ function build() {
 
     const rows = readTsv(inputPath);
     const prod: OutputQuestion[] = [];
+    const debug: OutputQuestion[] = [];
     const ng: OutputQuestion[] = [];
     const errorCounts = new Map<string, number>();
 
@@ -95,18 +96,11 @@ function build() {
 
         const weight = computeWeight(q);
 
-        if (q.status !== 'prod') {
-            errors.push('status_not_prod');
-        }
-
         // Prepare aliases array
         const aliases = q.aliases
             ? q.aliases.split('|').map(s => s.trim()).filter(s => s.length > 0)
             : [];
 
-        // "answers" calculation for `answer_variants`
-        // Original: `answer_variants: [question.answer, ...(question.aliases || [])]`
-        // `question.answer` (from TSV `answer` col) is the main typing target (e.g. "tokyo")
         const answerVariants = [q.answer, ...aliases];
 
         // Output Object Construction
@@ -139,25 +133,36 @@ function build() {
             errors.forEach(e => {
                 errorCounts.set(e, (errorCounts.get(e) || 0) + 1);
             });
-        } else {
+        } else if (q.status === 'prod') {
             prod.push(output);
+        } else if (q.status === 'debug') {
+            debug.push(output);
+        } else {
+            // inbox or other status with no errors goes to ng (as 'not_ready')
+            output.errors = ['status_not_prod_or_debug'];
+            ng.push(output);
+            errorCounts.set('status_not_ready', (errorCounts.get('status_not_ready') || 0) + 1);
         }
     });
 
     stableSort(prod);
+    stableSort(debug);
     stableSort(ng);
 
     const prodOutput = prod.map(formatOutput);
+    const debugOutput = debug.map(formatOutput);
     const ngOutput = ng.map(formatOutput);
 
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(path.join(outDir, 'questions_prod.json'), JSON.stringify(prodOutput, null, 2));
+    fs.writeFileSync(path.join(outDir, 'questions_debug.json'), JSON.stringify(debugOutput, null, 2));
     fs.writeFileSync(path.join(outDir, 'questions_ng.json'), JSON.stringify(ngOutput, null, 2));
 
     // Report
     const reportLines = [
         `total\t${rows.length}`,
         `prod\t${prod.length}`,
+        `debug\t${debug.length}`,
         `ng\t${ng.length}`,
         '',
         'errors'

@@ -7,10 +7,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Input: Build output from ta-question-gen
-const DATA_FILE = path.join(__dirname, '../out/questions_prod.json');
-// Template
+const PROD_FILE = path.join(__dirname, '../out/questions_prod.json');
+const DEBUG_FILE = path.join(__dirname, '../out/questions_debug.json');
+const NG_FILE = path.join(__dirname, '../out/questions_ng.json');
 const TEMPLATE_FILE = path.join(__dirname, 'templates/checklist.html');
-// Output: GitHub Pages root
 const OUTPUT_FILE = path.join(__dirname, '../docs/index.html');
 
 /**
@@ -35,37 +35,50 @@ function highlightAmbiguousRomaji(text: string): string {
     return highlighted;
 }
 
+function loadJson(p: string) {
+    if (!fs.existsSync(p)) return [];
+    return JSON.parse(fs.readFileSync(p, 'utf8'));
+}
+
 function generateChecklist() {
     try {
-        if (!fs.existsSync(DATA_FILE)) {
-            console.error('Error: Data file not found:', DATA_FILE);
-            process.exit(1);
-        }
         if (!fs.existsSync(TEMPLATE_FILE)) {
             console.error('Error: Template file not found:', TEMPLATE_FILE);
             process.exit(1);
         }
 
-        const rawData = fs.readFileSync(DATA_FILE, 'utf8');
-        const questions: any[] = JSON.parse(rawData);
+        const prodQuestions = loadJson(PROD_FILE);
+        const debugQuestions = loadJson(DEBUG_FILE);
+        const ngQuestions = loadJson(NG_FILE);
+
+        const allQuestions = [
+            ...prodQuestions.map((q: any) => ({ ...q, _list: 'prod' })),
+            ...debugQuestions.map((q: any) => ({ ...q, _list: 'debug' })),
+            ...ngQuestions.map((q: any) => ({ ...q, _list: 'ng' }))
+        ];
+
         const templateHtml = fs.readFileSync(TEMPLATE_FILE, 'utf8');
 
         let tableRows = '';
 
-        for (const q of questions) {
+        for (const q of allQuestions) {
             const romaji = q.romaji_typing || '';
             const highlightedRomaji = highlightAmbiguousRomaji(romaji);
 
             const hasVariants = q.answer_variants && q.answer_variants.length > 1;
-            const rowClass = hasVariants ? 'has-variants' : '';
             const variantsText = q.answer_variants ? q.answer_variants.join(', ') : '-';
             const highlightedVariants = highlightAmbiguousRomaji(variantsText);
 
-            // Safer display with full HTML escaping
             const displayQuestion = escapeHtml(q.question);
             const displayAnswer = escapeHtml(q.answer_display || q.answer);
-            // Ensure ID is safe for attribute/JS string usage (validator checks regex, but escaping is safer practice)
             const safeId = escapeHtml(String(q.id));
+
+            // Status Badge for the list
+            let listBadge = '';
+            if (q._list === 'debug') listBadge = '<span class="status-badge debug" style="margin-left:8px; background:#8b5cf6; color:white; font-size:0.7em;">DEBUG</span>';
+            if (q._list === 'ng') listBadge = '<span class="status-badge ng" style="margin-left:8px; font-size:0.7em;">NG</span>';
+
+            const rowClass = q._list === 'ng' ? 'row-ng-initial' : (q._list === 'debug' ? 'row-debug-initial' : '');
 
             tableRows += `
                 <tr id="row-${safeId}" class="${rowClass}" data-id="${safeId}">
@@ -79,21 +92,27 @@ function generateChecklist() {
                         <span class="id-badge">${safeId}</span>
                     </td>
                     <td style="min-width: 250px;">
-                        <div class="question-text">${displayQuestion}</div>
+                        <div class="question-text">${displayQuestion}${listBadge}</div>
                         <div class="answer-text">${displayAnswer}</div>
+                        ${q.errors ? `<div style="font-size:0.75rem; color:#ef4444; margin-top:4px;">${q.errors.join(', ')}</div>` : ''}
                     </td>
                     <td class="romaji-cell">
                         <span class="romaji-main">${highlightedRomaji}</span>
                         ${variantsText !== '-' ? `<span class="romaji-variants">Variants: ${highlightedVariants}</span>` : ''}
                     </td>
-                    <td class="status-cell" id="status-${q.id}"></td>
+                    <td class="status-cell" id="status-${safeId}"></td>
                 </tr>`;
         }
 
-        // Inject data into template
+        const statsHtml = `
+            <span style="color:#10b981">Prod: ${prodQuestions.length}</span> | 
+            <span style="color:#8b5cf6">Debug: ${debugQuestions.length}</span> | 
+            <span style="color:#ef4444">NG: ${ngQuestions.length}</span>
+        `;
+
         let outputHtml = templateHtml
             .replace('{{TABLE_ROWS}}', tableRows)
-            .replace('{{TOTAL_COUNT}}', String(questions.length))
+            .replace('{{TOTAL_COUNT}} items', statsHtml)
             .replace('{{GENERATED_DATE}}', new Date().toLocaleString('ja-JP'));
 
         const docsDir = path.dirname(OUTPUT_FILE);
@@ -102,7 +121,7 @@ function generateChecklist() {
         }
 
         fs.writeFileSync(OUTPUT_FILE, outputHtml, 'utf8');
-        console.log(`Checklist generated: ${OUTPUT_FILE} (${questions.length} questions)`);
+        console.log(`Checklist generated: ${OUTPUT_FILE} (Prod:${prodQuestions.length}, Debug:${debugQuestions.length}, NG:${ngQuestions.length})`);
     } catch (err) {
         console.error('Error generating checklist:', err);
         process.exit(1);
