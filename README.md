@@ -1,6 +1,6 @@
-# Question Generator for TypeAnswer
+# Question Generator
 
-連携するタイピングクイズゲームで使用する問題データを作成・管理するためのリポジトリです。本リポジトリは「データ生成（Generation）」と「品質管理（Quality Control）」の役割を担います。
+ゲーム本体で使用する問題データを作成・管理するためのリポジトリです。本リポジトリは「データ生成（Generation）」と「品質管理（Quality Control）」の役割を担います。
 
 ## Architecture
 
