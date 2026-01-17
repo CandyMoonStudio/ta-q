@@ -109,9 +109,9 @@ function generateChecklist() {
         }
 
         const statsHtml = `
-            <span style="color:#10b981">Prod: ${prodQuestions.length}</span> | 
-            <span style="color:#8b5cf6">Debug: ${debugQuestions.length}</span> | 
-            <span style="color:#ef4444">NG: ${ngQuestions.length}</span>
+            <span style="color:#10b981">採用: ${prodQuestions.length}</span> | 
+            <span style="color:#1f2937">要修正: ${debugQuestions.length}</span> | 
+            <span style="color:#ef4444">却下: ${ngQuestions.length}</span>
         `;
 
         let outputHtml = templateHtml
