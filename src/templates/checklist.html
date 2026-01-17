@@ -33,7 +33,7 @@
         }
 
         body {
-            font-family: 'Inter', 'M PLUS Rounded 1c', 'Noto Sans JP', sans-serif;
+            font-family: 'BIZ UDPGothic', 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
@@ -771,7 +771,7 @@
                     <th width="120">ジャンル</th>
                     <th>問題 / 解答</th>
                     <th>ローマ字 / 別解</th>
-                    <th width="250" style="text-align:right;">状態 / メモ</th>
+                    <th width="250" style="text-align:left;">状態 / メモ</th>
                 </tr>
             </thead>
             <tbody>
@@ -898,6 +898,71 @@
                 updateReport();
             }
 
+            // --- Stats Update ---
+            function updateStats() {
+                // Initial counts from server data
+                let counts = {
+                    prod: 0, debug: 0, ng: 0, hold: 0
+                };
+
+                // Base counts from SERVER_DATA (initial state)
+                if (typeof SERVER_DATA !== 'undefined') {
+                    SERVER_DATA.forEach(q => {
+                        if (q._list === 'prod') counts.prod++;
+                        else if (q._list === 'debug') counts.debug++;
+                        else if (q._list === 'ng') counts.ng++;
+                    });
+                }
+
+                // Apply adjustments based on reviewData
+                // This is tricky because we need to subtract from old status and add to new status
+                // Simpler approach: Iterate ALL SERVER_DATA and calculating current effective status
+
+                let currentCounts = { prod: 0, debug: 0, ng: 0, hold: 0, unset: 0 };
+
+                if (typeof SERVER_DATA !== 'undefined') {
+                    SERVER_DATA.forEach(q => {
+                        const id = q.id;
+                        let initialStatus = q._list;
+                        if (initialStatus === 'prod') initialStatus = 'unset'; // 'unset' is effectively 'prod' candidates usually? 
+                        // Wait, logic in applyFilters is:
+                        // if (initialStatus === 'prod') initialStatus = 'unset';
+                        // let effectiveStatus = currentReview?.status || initialStatus || 'unset';
+
+                        // Let's match applyFilters logic
+                        const review = reviewData[id];
+                        let effective = review?.status || initialStatus;
+
+                        // Map 'unset' back to 'prod' for counting? 
+                        // Actually the user wants to see how many are "OK", "NG", etc.
+                        // "Prod" in server data usually means "OK" candidates.
+
+                        if (effective === 'prod') effective = 'ok'; // Normalize
+                        if (!effective || effective === 'unset') {
+                            // If unset, it counts as nothing specific in the header stats?
+                            // or usually 'prod' means 'adopted'.
+                            // Let's stick to the button types: ok, ng, debug, hold
+                        }
+
+                        if (currentCounts.hasOwnProperty(effective)) {
+                            currentCounts[effective]++;
+                        } else if (effective === 'prod') {
+                            currentCounts.prod++; // Should not happen if normalized
+                        }
+                    });
+                }
+
+                // Update DOM
+                const setSafe = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerText = val;
+                };
+                setSafe('count-prod', currentCounts.ok); // OK is Prod
+                setSafe('count-debug', currentCounts.debug);
+                setSafe('count-ng', currentCounts.ng);
+                setSafe('count-hold', currentCounts.hold);
+            }
+
             // --- Status Management ---
             function setStatus(id, status) {
                 if (!reviewData[id]) {
@@ -919,9 +984,7 @@
                 saveToLS();
                 updateRowVisuals(id);
                 renderStatusCell(id);
-
-                // Re-apply filters to reflect changes immediately (e.g. if filtering by 'Unset' and now it's 'OK')
-                applyFilters();
+                updateStats();
             }
 
             function activateNoteInput(id) {

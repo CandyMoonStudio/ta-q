@@ -122,9 +122,10 @@ function generateChecklist() {
         }
 
         const statsHtml = `
-            <span style="color:#10b981">採用: ${prodQuestions.length}</span> | 
-            <span style="color:#1f2937">要修正: ${debugQuestions.length}</span> | 
-            <span style="color:#ef4444">却下: ${ngQuestions.length}</span>
+            <span style="color:#10b981">採用: <span id="count-prod">${prodQuestions.length}</span></span> | 
+            <span style="color:#1f2937">要修正: <span id="count-debug">${debugQuestions.length}</span></span> | 
+            <span style="color:#ef4444">却下: <span id="count-ng">${ngQuestions.length}</span></span> |
+            <span style="color:#6b7280">保留: <span id="count-hold">0</span></span>
         `;
 
         let outputHtml = templateHtml
