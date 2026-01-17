@@ -43,7 +43,7 @@ npm install
 ### ビルド（JSON生成）
 
 ```bash
-node src/build.mjs
+npm run build
 ```
 
 実行すると `out/` ディレクトリに以下のファイルが生成されます。
