@@ -1,8 +1,22 @@
 # Question Generator for TypeAnswer
 
-[TypeAnswer](https://github.com/yusuke/typeanswer) （タイピングクイズゲーム）で使用する問題データを作成・管理するためのリポジトリです。
+[TypeAnswer](https://github.com/yusuke/typeanswer) （タイピングクイズゲーム）で使用する問題データを作成・管理するためのリポジトリです。本リポジトリは「データ生成（Generation）」と「品質管理（Quality Control）」の役割を担います。
 
-作問者が編集しやすい **TSV (Tab Separated Values)** 形式でデータを管理し、各種バリデーションを行った上で、ゲームアプリが読み込める **JSON** 形式に変換します。
+## Architecture
+
+本プロジェクトは、人間が編集しやすい **TSV (Tab Separated Values)** データをマスターとし、アプリケーションが利用可能な最適化された **JSON** データへ変換するビルドパイプラインを提供します。
+
+- **Master Data**: `questions_edit.tsv` (Human Readable/Editable)
+- **Builder**: TypeScript Scripts (Validation, Processing, Weight Calculation)
+- **Artifacts**: `out/questions_prod.json`, `out/questions_ng.json`
+
+## Tech Stack
+
+- **Language**: TypeScript
+- **Runtime**: Node.js
+- **Validation**: Zod
+- **Testing**: Vitest
+- **Format**: ESM (ECMAScript Modules)
 
 ## ワークフロー
 
