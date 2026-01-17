@@ -98,9 +98,49 @@ h1 {
 }
 
 .stats {
-    font-weight: 500;
-    opacity: 0.9;
-    font-size: 0.9rem;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.stats-item {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stats-item.prod {
+    border-left: 4px solid #22c55e;
+    color: #bbf7d0;
+}
+
+.stats-item.debug {
+    border-left: 4px solid #8b5cf6;
+    color: #ddd6fe;
+}
+
+.stats-item.ng {
+    border-left: 4px solid #ef4444;
+    color: #fecaca;
+}
+
+.stats-item.hold {
+    border-left: 4px solid #6b7280;
+    color: #e5e7eb;
+}
+
+.stats-item.info {
+    border-left: 4px solid #ffffff;
+    color: #ffffff;
+    opacity: 0.8;
 }
 
 /* Container & Table */
@@ -674,11 +714,13 @@ body.drawer-open #drawer {
         </div>
         <div class="stats">
             
-            <span style="color:#10b981">採用: <span id="count-prod">34</span></span> | 
-            <span style="color:#1f2937">要修正: <span id="count-debug">0</span></span> | 
-            <span style="color:#ef4444">却下: <span id="count-ng">44</span></span> |
-            <span style="color:#6b7280">保留: <span id="count-hold">0</span></span>
-         • Generated: 2026/1/17 22:28:04
+            <div class="stats-item prod">採用: <span id="count-prod">34</span></div>
+            <div class="stats-item debug">要修正: <span id="count-debug">0</span></div>
+            <div class="stats-item ng">却下: <span id="count-ng">44</span></div>
+            <div class="stats-item hold">保留: <span id="count-hold">0</span></div>
+            <div class="stats-item info">78 items</div>
+            <div class="stats-item info">2026/1/17 23:13:35</div>
+        
         </div>
     </header>
 

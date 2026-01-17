@@ -123,10 +123,12 @@ function generateChecklist() {
         }
 
         const statsHtml = `
-            <span style="color:#10b981">採用: <span id="count-prod">${prodQuestions.length}</span></span> | 
-            <span style="color:#1f2937">要修正: <span id="count-debug">${debugQuestions.length}</span></span> | 
-            <span style="color:#ef4444">却下: <span id="count-ng">${ngQuestions.length}</span></span> |
-            <span style="color:#6b7280">保留: <span id="count-hold">0</span></span>
+            <div class="stats-item prod">採用: <span id="count-prod">${prodQuestions.length}</span></div>
+            <div class="stats-item debug">要修正: <span id="count-debug">${debugQuestions.length}</span></div>
+            <div class="stats-item ng">却下: <span id="count-ng">${ngQuestions.length}</span></div>
+            <div class="stats-item hold">保留: <span id="count-hold">0</span></div>
+            <div class="stats-item info">${allQuestions.length} items</div>
+            <div class="stats-item info">${new Date().toLocaleString('ja-JP')}</div>
         `;
 
         // Load external resources
@@ -137,8 +139,7 @@ function generateChecklist() {
 
         let outputHtml = templateHtml
             .replace('{{TABLE_ROWS}}', tableRows)
-            .replace('{{TOTAL_COUNT}} items', statsHtml)
-            .replace('{{GENERATED_DATE}}', new Date().toLocaleString('ja-JP'))
+            .replace('{{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}', statsHtml)
             .replace(/{{\s*SERVER_DATA\s*}}/, JSON.stringify(allQuestions).replace(/\//g, '\\/'))
             .replace(/\{\s*\{\s*STYLES\s*\}\s*\}/g, cssContent)
             .replace(/\{\s*\{\s*SCRIPTS\s*\}\s*\}/g, jsContent);
