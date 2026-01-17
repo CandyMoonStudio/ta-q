@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Quality Check</title>
+    <title>QCL</title>
     <!-- Use Google Fonts instead of local fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,9 +24,6 @@
             --warning: #f59e0b;
             --success: #10b981;
             --accent: #8b5cf6;
-
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 
             --drawer-width: min(400px, 90vw);
         }
@@ -90,11 +87,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: width 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
-        }
-
-        body.drawer-open header {
-            width: calc(100% - var(--drawer-width));
+            /* Allow natural flow with body padding */
         }
 
         h1 {
@@ -120,48 +113,36 @@
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
+            border-collapse: collapse;
+            /* Table Style */
         }
 
         th {
-            text-align: left;
-            padding: 0 20px 10px 20px;
+            text-align: center;
+            /* Centered */
+            padding: 12px 20px;
             color: var(--text-sub);
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             font-weight: 700;
+            border-bottom: 2px solid #e5e7eb;
         }
 
         tr {
             background-color: var(--bg-card);
-            box-shadow: var(--card-shadow);
-            border-radius: 12px;
-            transition: all 0.2s ease-in-out;
-        }
-
-        td:first-child {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-        }
-
-        td:last-child {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
+            transition: background-color 0.2s;
         }
 
         tr:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--card-shadow-hover);
-            z-index: 1;
-            position: relative;
+            background-color: #f9fafb;
         }
 
         td {
             padding: 16px 20px;
             vertical-align: middle;
-            border: none;
+            border-bottom: 1px solid #e5e7eb;
+            /* Divider */
         }
 
         /* Cells */
@@ -559,7 +540,7 @@
 <body id="app-body">
     <header>
         <div style="display: flex; align-items: center; gap: 16px;">
-            <h1>Quiz Check</h1>
+            <h1>QCL</h1>
         </div>
         <div class="stats">
             {{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}

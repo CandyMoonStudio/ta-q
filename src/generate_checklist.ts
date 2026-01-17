@@ -85,12 +85,13 @@ function generateChecklist() {
                 <tr id="row-${safeId}" class="${rowClass}" data-id="${safeId}">
                     <td class="action-cell">
                         <div class="action-buttons">
-                            <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="OK (Adopt)">✓</button>
-                            <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="NG (Reject)">×</button>
-                            <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="Debug (Fix)">?</button>
-                            <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="Hold (Later)">⏸</button>
-                            <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="Add Note">📝</button>
+                            <button class="btn-icon btn-ok" onclick="setStatus('${safeId}', 'ok')" title="OK（採用）">✓</button>
+                            <button class="btn-icon btn-ng" onclick="setStatus('${safeId}', 'ng')" title="NG（却下）">×</button>
+                            <button class="btn-icon btn-debug" onclick="setStatus('${safeId}', 'debug')" title="Debug（要修正：誤字脱字や内容の不備）">?</button>
+                            <button class="btn-icon btn-hold" onclick="setStatus('${safeId}', 'hold')" title="Hold（保留：後で判断）">⏸</button>
+                            <button class="btn-icon btn-note" onclick="activateNoteInput('${safeId}')" title="メモを追加">📝</button>
                         </div>
+                    </td>
                     </td>
                     <td class="id-cell">
                         <span class="id-badge">${safeId}</span>
