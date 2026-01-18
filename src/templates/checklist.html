@@ -195,6 +195,50 @@
         const SERVER_DATA = {{ SERVER_DATA }};
     </script>
 
+    <!-- Footer with Credit -->
+    <footer
+        style="text-align: center; padding: 20px; color: rgba(255,255,255,0.6); font-size: 0.85em; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 40px;">
+        <span id="credit-link" style="cursor: pointer; transition: color 0.2s;"
+            onmouseover="this.style.color='rgba(255,255,255,0.9)'"
+            onmouseout="this.style.color='rgba(255,255,255,0.6)'">
+            Made with ❤️ by CandyMoonStudio
+        </span>
+    </footer>
+
+    <!-- Save/Restore Modal -->
+    <div id="save-restore-modal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;">
+        <div
+            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px; max-width: 500px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+            <h2 style="margin: 0 0 20px 0; color: white; font-size: 1.5em;">💾 データの保存と復元</h2>
+
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: white; font-size: 1.1em; margin-bottom: 10px;">📤 エクスポート</h3>
+                <button id="btn-export-code" class="btn"
+                    style="width: 100%; background: #22c55e; color: white; padding: 12px; font-size: 1em; font-weight: 600;">
+                    コードを生成してコピー
+                </button>
+                <textarea id="export-code-display" readonly
+                    style="width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: none; font-family: monospace; font-size: 0.85em; resize: vertical; min-height: 80px; display: none;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: white; font-size: 1.1em; margin-bottom: 10px;">📥 インポート</h3>
+                <textarea id="import-code-input" placeholder="ここにコードを貼り付けてください..."
+                    style="width: 100%; padding: 10px; border-radius: 6px; border: none; font-family: monospace; font-size: 0.85em; resize: vertical; min-height: 80px;"></textarea>
+                <button id="btn-import-code" class="btn"
+                    style="width: 100%; margin-top: 10px; background: #3b82f6; color: white; padding: 12px; font-size: 1em; font-weight: 600;">
+                    復元する
+                </button>
+            </div>
+
+            <button id="btn-close-modal" class="btn"
+                style="width: 100%; background: rgba(255,255,255,0.2); color: white; padding: 10px; font-size: 0.9em;">
+                閉じる
+            </button>
+        </div>
+    </div>
+
     <!-- Application Logic -->
     {{SCRIPTS}}
 </body>

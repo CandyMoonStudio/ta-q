@@ -9,6 +9,29 @@ let reviewData = {};
 let drafts = [];
 let allTags = new Set(); // For autocomplete
 
+// --- Simple Compression Utilities ---
+// Lightweight Base64 compression for save codes
+function compressData(data) {
+    try {
+        const json = JSON.stringify(data);
+        // Simple compression: Base64 encode
+        return btoa(unescape(encodeURIComponent(json)));
+    } catch (e) {
+        console.error('Compression failed:', e);
+        return null;
+    }
+}
+
+function decompressData(compressed) {
+    try {
+        const json = decodeURIComponent(escape(atob(compressed)));
+        return JSON.parse(json);
+    } catch (e) {
+        console.error('Decompression failed:', e);
+        return null;
+    }
+}
+
 // --- Init ---
 window.addEventListener('DOMContentLoaded', () => {
     if (!REVIEW_ENABLED) {
@@ -1193,3 +1216,115 @@ function resetAllData() {
         location.reload();
     }
 }
+
+// --- Save/Restore Modal Functions ---
+function showSaveRestoreModal() {
+    const modal = document.getElementById('save-restore-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+    }
+}
+
+function hideSaveRestoreModal() {
+    const modal = document.getElementById('save-restore-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    // Clear inputs
+    const exportDisplay = document.getElementById('export-code-display');
+    const importInput = document.getElementById('import-code-input');
+    if (exportDisplay) exportDisplay.style.display = 'none';
+    if (importInput) importInput.value = '';
+}
+
+function exportSaveCode() {
+    const code = compressData(reviewData);
+    if (!code) {
+        alert('エクスポートに失敗しました。');
+        return;
+    }
+
+    const display = document.getElementById('export-code-display');
+    if (display) {
+        display.value = code;
+        display.style.display = 'block';
+        display.select();
+
+        // Copy to clipboard
+        try {
+            document.execCommand('copy');
+            alert('✅ コードをクリップボードにコピーしました！\n\n別のデバイスで復元する際に貼り付けてください。');
+        } catch (e) {
+            alert('⚠️ コードを生成しました。\n\n手動でコピーしてください。');
+        }
+    }
+}
+
+function importSaveCode() {
+    const input = document.getElementById('import-code-input');
+    if (!input || !input.value.trim()) {
+        alert('コードを入力してください。');
+        return;
+    }
+
+    const code = input.value.trim();
+    const data = decompressData(code);
+
+    if (!data) {
+        alert('❌ 無効なコードです。\n\n正しいコードを入力してください。');
+        return;
+    }
+
+    const confirmed = confirm(
+        '⚠️ 確認\n\n' +
+        '現在のデータを上書きして復元します。\n\n' +
+        'この操作は取り消せません。続行しますか？'
+    );
+
+    if (confirmed) {
+        try {
+            localStorage.setItem(LS_KEY, JSON.stringify(data));
+            alert('✅ データを復元しました！\n\nページをリロードします。');
+            location.reload();
+        } catch (e) {
+            alert('❌ 復元に失敗しました。\n\n' + e.message);
+        }
+    }
+}
+
+// --- Event Listeners for Save/Restore Modal ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Credit link click
+    const creditLink = document.getElementById('credit-link');
+    if (creditLink) {
+        creditLink.addEventListener('click', showSaveRestoreModal);
+    }
+
+    // Close modal
+    const closeBtn = document.getElementById('btn-close-modal');
+    if (closeBtn) {
+        closeBtn.addEventListener('click', hideSaveRestoreModal);
+    }
+
+    // Close modal on backdrop click
+    const modal = document.getElementById('save-restore-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideSaveRestoreModal();
+            }
+        });
+    }
+
+    // Export button
+    const exportBtn = document.getElementById('btn-export-code');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportSaveCode);
+    }
+
+    // Import button
+    const importBtn = document.getElementById('btn-import-code');
+    if (importBtn) {
+        importBtn.addEventListener('click', importSaveCode);
+    }
+});
