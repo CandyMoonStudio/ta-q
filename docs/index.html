@@ -417,7 +417,7 @@ tr:hover td:first-child {
 }
 
 .edit-icon {
-    opacity: 0;
+    opacity: 0.6;
     font-size: 0.8em;
     color: var(--primary);
     transition: opacity 0.2s;
@@ -576,9 +576,6 @@ tr.row-note {
 .inline-input {
     width: 100%;
     padding: 8px;
-    border: 1px solid .22c55e;
-    /* ? typo in original? keeping as is or fixing? Original had .22c55e? */
-    /* Original logic check needed. Assuming #22c55e or default. Let's make it standard. */
     border: 1px solid #d1d5db;
     border-radius: 4px;
     font-size: 0.9rem;
@@ -775,7 +772,7 @@ body.drawer-open #drawer {
             <div class="stats-item ng">却下: <span id="count-ng">44</span></div>
             <div class="stats-item hold">保留: <span id="count-hold">0</span></div>
             <div class="stats-item info">78 items</div>
-            <div class="stats-item info">2026/1/18 0:30:29</div>
+            <div class="stats-item info">2026/1/18 19:44:38</div>
         
         </div>
     </header>
@@ -4217,77 +4214,76 @@ body.drawer-open #drawer {
                 JSON</button>
         </div>
 
-    </div>
+        <div class="drawer-content" id="content-edit">
+            <div class="input-group">
+                <label>Editing ID</label>
+                <div id="edit-id-display"
+                    style="font-family:monospace; font-weight:bold; color:var(--accent); margin-bottom:10px;">-</div>
+            </div>
 
-    <div class="drawer-content" id="content-edit">
-        <div class="input-group">
-            <label>Editing ID</label>
-            <div id="edit-id-display"
-                style="font-family:monospace; font-weight:bold; color:var(--accent); margin-bottom:10px;">-</div>
+            <div class="input-group">
+                <label>Difficulty</label>
+                <div class="edit-star-rating" id="edit-difficulty-stars"
+                    style="font-size:1.5rem; color:#fbbf24; cursor:pointer;">
+                    ★★★★★
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Type (Category)</label>
+                <select id="edit-type-select" style="width:100%; padding:8px; border-radius:4px; margin-bottom:10px;">
+                    <option value="">(None)</option>
+                    <option value="fast">Fast</option>
+                    <option value="knowledge">Knowledge</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Tags</label>
+                <div id="edit-current-tags"
+                    style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px; min-height:30px;">
+                    <!-- Chips go here -->
+                </div>
+                <div style="display:flex; gap:4px;">
+                    <input type="text" id="edit-new-tag" placeholder="Add custom tag..." list="tag-suggestions">
+                    <button class="btn-primary" id="btn-add-tag"
+                        style="width:auto; margin:0; padding:0 12px;">+</button>
+                </div>
+                <datalist id="tag-suggestions">
+                    <!-- Populated by JS -->
+                </datalist>
+
+                <div style="margin-top:10px; font-size:0.8em; color:rgba(255,255,255,0.5);">
+                    Recommended: History, Science, Geography, Culture, Sports, Entertainment, Japan, World
+                </div>
+            </div>
+
+            <button class="btn-primary" id="btn-save-edit" style="margin-top:20px; background:#22c55e;">Save
+                Changes</button>
         </div>
 
-        <div class="input-group">
-            <label>Difficulty</label>
-            <div class="edit-star-rating" id="edit-difficulty-stars"
-                style="font-size:1.5rem; color:#fbbf24; cursor:pointer;">
-                ★★★★★
+        <div class="drawer-content" id="content-add">
+            <div class="input-group">
+                <label>ID (Optional)</label>
+                <input type="text" id="new-id" placeholder="Auto-generated if empty">
+            </div>
+            <div class="input-group">
+                <label>Question</label>
+                <input type="text" id="new-text">
+            </div>
+            <div class="input-group">
+                <label>Answer</label>
+                <input type="text" id="new-answer">
+            </div>
+            <button class="btn-primary" data-action="add-draft">Add Draft</button>
+
+            <div class="draft-list" id="draft-list"></div>
+
+            <div style="margin-top:20px; text-align:right;">
+                <button class="btn copy-btn" data-action="copy-tsv"
+                    style="background:rgba(255,255,255,0.1); color:white;">Copy All as TSV</button>
             </div>
         </div>
-
-        <div class="input-group">
-            <label>Type (Category)</label>
-            <select id="edit-type-select" style="width:100%; padding:8px; border-radius:4px; margin-bottom:10px;">
-                <option value="">(None)</option>
-                <option value="fast">Fast</option>
-                <option value="knowledge">Knowledge</option>
-            </select>
-        </div>
-
-        <div class="input-group">
-            <label>Tags</label>
-            <div id="edit-current-tags"
-                style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px; min-height:30px;">
-                <!-- Chips go here -->
-            </div>
-            <div style="display:flex; gap:4px;">
-                <input type="text" id="edit-new-tag" placeholder="Add custom tag..." list="tag-suggestions">
-                <button class="btn-primary" id="btn-add-tag" style="width:auto; margin:0; padding:0 12px;">+</button>
-            </div>
-            <datalist id="tag-suggestions">
-                <!-- Populated by JS -->
-            </datalist>
-
-            <div style="margin-top:10px; font-size:0.8em; color:rgba(255,255,255,0.5);">
-                Recommended: History, Science, Geography, Culture, Sports, Entertainment, Japan, World
-            </div>
-        </div>
-
-        <button class="btn-primary" id="btn-save-edit" style="margin-top:20px; background:#22c55e;">Save
-            Changes</button>
-    </div>
-
-    <div class="drawer-content" id="content-add">
-        <div class="input-group">
-            <label>ID (Optional)</label>
-            <input type="text" id="new-id" placeholder="Auto-generated if empty">
-        </div>
-        <div class="input-group">
-            <label>Question</label>
-            <input type="text" id="new-text">
-        </div>
-        <div class="input-group">
-            <label>Answer</label>
-            <input type="text" id="new-answer">
-        </div>
-        <button class="btn-primary" data-action="add-draft">Add Draft</button>
-
-        <div class="draft-list" id="draft-list"></div>
-
-        <div style="margin-top:20px; text-align:right;">
-            <button class="btn copy-btn" data-action="copy-tsv"
-                style="background:rgba(255,255,255,0.1); color:white;">Copy All as TSV</button>
-        </div>
-    </div>
     </div>
 
     <!-- Data Injection -->
@@ -4794,8 +4790,8 @@ function openEditDrawer(id) {
     // Or just force show content-edit within the drawer structure.
 
     // Hide all contents
-    document.querySelectorAll('.drawer-content').forEach(c => c.style.display = 'none');
-    document.getElementById('content-edit').style.display = 'block';
+    document.querySelectorAll('.drawer-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('content-edit').classList.add('active');
 
     // Open Drawer
     document.body.classList.add('drawer-open');

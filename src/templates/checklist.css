@@ -403,7 +403,7 @@ tr:hover td:first-child {
 }
 
 .edit-icon {
-    opacity: 0;
+    opacity: 0.6;
     font-size: 0.8em;
     color: var(--primary);
     transition: opacity 0.2s;
@@ -562,9 +562,6 @@ tr.row-note {
 .inline-input {
     width: 100%;
     padding: 8px;
-    border: 1px solid .22c55e;
-    /* ? typo in original? keeping as is or fixing? Original had .22c55e? */
-    /* Original logic check needed. Assuming #22c55e or default. Let's make it standard. */
     border: 1px solid #d1d5db;
     border-radius: 4px;
     font-size: 0.9rem;

@@ -495,8 +495,8 @@ function openEditDrawer(id) {
     // Or just force show content-edit within the drawer structure.
 
     // Hide all contents
-    document.querySelectorAll('.drawer-content').forEach(c => c.style.display = 'none');
-    document.getElementById('content-edit').style.display = 'block';
+    document.querySelectorAll('.drawer-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('content-edit').classList.add('active');
 
     // Open Drawer
     document.body.classList.add('drawer-open');
