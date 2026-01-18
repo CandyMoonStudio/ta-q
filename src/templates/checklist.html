@@ -19,8 +19,14 @@
         <div style="display: flex; align-items: center; gap: 16px;">
             <h1>QCL</h1>
         </div>
-        <div class="stats">
-            {{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}
+        <div style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
+            <div class="stats">
+                {{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}
+            </div>
+            <button class="btn btn-reset" data-action="reset-all" title="全てのレビューデータをリセット"
+                style="background: #ef4444; color: white; padding: 8px 16px; border-radius: 6px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85em;">
+                🔄 Reset All
+            </button>
         </div>
     </header>
 

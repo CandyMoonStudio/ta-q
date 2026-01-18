@@ -149,6 +149,10 @@ function initEventListeners() {
                 // Remove a specific tag
                 removeTag(target.dataset.id, target.dataset.tag);
                 break;
+            case 'reset-all':
+                // Reset all review data with confirmation
+                resetAllData();
+                break;
             case 'edit-tags':
                 openEditDrawer(id);
                 break;
@@ -1172,3 +1176,20 @@ document.addEventListener('change', (e) => {
         handleTypeChange(e.target);
     }
 });
+
+// --- Reset All Data ---
+function resetAllData() {
+    const confirmed = confirm(
+        '⚠️ 警告: 全てのレビューデータ（ステータス、メモ、難易度、タグ、タイプ）をリセットします。\n\n' +
+        '全ての問題が初期状態に戻ります。\n\n' +
+        'この操作は取り消せません。続行しますか？'
+    );
+
+    if (confirmed) {
+        // Clear localStorage
+        localStorage.removeItem(LS_KEY);
+
+        // Reload page to reset UI
+        location.reload();
+    }
+}
