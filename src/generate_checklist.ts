@@ -146,12 +146,12 @@ function generateChecklist() {
         }
 
         const statsHtml = `
-            <div class="stats-item prod">採用: <span id="count-prod">${prodQuestions.length}</span></div>
-            <div class="stats-item debug">要修正: <span id="count-debug">${debugQuestions.length}</span></div>
-            <div class="stats-item unset">未設定: <span id="count-unset">${unsetQuestions.length}</span></div>
-            <div class="stats-item ng">却下: <span id="count-ng">${ngQuestions.length}</span></div>
-            <div class="stats-item hold">保留: <span id="count-hold">0</span></div>
             <div class="stats-item info">${allQuestions.length} items</div>
+            <div class="stats-item prod">OK: <span id="count-prod">${prodQuestions.length}</span></div>
+            <div class="stats-item ng">NG: <span id="count-ng">${ngQuestions.length}</span></div>
+            <div class="stats-item debug">Debug: <span id="count-debug">${debugQuestions.length}</span></div>
+            <div class="stats-item hold">Hold: <span id="count-hold">0</span></div>
+            <div class="stats-item unset">Unset: <span id="count-unset">${unsetQuestions.length}</span></div>
             <div class="stats-item info">${new Date().toLocaleString('ja-JP')}</div>
         `;
 

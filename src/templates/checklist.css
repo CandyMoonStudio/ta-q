@@ -105,7 +105,8 @@ h1 {
 
 .stats-item.prod {
     border-left: 4px solid #22c55e;
-    color: #bbf7d0;
+    color: #ffffff;
+    font-weight: 600;
 }
 
 .stats-item.debug {

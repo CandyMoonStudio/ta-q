@@ -187,41 +187,48 @@ function initEventListeners() {
 
 // --- Stats Update ---
 function updateStats() {
-    let counts = { prod: 0, debug: 0, ng: 0 };
-    if (typeof SERVER_DATA !== 'undefined') {
-        SERVER_DATA.forEach(q => {
-            if (q._list === 'prod') counts.prod++;
-            else if (q._list === 'debug') counts.debug++;
-            else if (q._list === 'unset') counts.unset = (counts.unset || 0) + 1;
-            else if (q._list === 'ng') counts.ng++;
-        });
-    }
-
     let currentCounts = { ok: 0, debug: 0, ng: 0, hold: 0, unset: 0 };
 
     if (typeof SERVER_DATA !== 'undefined') {
         SERVER_DATA.forEach(q => {
             const id = q.id;
+
+            // Get initial status from data
             let initialStatus = q._list || 'unset';
             if (initialStatus === 'prod') initialStatus = 'ok';
 
+            // Get effective status (review overrides initial)
             const review = reviewData[id];
-            let effective = review?.status || initialStatus;
+            let effectiveStatus;
 
-            if (effective === 'prod') effective = 'ok';
-            // if (effective === 'unset' || !effective) effective = 'ok'; // Keep unset as unset for stats
+            if (review && review.hasOwnProperty('status')) {
+                // Review exists and has status property
+                effectiveStatus = review.status === null ? 'unset' : review.status;
+            } else {
+                // No review, use initial status
+                effectiveStatus = initialStatus;
+            }
 
-            if (currentCounts.hasOwnProperty(effective)) {
-                currentCounts[effective]++;
-            } else if (effective === 'unset') {
-                currentCounts.unset++;
+            // Normalize prod to ok
+            if (effectiveStatus === 'prod') effectiveStatus = 'ok';
+
+            // Count the effective status
+            if (currentCounts.hasOwnProperty(effectiveStatus)) {
+                currentCounts[effectiveStatus]++;
             }
         });
     }
 
+    console.log('[DEBUG] Stats counts:', currentCounts);
+
     const setSafe = (id, val) => {
         const el = document.getElementById(id);
-        if (el) el.textContent = val;
+        if (el) {
+            console.log(`[DEBUG] Setting ${id} to ${val}`);
+            el.textContent = val;
+        } else {
+            console.warn(`[DEBUG] Element not found: ${id}`);
+        }
     };
     setSafe('count-prod', currentCounts.ok);
     setSafe('count-debug', currentCounts.debug);
