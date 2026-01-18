@@ -109,7 +109,8 @@ function initEventListeners() {
             // Check for backdrop click to close drawer
             if (document.body.classList.contains('drawer-open')) {
                 const isDrawer = clickedElement.closest('#drawer');
-                const isTrigger = clickedElement.closest('#btn-open-add') || clickedElement.closest('.fab-add');
+                const isTrigger = clickedElement.closest('#btn-open-add') || clickedElement.closest('.fab-add') || clickedElement.closest('[data-action="edit-tags"]');
+
                 if (!isDrawer && !isTrigger) {
                     toggleDrawer();
                 }
@@ -118,6 +119,8 @@ function initEventListeners() {
         }
 
         const action = target.dataset.action;
+        console.log('[DEBUG] Click Action:', action, target);
+
         const row = target.closest('tr');
         const id = row ? row.dataset.id : null;
 
@@ -138,6 +141,7 @@ function initEventListeners() {
                 switchTab('add');
                 break;
             case 'download-json':
+                console.log('[DEBUG] Executing download-json');
                 downloadJson(target.dataset.target);
                 break;
             case 'copy-markdown':

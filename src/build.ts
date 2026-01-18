@@ -9,7 +9,7 @@ import type { Question } from './services/validator.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
-const inputPath = path.join(rootDir, 'questions_edit.tsv');
+const inputPath = path.join(rootDir, 'data', 'questions.tsv');
 const outDir = path.join(rootDir, 'out');
 
 interface OutputQuestion {

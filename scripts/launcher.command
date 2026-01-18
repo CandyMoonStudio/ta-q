@@ -25,14 +25,16 @@ else
     echo "npm found at: $(command -v npm)"
 fi
 
-# Navigate to the script's directory
-cd "$(dirname "$0")" || {
-    echo "Error: Failed to change directory."
+# Navigate to the project root directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR/.." || {
+    echo "Error: Failed to change directory to project root."
     read -p "Press [Enter] key to exit..."
     exit 1
 }
 
 echo "Starting ta-q Checklist local server..."
+echo "Project root: $(pwd)"
 echo "Press Ctrl+C to stop."
 
 # Build latest checklist
@@ -43,22 +45,17 @@ else
     echo "Skipping build (npm not found)."
 fi
 
-# Change to docs directory
-if [ -d "docs" ]; then
-    cd docs
-else
-    echo "Error: docs directory not found."
-    read -p "Press [Enter] key to exit..."
-    exit 1
-fi
-
-# Run the server script
+# Run the server script using npm if possible, fallback to python
 echo "Server is starting at http://localhost:7000"
 echo "---------------------------------------------------"
 # Open browser (macOS specific)
 open http://localhost:7000
 
-python3 -m http.server 7000
+if command -v npm &> /dev/null; then
+    npm run serve
+else
+    python3 -m http.server 7000 --directory docs
+fi
 
 # Keep window open if server crashes or exits
 echo ""

@@ -21,6 +21,7 @@ export const QuestionSchema = z.object({
     answer_display: z.string().optional(),
     reading: z.string().optional(),
     explanation: z.string().optional(),
+    difficulty: z.string().optional(),
 
     // Internal/System fields often added later, but schema might see them if passed
     weight: z.number().optional()
