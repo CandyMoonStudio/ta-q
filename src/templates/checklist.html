@@ -11,13 +11,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap"
         rel="stylesheet">
-    <style>
-        {
-                {
-                STYLES
-            }
-        }
-    </style>
+    {{STYLES}}
 </head>
 
 <body id="app-body">
@@ -44,8 +38,12 @@
                 <option value="debug">DEBUG (要修正)</option>
                 <option value="hold">HOLD (保留)</option>
             </select>
-            <select class="filter-select" id="genre-filter">
-                <option value="all">全ジャンル</option>
+            <select class="filter-select" id="type-filter">
+                <option value="all">Type: All</option>
+                <!-- Generated dynamically -->
+            </select>
+            <select class="filter-select" id="tag-filter">
+                <option value="all">Tag: All</option>
                 <!-- Generated dynamically -->
             </select>
         </div>
@@ -59,7 +57,8 @@
                     <th width="100">状態</th>
                     <th width="60">ID</th>
                     <th width="80">難易度</th>
-                    <th width="120">ジャンル</th>
+                    <th width="80">Type</th>
+                    <th width="120">Tags</th>
                     <th>問題 / 解答</th>
                     <th>ローマ字 / 別解</th>
                     <th width="200">メモ</th>
@@ -191,9 +190,7 @@
     </script>
 
     <!-- Application Logic -->
-    <script>
-        { { SCRIPTS } }
-    </script>
+    {{SCRIPTS}}
 </body>
 
 </html>

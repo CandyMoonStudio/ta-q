@@ -119,11 +119,17 @@ function generateChecklist() {
                             ${'★'.repeat(difficulty)}${'☆'.repeat(5 - difficulty)}
                         </div>
                     </td>
-                    <td class="genre-cell" id="genre-${safeId}" style="font-size:0.85em; color:var(--text-sub);">
-                        <div class="tag-container" data-action="edit-tags" title="Click to edit tags">
-                            ${typeText ? `<span class="tag-badge type">${escapeHtml(typeText)}</span>` : ''}
-                            ${tagsText ? tagsText.split(',').map((t: string) => `<span class="tag-badge tag">${escapeHtml(t.trim())}</span>`).join('') : ''}
-                            <span class="edit-icon">✎</span>
+                    <td class="type-cell" id="type-${safeId}" style="min-width:80px; font-size:0.85em;">
+                        <select class="inline-type-select" data-action="inline-edit-type" data-id="${safeId}" style="width:100%; padding:4px; border:1px solid #ddd; border-radius:4px; background:white; cursor:pointer;">
+                            <option value=""${!typeText ? ' selected' : ''}>-</option>
+                            <option value="fast"${typeText === 'fast' ? ' selected' : ''}>Fast</option>
+                            <option value="knowledge"${typeText === 'knowledge' ? ' selected' : ''}>Knowledge</option>
+                        </select>
+                    </td>
+                    <td class="tags-cell" id="tags-${safeId}" style="min-width:120px; font-size:0.85em; color:var(--text-sub);">
+                        <div class="tag-display" data-action="inline-edit-tags" data-id="${safeId}" style="cursor:pointer; padding:4px; min-height:28px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                            ${tagsText ? tagsText.split(',').map((t: string) => `<span class="tag-badge tag" data-tag="${escapeHtml(t.trim())}">${escapeHtml(t.trim())}<span class="tag-remove" data-action="remove-tag" data-id="${safeId}" data-tag="${escapeHtml(t.trim())}" style="margin-left:4px; cursor:pointer; opacity:0.6;">×</span></span>`).join('') : '<span style="opacity:0.3;">(Click to add)</span>'}
+                            <span class="edit-icon" style="opacity:0.5; margin-left:4px;">✎</span>
                         </div>
                     </td>
                     <td style="min-width: 250px;">
@@ -156,16 +162,22 @@ function generateChecklist() {
         const jsContent = fs.readFileSync(jsPath, 'utf-8');
 
         let outputHtml = templateHtml
-            .replace('{{TABLE_ROWS}}', tableRows)
-            .replace('{{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}', statsHtml)
-            .replace(/{{\s*SERVER_DATA\s*}}/, JSON.stringify(allQuestions).replace(/\//g, '\\/'))
-            .replace(/\{\s*\{\s*STYLES\s*\}\s*\}/g, cssContent)
-            .replace(/\{\s*\{\s*SCRIPTS\s*\}\s*\}/g, jsContent);
+            .replace('{{TABLE_ROWS}}', () => tableRows)
+            .replace('{{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}', () => statsHtml)
+            .replace(/{{\s*SERVER_DATA\s*}}/, () => JSON.stringify(allQuestions).replace(/\//g, '\\/'))
+            .replace(/\{\s*\{\s*STYLES\s*\}\s*\}/g, () => '<link rel="stylesheet" href="checklist.css">')
+            .replace(/\{\s*\{\s*SCRIPTS\s*\}\s*\}/g, () => '<script src="checklist.js"></script>');
 
         const docsDir = path.dirname(OUTPUT_FILE);
         if (!fs.existsSync(docsDir)) {
             fs.mkdirSync(docsDir, { recursive: true });
         }
+
+        // Write CSS and JS to separate files
+        const cssOutputPath = path.join(docsDir, 'checklist.css');
+        const jsOutputPath = path.join(docsDir, 'checklist.js');
+        fs.writeFileSync(cssOutputPath, cssContent, 'utf8');
+        fs.writeFileSync(jsOutputPath, jsContent, 'utf8');
 
         fs.writeFileSync(OUTPUT_FILE, outputHtml, 'utf8');
         console.log(`Checklist generated: ${OUTPUT_FILE} (Prod:${prodQuestions.length}, Debug:${debugQuestions.length}, Unset:${unsetQuestions.length}, NG:${ngQuestions.length})`);
