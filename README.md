@@ -1,13 +1,24 @@
-# Question Generator
+# TypeAnswer Question Management (ta-q)
 
-ゲーム本体で使用する問題データを作成・管理するためのリポジトリです。本リポジトリは「データ生成（Generation）」と「品質管理（Quality Control）」の役割を担います。
+ゲーム本体で使用する問題データを管理・検証するためのリポジトリです。本リポジトリは「マスタデータの管理（Master Data Management）」と「品質管理（Quality Control）」の役割を担います。
+
+**主な役割:**
+
+- **Check (検証)**: データの整合性チェック、ブラウザでのプレビュー。
+- **Classify (分類)**: ステータス（Prod/NG/Inbox）の分類、タグ付け。
+- **Add (手動追加)**: 補足的な問題の手動追加・修正。
+
+※ **問題の作成（Generation）について**
+問題データの作成自体は、主にローカルのクローズドな環境で行われます。本リポジトリは、そうして作成されたデータの「受け皿」および「整地場所」として機能します。
 
 ## Architecture
 
-本プロジェクトは、人間が編集しやすい **TSV (Tab Separated Values)** データをマスターとし、アプリケーションが利用可能な最適化された **JSON** データへ変換するビルドパイプラインを提供します。
+本プロジェクトは、人間が手動で編集しやすい **TSV (Tab Separated Values)** データをマスターとし、アプリケーションが利用可能な最適化された **JSON** データへ変換するビルドパイプラインを提供します。
+また、GitHub Pages 上でインタラクティブなバリデーションチェックリストを提供し、多人数あるいは複数端末での品質確認を容易にします。
 
 - **Master Data**: `questions_edit.tsv` (Human Readable/Editable)
 - **Builder**: TypeScript Scripts (Validation, Processing, Weight Calculation)
+- **QC Tool**: GitHub Pages Checklist (Interactive Review UI)
 - **Artifacts**: `out/questions_prod.json`, `out/questions_ng.json`
 
 ## Tech Stack
