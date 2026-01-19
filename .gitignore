@@ -12,10 +12,12 @@ yarn-debug.log*
 yarn-error.log*
 .npm/
 
-# IDE
+# IDE / AI
 .vscode/
 .idea/
 .gemini/
+.codex/
+agent.md
 
 # Output / Artifacts
 out/
