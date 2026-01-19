@@ -2,9 +2,25 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+*.swp
+*.bak
 
 # Node
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
 
-# Output
+# IDE
+.vscode/
+.idea/
+.gemini/
+
+# Output / Artifacts
 out/
+/docs/report.txt
+
+# Coverage
+coverage/
+*.lcov
