@@ -1,0 +1,8 @@
+# Codex config for ta-q
+language = "ja"
+approval_policy = "always"
+default_mode = "analysis"
+default_permission = "read-only"
+
+[behavior]
+explain_before_implementation = true
