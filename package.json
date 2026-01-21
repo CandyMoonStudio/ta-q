@@ -4,20 +4,40 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "build:vite": "vite build",
     "build": "tsx src/build.ts",
     "checklist": "npm run build && tsx src/generate_checklist.ts",
     "serve": "python3 -m http.server 7000 --directory docs",
     "add": "tsx src/cli/add.ts",
-    "test": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "guardrail": "./scripts/guardcheck.sh"
+    "check:prepush": "npm run lint && npm run typecheck && npm test",
+    "guardrail": "./scripts/guardcheck.sh",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,js,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "devDependencies": {
     "@types/node": "^25.0.9",
     "csv-parse": "^6.1.0",
+    "eslint": "^9.0.0",
+    "eslint-config-prettier": "^10.0.0",
+    "globals": "^15.0.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.17",
-    "zod": "^4.3.5"
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^6.0.0",
+    "vitest": "^3.0.0",
+    "zod": "^3.0.0"
   }
 }
