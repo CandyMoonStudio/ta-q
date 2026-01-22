@@ -1,3 +1,4 @@
+import { build as esbuildBuild } from 'esbuild';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -13,87 +14,111 @@ const UNSET_FILE = path.join(__dirname, '../out/questions_unset.json');
 const NG_FILE = path.join(__dirname, '../out/questions_ng.json');
 const TEMPLATE_FILE = path.join(__dirname, 'templates/checklist.html');
 const OUTPUT_FILE = path.join(__dirname, '../docs/index.html');
+const CLIENT_ENTRY = path.join(__dirname, 'client/main.ts');
 
 /**
  * Highlights ambiguous romaji patterns using spans.
  */
 function highlightAmbiguousRomaji(text: string): string {
-    if (!text) return '';
+  if (!text) return '';
 
-    const patterns = [
-        /(si|shi)/g, /(tu|tsu)/g, /(ti|chi)/g, /(hu|fu)/g, /(zi|ji)/g,
-        /(sya|sha)/g, /(syu|shu)/g, /(syo|sho)/g,
-        /(tya|cha)/g, /(tyu|chu)/g, /(tyo|cho)/g,
-        /(ja|jya)/g, /(ju|jyu)/g, /(jo|jyo)/g,
-        /(n)/g
-    ];
+  const patterns = [
+    /(si|shi)/g,
+    /(tu|tsu)/g,
+    /(ti|chi)/g,
+    /(hu|fu)/g,
+    /(zi|ji)/g,
+    /(sya|sha)/g,
+    /(syu|shu)/g,
+    /(syo|sho)/g,
+    /(tya|cha)/g,
+    /(tyu|chu)/g,
+    /(tyo|cho)/g,
+    /(ja|jya)/g,
+    /(ju|jyu)/g,
+    /(jo|jyo)/g,
+    /(n)/g,
+  ];
 
-    let highlighted = text;
-    // Simple bulk replace approach
-    const regex = new RegExp(`(${patterns.map((p) => p.source.replace(/[()]/g, '')).join('|')})`, 'g');
-    highlighted = highlighted.replace(regex, '<span class="highlight-variant">$1</span>');
+  let highlighted = text;
+  // Simple bulk replace approach
+  const regex = new RegExp(
+    `(${patterns.map((p) => p.source.replace(/[()]/g, '')).join('|')})`,
+    'g'
+  );
+  highlighted = highlighted.replace(regex, '<span class="highlight-variant">$1</span>');
 
-    return highlighted;
+  return highlighted;
 }
 
 function loadJson(p: string) {
-    if (!fs.existsSync(p)) return [];
-    return JSON.parse(fs.readFileSync(p, 'utf8'));
+  if (!fs.existsSync(p)) return [];
+  return JSON.parse(fs.readFileSync(p, 'utf8'));
 }
 
-function generateChecklist() {
-    try {
-        if (!fs.existsSync(TEMPLATE_FILE)) {
-            console.error('Error: Template file not found:', TEMPLATE_FILE);
-            process.exit(1);
-        }
+async function generateChecklist() {
+  try {
+    if (!fs.existsSync(TEMPLATE_FILE)) {
+      console.error('Error: Template file not found:', TEMPLATE_FILE);
+      process.exit(1);
+    }
 
-        const prodQuestions = loadJson(PROD_FILE);
-        const debugQuestions = loadJson(DEBUG_FILE);
-        const unsetQuestions = loadJson(UNSET_FILE);
-        const ngQuestions = loadJson(NG_FILE);
+    const prodQuestions = loadJson(PROD_FILE);
+    const debugQuestions = loadJson(DEBUG_FILE);
+    const unsetQuestions = loadJson(UNSET_FILE);
+    const ngQuestions = loadJson(NG_FILE);
 
-        const allQuestions = [
-            ...prodQuestions.map((q: any) => ({ ...q, _list: 'prod' })),
-            ...debugQuestions.map((q: any) => ({ ...q, _list: 'debug' })),
-            ...unsetQuestions.map((q: any) => ({ ...q, _list: 'unset' })),
-            ...ngQuestions.map((q: any) => ({ ...q, _list: 'ng' }))
-        ];
+    const allQuestions = [
+      ...prodQuestions.map((q: any) => ({ ...q, _list: 'prod' })),
+      ...debugQuestions.map((q: any) => ({ ...q, _list: 'debug' })),
+      ...unsetQuestions.map((q: any) => ({ ...q, _list: 'unset' })),
+      ...ngQuestions.map((q: any) => ({ ...q, _list: 'ng' })),
+    ];
 
-        const templateHtml = fs.readFileSync(TEMPLATE_FILE, 'utf8');
+    const templateHtml = fs.readFileSync(TEMPLATE_FILE, 'utf8');
 
-        let tableRows = '';
+    let tableRows = '';
 
-        for (const q of allQuestions) {
-            const romaji = q.romaji_typing || '';
-            const escapedRomaji = escapeHtml(romaji);
-            const highlightedRomaji = highlightAmbiguousRomaji(escapedRomaji);
+    for (const q of allQuestions) {
+      const romaji = q.romaji_typing || '';
+      const escapedRomaji = escapeHtml(romaji);
+      const highlightedRomaji = highlightAmbiguousRomaji(escapedRomaji);
 
-            const variantsText = q.answer_variants ? q.answer_variants.join(', ') : '-';
-            const escapedVariants = escapeHtml(variantsText);
-            const highlightedVariants = highlightAmbiguousRomaji(escapedVariants);
+      const variantsText = q.answer_variants ? q.answer_variants.join(', ') : '-';
+      const escapedVariants = escapeHtml(variantsText);
+      const highlightedVariants = highlightAmbiguousRomaji(escapedVariants);
 
-            const displayQuestion = escapeHtml(q.question);
-            const displayAnswer = escapeHtml(q.answer_display || q.answer);
-            const safeId = escapeHtml(String(q.id));
+      const displayQuestion = escapeHtml(q.question);
+      const displayAnswer = escapeHtml(q.answer_display || q.answer);
+      const safeId = escapeHtml(String(q.id));
 
-            const typeText = q.type || '';
-            const tagsText = (q.tags && Array.isArray(q.tags)) ? q.tags.join(',') : (q.tags || '');
-            const difficulty = q.difficulty || 3;
-            const searchText = (q.id + ' ' + q.question + ' ' + q.answer + ' ' + (q.answer_display || '') + ' ' + (q.romaji_typing || '')).toLowerCase();
+      const typeText = q.type || '';
+      const tagsText = q.tags && Array.isArray(q.tags) ? q.tags.join(',') : q.tags || '';
+      const difficulty = q.difficulty || 3;
+      // Search text for filtering
+      const searchText = (
+        q.id +
+        ' ' +
+        q.question +
+        ' ' +
+        q.answer +
+        ' ' +
+        (q.answer_display || '') +
+        ' ' +
+        (q.romaji_typing || '')
+      ).toLowerCase();
 
-            // Status Badge for the list
-            let listBadge = '';
+      // Status Badge for the list
+      let initialStatus = q._list || 'unset';
+      if (initialStatus === 'prod') initialStatus = 'ok';
 
-            // Mapping initial list to display status
-            let initialStatus = q._list || 'unset';
-            if (initialStatus === 'prod') initialStatus = 'ok';
+      const statusClass = initialStatus !== 'unset' ? `row-${initialStatus}` : '';
+      const badgeHtml =
+        initialStatus !== 'unset'
+          ? `<span class="status-badge ${initialStatus}">${initialStatus.toUpperCase()}</span>`
+          : '';
 
-            const statusClass = initialStatus !== 'unset' ? `row-${initialStatus}` : '';
-            const badgeHtml = initialStatus !== 'unset' ?
-                `<span class="status-badge ${initialStatus}">${initialStatus.toUpperCase()}</span>` : '';
-
-            tableRows += `
+      tableRows += `
                 <tr id="row-${safeId}" class="${statusClass}" 
                     data-id="${safeId}" 
                     data-search="${escapeHtml(searchText)}" 
@@ -120,16 +145,22 @@ function generateChecklist() {
                         </div>
                     </td>
                     <td class="type-cell" id="type-${safeId}" style="min-width:80px; font-size:0.85em;">
-                        <select class="inline-type-select" data-action="inline-edit-type" data-id="${safeId}" style="width:100%; padding:4px; border:1px solid #ddd; border-radius:4px; background:white; cursor:pointer;">
-                            <option value=""${!typeText ? ' selected' : ''}>-</option>
-                            <option value="fast"${typeText === 'fast' ? ' selected' : ''}>Fast</option>
-                            <option value="knowledge"${typeText === 'knowledge' ? ' selected' : ''}>Knowledge</option>
-                        </select>
+                       ${typeText ? `<span class="tag-badge type">${escapeHtml(typeText)}</span>` : '-'}
                     </td>
                     <td class="tags-cell" id="tags-${safeId}" style="min-width:120px; font-size:0.85em; color:var(--text-sub);">
-                        <div class="tag-display" data-action="inline-edit-tags" data-id="${safeId}" style="cursor:pointer; padding:4px; min-height:28px; display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
-                            ${tagsText ? tagsText.split(',').map((t: string) => `<span class="tag-badge tag" data-tag="${escapeHtml(t.trim())}">${escapeHtml(t.trim())}<span class="tag-remove" data-action="remove-tag" data-id="${safeId}" data-tag="${escapeHtml(t.trim())}" style="margin-left:4px; cursor:pointer; opacity:0.6;">×</span></span>`).join('') : '<span style="opacity:0.3;">(Click to add)</span>'}
-                            <span class="edit-icon" style="opacity:0.5; margin-left:4px;">✎</span>
+                        <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center;">
+                            ${
+                              tagsText
+                                ? tagsText
+                                    .split(',')
+                                    .map(
+                                      (t: string) =>
+                                        `<span class="tag-badge tag">${escapeHtml(t.trim())}</span>`
+                                    )
+                                    .join('')
+                                : ''
+                            }
+                            <span class="edit-icon" data-action="edit-tags" data-id="${safeId}" style="opacity:0.5; margin-left:4px; cursor:pointer;">✎</span>
                         </div>
                     </td>
                     <td style="min-width: 250px;">
@@ -143,9 +174,9 @@ function generateChecklist() {
                     </td>
                     <td class="note-cell" id="note-${safeId}"></td>
                 </tr>`;
-        }
+    }
 
-        const statsHtml = `
+    const statsHtml = `
             <div class="stats-item info">${allQuestions.length} items</div>
             <div class="stats-item prod">OK: <span id="count-prod">${prodQuestions.length}</span></div>
             <div class="stats-item ng">NG: <span id="count-ng">${ngQuestions.length}</span></div>
@@ -155,36 +186,48 @@ function generateChecklist() {
             <div class="stats-item info">${new Date().toLocaleString('ja-JP')}</div>
         `;
 
-        // Load external resources
-        const cssPath = path.join(__dirname, 'templates', 'checklist.css');
-        const jsPath = path.join(__dirname, 'templates', 'checklist.js');
-        const cssContent = fs.readFileSync(cssPath, 'utf-8');
-        const jsContent = fs.readFileSync(jsPath, 'utf-8');
+    // Load external resources
+    const cssPath = path.join(__dirname, 'templates', 'checklist.css');
+    const cssContent = fs.readFileSync(cssPath, 'utf-8');
 
-        let outputHtml = templateHtml
-            .replace('{{TABLE_ROWS}}', () => tableRows)
-            .replace('{{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}', () => statsHtml)
-            .replace(/{{\s*SERVER_DATA\s*}}/, () => JSON.stringify(allQuestions).replace(/\//g, '\\/'))
-            .replace(/\{\s*\{\s*STYLES\s*\}\s*\}/g, () => '<link rel="stylesheet" href="checklist.css">')
-            .replace(/\{\s*\{\s*SCRIPTS\s*\}\s*\}/g, () => '<script src="checklist.js"></script>');
+    // Bundle Client JS
+    console.log('Bundling client code...');
+    const bundleResult = await esbuildBuild({
+      entryPoints: [CLIENT_ENTRY],
+      bundle: true,
+      minify: true,
+      format: 'iife',
+      write: false,
+    });
 
-        const docsDir = path.dirname(OUTPUT_FILE);
-        if (!fs.existsSync(docsDir)) {
-            fs.mkdirSync(docsDir, { recursive: true });
-        }
+    const jsContent = bundleResult.outputFiles[0].text;
 
-        // Write CSS and JS to separate files
-        const cssOutputPath = path.join(docsDir, 'checklist.css');
-        const jsOutputPath = path.join(docsDir, 'checklist.js');
-        fs.writeFileSync(cssOutputPath, cssContent, 'utf8');
-        fs.writeFileSync(jsOutputPath, jsContent, 'utf8');
+    const outputHtml = templateHtml
+      .replace('{{TABLE_ROWS}}', () => tableRows)
+      .replace('{{TOTAL_COUNT}} items • Generated: {{GENERATED_DATE}}', () => statsHtml)
+      .replace(/{{\s*SERVER_DATA\s*}}/, () => JSON.stringify(allQuestions).replace(/\//g, '\\/'))
+      .replace(/\{\s*\{\s*STYLES\s*\}\s*\}/g, () => '<link rel="stylesheet" href="checklist.css">')
+      .replace(/\{\s*\{\s*SCRIPTS\s*\}\s*\}/g, () => '<script src="checklist.js"></script>');
 
-        fs.writeFileSync(OUTPUT_FILE, outputHtml, 'utf8');
-        console.log(`Checklist generated: ${OUTPUT_FILE} (Prod:${prodQuestions.length}, Debug:${debugQuestions.length}, Unset:${unsetQuestions.length}, NG:${ngQuestions.length})`);
-    } catch (err) {
-        console.error('Error generating checklist:', err);
-        process.exit(1);
+    const docsDir = path.dirname(OUTPUT_FILE);
+    if (!fs.existsSync(docsDir)) {
+      fs.mkdirSync(docsDir, { recursive: true });
     }
+
+    // Write CSS and JS to separate files
+    const cssOutputPath = path.join(docsDir, 'checklist.css');
+    const jsOutputPath = path.join(docsDir, 'checklist.js');
+    fs.writeFileSync(cssOutputPath, cssContent, 'utf8');
+    fs.writeFileSync(jsOutputPath, jsContent, 'utf8');
+
+    fs.writeFileSync(OUTPUT_FILE, outputHtml, 'utf8');
+    console.log(
+      `Checklist generated: ${OUTPUT_FILE} (Prod:${prodQuestions.length}, Debug:${debugQuestions.length}, Unset:${unsetQuestions.length}, NG:${ngQuestions.length})`
+    );
+  } catch (err) {
+    console.error('Error generating checklist:', err);
+    process.exit(1);
+  }
 }
 
 generateChecklist();
