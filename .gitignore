@@ -21,6 +21,7 @@ agent.md
 
 # Output / Artifacts
 out/
+dist/
 /docs/report.txt
 
 # Coverage
